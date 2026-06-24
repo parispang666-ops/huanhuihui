@@ -1,0 +1,3804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>风险管理与辨识 - 环慧慧EHS+</title>
+  <style>
+    :root {
+      --color-brand: #1570EF; --color-brand-hover: #2E90FA; --color-brand-active: #175CD3;
+      --color-danger: #F64C41; --color-success: #00C5C3;
+      --color-text-primary: #444F66; --color-text-secondary: #758095;
+      --color-text-placeholder: #9EA4AE; --color-text-disabled: #B3B9C4;
+      --color-bg-page: #F7F8FA; --color-bg-surface: #FFFFFF; --color-bg-muted: #F7F8F9;
+      --color-brand-light: #EFF8FF; --color-border: #DEDFE3; --color-divider: #E6E7EB;
+      --radius-component: 4px;
+      --font-family-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      --shadow-topbar: 0 1px 4px rgba(31, 42, 55, .10);
+      --shadow-brand: 0 1px 5px rgba(21,112,239,.05), 0 4px 2.5px rgba(21,112,239,.08), 0 2px 2px rgba(21,112,239,.25);
+      --focus-ring: 0 0 0 2px #D9E1FF;
+      --color-topbar-bg: #00254A; --color-topbar-text: rgba(255,255,255,0.90); --color-topbar-sub: rgba(255,255,255,0.60);
+      --color-sidebar-bg: #00254A; --color-sidebar-item-bg: #042240; --color-sidebar-active: #007AFF;
+      --sidebar-width-new: 256px;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; min-width: 0; overflow: hidden; }
+    body { margin: 0; color: var(--color-text-primary); background: var(--color-bg-page); font-family: var(--font-family-ui); font-size: 14px; line-height: 22px; letter-spacing: 0; }
+    button, input, select { font: inherit; letter-spacing: 0; }
+    button { border: 0; cursor: pointer; }
+    img { display: block; object-fit: contain; }
+
+    /* ==================== 顶部导航栏 ==================== */
+    .menu-topbar { position: fixed; z-index: 30; top: 0; left: 0; width: 100%; height: 64px; display: flex; background: var(--color-topbar-bg); overflow: hidden; }
+    .menu-logo { width: var(--sidebar-width-new); height: 64px; position: relative; display: flex; align-items: center; background: var(--color-topbar-bg); overflow: hidden; flex: 0 0 var(--sidebar-width-new); }
+    .menu-logo::before { content:""; position:absolute; width:236px; height:236px; left:10px; top:-33px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.40) inset; border-radius:9999px; }
+    .menu-logo::after { content:""; position:absolute; width:188px; height:188px; left:34px; top:-9px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.30) inset; border-radius:9999px; }
+    .menu-logo-inner { position:absolute; width:138px; height:138px; left:59px; top:16px; background:#002449; box-shadow:0px 4px 10px rgba(0,0,0,0.20) inset; border-radius:9999px; z-index:0; }
+    .menu-logo-icon { position:absolute; left:28px; top:8px; width:48px; height:48px; z-index:1; }
+    .menu-logo-icon img { width:48px; height:48px; }
+    .menu-logo-main { position:absolute; left:88px; top:16px; z-index:1; font-size:20px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-text); white-space:nowrap; }
+    .menu-logo-brand { color:rgba(58,184,255,0.90); }
+    .menu-logo-sub { position:absolute; left:87px; top:39px; z-index:1; font-size:12px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-sub); white-space:nowrap; }
+    .menu-logo-sep { position:absolute; left:148px; top:27px; width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.30); }
+    .menu-top-nav { flex:1; min-width:0; height:64px; display:flex; align-items:center; background:var(--color-topbar-bg); }
+    .menu-top-track { height:64px; display:flex; align-items:center; gap:32px; padding:0 16px; }
+    .menu-top-item { height:46px; display:inline-flex; align-items:center; padding:0; border:none; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; }
+    .menu-top-item.is-active { border-bottom-color:var(--color-sidebar-active); }
+    .menu-top-actions { height:64px; display:flex; align-items:center; padding:0 16px 0 12px; color:var(--color-topbar-text); font-size:12px; font-family:var(--font-family-ui); white-space:nowrap; flex-shrink:0; }
+    .menu-user { display:inline-flex; align-items:center; gap:0; color:var(--color-topbar-text); font-size:12px; white-space:nowrap; }
+    .menu-user-meta { height:24px; display:inline-flex; align-items:center; }
+
+    /* ==================== 侧边导航菜单 ==================== */
+    .menu-shell { position:fixed; z-index:20; top:64px; left:0; width:var(--sidebar-width-new); height:calc(100vh - 64px); display:flex; flex-direction:column; justify-content:flex-start; background:var(--color-sidebar-bg); box-shadow:0px 2px 8px rgba(0,0,0,0.25); }
+    .menu-side-list { display:flex; flex-direction:column; margin:0; padding:0; overflow:hidden auto; scrollbar-width:thin; }
+    .menu-side-list::-webkit-scrollbar { width:3px; }
+    .menu-side-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:50px; }
+    .menu-side-item { width:256px; height:52px; display:flex; align-items:center; gap:12px; padding:0 8px 0 24px; border:none; border-radius:0; background:var(--color-sidebar-bg); color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; }
+    .menu-side-item:hover { background:rgba(255,255,255,0.06); }
+    .menu-side-item img { width:20px; height:20px; flex:0 0 auto; }
+    .menu-side-item .menu-side-arrow { width:16px; height:16px; flex:0 0 auto; margin-left:auto; margin-right:12px; }
+    .menu-side-item .menu-side-arrow img { width:16px; height:16px; }
+    .menu-side-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .menu-sublist { display:none; flex-direction:column; margin:0; padding:0; background:var(--color-sidebar-item-bg); }
+    .menu-sublist.is-open { display:flex; }
+    .menu-side-child { width:240px; height:36px; display:flex; align-items:center; margin:8px; padding:0 0 0 36px; border:none; border-radius:4px; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; white-space:nowrap; position:relative; }
+    .menu-side-child::before { content:""; position:absolute; left:16px; top:50%; transform:translateY(-50%); width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.40); }
+    .menu-side-child:hover { background:rgba(255,255,255,0.08); }
+    .menu-side-child.is-active { background:var(--color-sidebar-active); color:white; }
+    .menu-side-child.is-active::before { background:white; }
+    .menu-collapse { display:none; }
+
+    /* ==================== 面包屑栏 ==================== */
+    .menu-breadcrumb { position:fixed; z-index:9; top:64px; left:var(--sidebar-width-new); right:0; height:50px; display:flex; align-items:center; padding:0 24px; background:white; box-shadow:0px 0px 8px 6px rgba(0,0,0,0.02); }
+    .menu-breadcrumb-path { display:inline-flex; align-items:center; height:34px; }
+    .menu-breadcrumb-icon { width:24px; height:34px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+    .menu-breadcrumb-icon img { width:12px; height:12px; }
+    .menu-breadcrumb-tag { display:inline-flex; align-items:center; height:34px; padding:0 0 0 8px; background:#E5F3FF; border-radius:0; }
+    .menu-breadcrumb-tag span { color:#007AFF; font-size:14px; font-family:var(--font-family-ui); font-weight:400; margin:0 4px; }
+    .menu-breadcrumb-next { width:24px; height:34px; display:inline-flex; align-items:center; justify-content:center; color:#9EA4AE; flex:0 0 auto; }
+    .menu-breadcrumb-next img { width:12px; height:12px; }
+
+    /* ==================== CONTENT ==================== */
+    .page-content { margin-left: var(--sidebar-width-new); padding: 126px 24px 24px; height: 100vh; overflow-y: auto; }
+    .page-content::-webkit-scrollbar { width: 3px; }
+    .page-content::-webkit-scrollbar-track { background: transparent; }
+    .page-content::-webkit-scrollbar-thumb { border-radius: 50px; background: var(--color-divider); }
+
+    /* ==================== 抽屉 ==================== */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; display: none; }
+    .drawer-overlay.is-open { display: block; }
+    .drawer { position: fixed; top: 0; right: 0; width: 520px; height: 100%; background: white; z-index: 101; display: flex; flex-direction: column; box-shadow: -2px 0 8px rgba(0,0,0,0.15); transform: translateX(100%); transition: transform 250ms ease; }
+    .drawer.is-open { transform: translateX(0); }
+    .drawer-header { height: 56px; min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--color-divider); }
+    .drawer-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+    .drawer-close { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; cursor: pointer; border-radius: var(--radius-component); color: var(--color-text-secondary); }
+    .drawer-close:hover { background: var(--color-bg-muted); color: var(--color-text-primary); }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 24px; }
+    .drawer-body::-webkit-scrollbar { width: 3px; }
+    .drawer-body::-webkit-scrollbar-thumb { background: var(--color-divider); border-radius: 50px; }
+    .drawer-footer { height: 64px; min-height: 64px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 0 24px; border-top: 1px solid var(--color-divider); }
+
+    /* 风险详情抽屉 */
+    .detail-section { margin-bottom: 24px; }
+    .detail-section-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--color-divider); }
+    .detail-item { display: flex; margin-bottom: 12px; }
+    .detail-item-label { flex: 0 0 120px; font-size: 14px; color: var(--color-text-secondary); line-height: 22px; }
+    .detail-item-value { flex: 1; font-size: 14px; color: var(--color-text-primary); line-height: 22px; }
+    .detail-accident-group { margin-bottom: 16px; }
+    .detail-accident-group:last-child { margin-bottom: 0; }
+    .detail-accident-type { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+    .detail-accident-measures { padding-left: 20px; margin: 0; }
+    .detail-accident-measures li { font-size: 14px; color: var(--color-text-primary); line-height: 24px; margin-bottom: 4px; }
+
+    /* 表单样式 */
+    .form-group { margin-bottom: 20px; }
+    .form-group-label { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; font-size: 14px; color: var(--color-text-primary); font-weight: 500; }
+    .form-group-label .required { color: var(--color-danger); }
+    .form-input { width: 100%; height: 36px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; color: var(--color-text-primary); background: white; }
+    .form-input:focus { outline: none; border-color: var(--color-brand); box-shadow: var(--focus-ring); }
+    .form-input::placeholder { color: var(--color-text-placeholder); }
+    .form-select { width: 100%; height: 36px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; color: var(--color-text-primary); background: white; cursor: pointer; appearance: auto; }
+    .form-select:focus { outline: none; border-color: var(--color-brand); box-shadow: var(--focus-ring); }
+    .form-hint { font-size: 12px; color: var(--color-text-placeholder); margin-top: 4px; }
+    .form-section-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); padding: 12px 0; border-top: 1px solid var(--color-divider); margin-top: 24px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .form-section-title::before { content: ""; width: 3px; height: 14px; background: var(--color-brand); border-radius: 2px; }
+    .form-input-wrapper { position: relative; display: flex; align-items: center; }
+    .form-input-wrapper .form-input { padding-right: 60px; }
+    .form-input-count { position: absolute; right: 12px; font-size: 12px; color: var(--color-text-placeholder); pointer-events: none; }
+    .form-input-with-icon .form-input { padding-right: 36px; }
+    .form-input-icon { position: absolute; right: 10px; display: flex; align-items: center; cursor: pointer; }
+    .form-select-btn { width: 100%; height: 36px; padding: 0 16px; border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; color: var(--color-brand); background: white; cursor: pointer; text-align: left; }
+    .form-select-btn:hover { border-color: var(--color-brand); }
+    .form-select-wrapper { position: relative; display: flex; align-items: center; }
+    .form-select-wrapper .form-select { padding-right: 32px; }
+    .form-select-hint { position: absolute; right: 8px; display: flex; align-items: center; cursor: help; }
+
+    /* 表单校验错误态 */
+    .form-group.has-error .form-input,
+    .form-group.has-error .form-select,
+    .form-group.has-error .form-select-btn { border-color: var(--color-danger); }
+    .form-group .form-error { display: none; margin-top: 6px; font-size: 12px; color: var(--color-danger); line-height: 18px; }
+    .form-group.has-error .form-error { display: block; }
+    .form-select:disabled, .form-input:disabled { background: var(--color-bg-muted); color: var(--color-text-disabled); cursor: not-allowed; }
+
+    /* ==================== 标签页 ==================== */
+    .tabs-container { display: flex; border-bottom: 1px solid var(--color-divider); margin-bottom: 16px; }
+    .tab-item { height: 40px; display: inline-flex; align-items: center; padding: 0 16px; background: transparent; color: var(--color-text-secondary); font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 150ms ease; }
+    .tab-item:hover { color: var(--color-text-primary); }
+    .tab-item.is-active { color: var(--color-brand); border-bottom-color: var(--color-brand); }
+
+    /* ==================== 搜索区域 ==================== */
+    .search-area { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding: 16px; background: var(--color-bg-surface); border-radius: var(--radius-component); }
+    .search-item { display: flex; align-items: center; gap: 8px; }
+    .search-label { color: var(--color-text-secondary); font-size: 14px; white-space: nowrap; }
+    .search-input { width: 200px; height: 32px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; }
+    .search-input:focus { outline: none; border-color: var(--color-brand); box-shadow: var(--focus-ring); }
+    .search-select { width: 160px; height: 32px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; background: white; cursor: pointer; }
+    .search-select:focus { outline: none; border-color: var(--color-brand); }
+    .btn-primary { height: 32px; padding: 0 20px; background: var(--color-brand); color: white; border-radius: var(--radius-component); font-size: 14px; transition: background 150ms ease; }
+    .btn-primary:hover { background: var(--color-brand-hover); }
+    .btn-default { height: 32px; padding: 0 20px; background: white; color: var(--color-text-primary); border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; transition: all 150ms ease; }
+    .btn-default:hover { border-color: var(--color-brand); color: var(--color-brand); }
+
+    /* ==================== 操作按钮区 ==================== */
+    .action-area { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .action-left { display: flex; flex-direction: column; gap: 12px; }
+    .action-name-label { font-size: 14px; color: var(--color-text-primary); }
+    .action-buttons { display: flex; gap: 12px; }
+    .btn-add { height: 32px; padding: 0 16px; background: var(--color-brand); color: white; border-radius: var(--radius-component); font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-add:hover { background: var(--color-brand-hover); }
+    .btn-back { height: 32px; padding: 0 20px; background: white; color: var(--color-text-primary); border: 1px solid var(--color-brand); border-radius: var(--radius-component); font-size: 14px; display: inline-flex; align-items: center; }
+    .btn-back:hover { background: var(--color-brand-light); }
+
+    /* 页签内容 */
+    .tab-panel { display: none; }
+    .tab-panel.is-active { display: block; }
+
+    /* 风险辨识详情面板 */
+    .identify-header { font-size: 14px; color: var(--color-text-primary); margin-bottom: 12px; }
+    .identify-name-label { color: var(--color-text-secondary); }
+    .identify-name-value { color: var(--color-text-primary); }
+
+    /* 右侧信息卡片 */
+    .info-card { display: inline-flex; flex-direction: column; justify-content: center; min-width: 140px; min-height: 56px; padding: 10px 16px; background: #808080; border-radius: var(--radius-component); position: relative; }
+    .info-card::before { content: ""; position: absolute; top: -6px; left: 24px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 6px solid #808080; }
+    .info-card-title { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 18px; }
+    .info-card-value { font-size: 13px; color: white; font-weight: 500; line-height: 20px; }
+
+    /* ==================== 数据表格 ==================== */
+    .data-table { width: 100%; background: var(--color-bg-surface); border-radius: var(--radius-component); overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .data-table table { width: 100%; min-width: 960px; border-collapse: collapse; table-layout: auto; }
+    .data-table th { height: 48px; padding: 0 16px; background: #F5F7FA; color: var(--color-text-secondary); font-size: 14px; font-weight: 500; text-align: left; border-bottom: 1px solid var(--color-divider); white-space: nowrap; }
+    .data-table td { height: 48px; padding: 0 16px; color: var(--color-text-primary); font-size: 14px; border-bottom: 1px solid var(--color-divider); white-space: nowrap; }
+    .data-table tr:hover td { background: var(--color-bg-muted); }
+    .data-table tr:hover td:last-child { background: var(--color-bg-muted); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table th .th-gear { float: right; width: 14px; height: 14px; color: var(--color-text-placeholder); cursor: pointer; }
+    /* 操作列固定 */
+    .data-table th:last-child,
+    .data-table td:last-child { position: sticky; right: 0; z-index: 1; }
+    .data-table th:last-child { background: #F5F7FA; z-index: 3; }
+    .data-table td:last-child { background: var(--color-bg-surface); box-shadow: -2px 0 4px rgba(0,0,0,0.04); }
+
+    /* 风险等级标签 */
+    .risk-tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 2px; font-size: 12px; }
+    .risk-low { background: #E6F7FF; color: #1890FF; }
+    .risk-medium { background: #FFF7E6; color: #FA8C16; }
+    .risk-high { background: #FFF1F0; color: #F5222D; }
+    .risk-critical { background: #FFF0F6; color: #EB2F96; }
+
+    /* 管控状态标签 */
+    .control-tag { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--radius-component); font-size: 12px; font-weight: 500; }
+    .control-tag.control-none { background: #F5F5F5; color: #8C8C8C; }
+    .control-tag.control-active { background: #E6F7FF; color: #1890FF; }
+    .control-tag.control-done { background: #F0FFF0; color: #52C41A; }
+
+    /* ==================== 地图坐标选择器 ==================== */
+    .picker-map-wrap { position: relative; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; background: #E8F0FE; }
+    .picker-map { width: 100%; height: 280px; cursor: crosshair; position: relative; background: linear-gradient(135deg, #D6E4F0 0%, #C8DAEE 25%, #A8C5E2 50%, #B8D4EC 75%, #D0E0F0 100%); }
+    .picker-map-grid { position: absolute; inset: 0; background-image:
+      linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+      background-size: 30px 30px; pointer-events: none; }
+    .picker-map-roads { position: absolute; inset: 0; pointer-events: none; }
+    .picker-map-road-h { position: absolute; left: 0; right: 0; background: rgba(255,255,255,0.35); }
+    .picker-map-road-v { position: absolute; top: 0; bottom: 0; background: rgba(255,255,255,0.35); }
+    .picker-map-factory { position: absolute; border: 2px dashed rgba(21,112,239,0.4); background: rgba(21,112,239,0.08); border-radius: 4px; pointer-events: none; }
+    .picker-map-factory-label { position: absolute; font-size: 11px; color: #1570EF; font-weight: 500; white-space: nowrap; top: -18px; left: 4px; }
+    .picker-map-marker { position: absolute; display: none; pointer-events: none; z-index: 5; transform: translate(-12px, -24px); }
+    .picker-map-marker.is-visible { display: block; }
+    .picker-map-marker svg { filter: drop-shadow(0 2px 3px rgba(0,0,0,0.30)); }
+    .picker-address-value { margin-top: 12px; font-size: 14px; color: var(--color-text-primary); background: var(--color-bg-muted); padding: 8px 12px; border-radius: var(--radius-component); min-height: 36px; display: flex; align-items: center; gap: 6px; }
+    .picker-address-value .addr-icon { color: var(--color-brand); flex-shrink: 0; }
+    .picker-address-value .addr-empty { color: var(--color-text-placeholder); }
+    .picker-tip { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; padding: 8px 12px; background: #EBF5FF; border-radius: var(--radius-component); font-size: 12px; color: #2E90FA; }
+
+    /* 管控详情弹窗 - 宽弹窗 */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 110; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.is-open { display: flex; }
+    .modal { background: white; border-radius: 8px; width: 520px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 4px 24px rgba(0,0,0,0.15); }
+    .modal-header { height: 56px; min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--color-divider); }
+    .modal-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+    .modal-close { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; cursor: pointer; border-radius: var(--radius-component); color: var(--color-text-secondary); }
+    .modal-close:hover { background: var(--color-bg-muted); color: var(--color-text-primary); }
+    .modal-body { flex: 1; overflow-y: auto; padding: 24px; }
+    .modal-body::-webkit-scrollbar { width: 3px; }
+    .modal-body::-webkit-scrollbar-thumb { background: var(--color-divider); border-radius: 50px; }
+    .modal-footer { height: 64px; min-height: 64px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 0 24px; border-top: 1px solid var(--color-divider); }
+
+    /* 管控详情区域 */
+    .detail-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+    .detail-subtitle { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 20px; }
+    .detail-subtitle .detail-status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .detail-status-dot.detail-dot-done { background: #52C41A; }
+    .detail-status-dot.detail-dot-active { background: #1890FF; }
+    .detail-round-card { background: var(--color-bg-muted); border-radius: 8px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--color-divider); }
+    .detail-round-card.is-current { background: var(--color-brand-light); }
+    .detail-round-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+    .detail-round-header .round-tag { font-size: 12px; color: var(--color-brand); font-weight: 400; }
+    .detail-round-divider { height: 1px; background: var(--color-divider); margin-bottom: 12px; }
+    .detail-round-row { display: flex; align-items: center; justify-content: space-between; height: 32px; font-size: 13px; }
+    .detail-round-row .detail-label { color: var(--color-text-secondary); }
+    .detail-round-row .detail-value { color: var(--color-text-primary); }
+
+    /* 确认弹窗 */
+    .confirm-modal { width: 400px; }
+    .confirm-body { text-align: center; padding: 32px 24px; }
+    .confirm-icon { width: 48px; height: 48px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #FFF7E6; color: #FA8C16; }
+    .confirm-text { font-size: 14px; color: var(--color-text-primary); line-height: 24px; }
+    .confirm-sub-text { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; }
+
+    /* 时间输入 */
+    .datetime-input { width: 100%; height: 36px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; color: var(--color-text-primary); background: white; }
+    .datetime-input:focus { outline: none; border-color: var(--color-brand); box-shadow: var(--focus-ring); }
+    .form-tip { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--color-brand-light); border-radius: var(--radius-component); font-size: 13px; color: var(--color-brand); margin-bottom: 20px; }
+
+    /* 操作链接 */
+    .action-links { display: flex; gap: 8px; }
+    .action-link { color: var(--color-brand); font-size: 14px; cursor: pointer; }
+    .action-link:hover { text-decoration: underline; }
+    .action-link-danger { color: var(--color-danger); font-size: 14px; cursor: pointer; }
+    .action-link-danger:hover { text-decoration: underline; }
+
+    /* ==================== 分页 ==================== */
+    .pagination { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 16px; padding: 12px 0; }
+    .pagination-info { color: var(--color-text-secondary); font-size: 14px; margin-right: 16px; }
+    .pagination-select { height: 28px; padding: 0 8px; border: 1px solid var(--color-border); border-radius: var(--radius-component); font-size: 14px; }
+    .pagination-btn { min-width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-component); color: var(--color-text-secondary); font-size: 14px; cursor: pointer; }
+    .pagination-btn:hover { border-color: var(--color-brand); color: var(--color-brand); }
+    .pagination-btn.is-active { background: var(--color-brand); color: white; border-color: var(--color-brand); }
+    .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pagination-jump { display: flex; align-items: center; gap: 8px; margin-left: 16px; }
+    .pagination-jump input { width: 40px; height: 28px; padding: 0 8px; border: 1px solid var(--color-border); border-radius: var(--radius-component); text-align: center; }
+
+    /* ==================== Toast 提示 ==================== */
+    .toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+    .toast { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-component); font-size: 14px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: toastIn 0.25s ease; pointer-events: auto; }
+    .toast-success { background: #00C5C3; }
+    .toast-error { background: var(--color-danger); }
+    .toast-warning { background: #FA8C16; }
+    .toast.toast-out { animation: toastOut 0.2s ease forwards; }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+
+    /* ==================== PRD 标注系统 ==================== */
+    .prd-badge { display: inline-block !important; vertical-align: top !important; position: absolute !important; top: -8px !important; right: -4px !important; z-index: 50 !important; background: rgb(250, 173, 20) !important; color: #fff !important; font-size: 10px !important; font-weight: 700 !important; line-height: 14px !important; padding: 0px 4px !important; border-radius: 2px !important; border: none !important; cursor: pointer !important; min-width: auto !important; height: auto !important; letter-spacing: 0 !important; }
+    .prd-badge-hidden .prd-badge { display: none !important; }
+    .prd-badge-wrap { position: relative !important; }
+    .prd-tooltip { position: fixed; z-index: 9959; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0, 120, 255, 0.15); border: 2px solid #1890ff; border-radius: 4px; width: 450px; max-height: 480px; overflow-y: auto; display: none; font-size: 13px; line-height: 1.6; color: #444F66; padding: 0; }
+    .prd-tooltip.is-visible { display: block; }
+    .prd-tooltip-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #E6E7EB; background: #F7F8FA; font-weight: 500; font-size: 14px; color: #444F66; }
+    .prd-tooltip-close { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; cursor: pointer; border-radius: 2px; color: #9EA4AE; font-size: 16px; }
+    .prd-tooltip-close:hover { background: #E6E7EB; color: #444F66; }
+    .prd-tooltip-body { padding: 14px; }
+    .prd-tooltip-body p { margin: 0 0 12px 0; }
+    .prd-tooltip-body ul, .prd-tooltip-body ol { margin: 8px 0; padding-left: 20px; }
+    .prd-tooltip-body li { margin-bottom: 4px; }
+    .prd-tooltip-body strong { color: #1570EF; }
+    .prd-tooltip-body table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+    .prd-tooltip-body table th { background: #F5F7FA; padding: 6px 8px; text-align: left; border: 1px solid #DEDFE3; font-weight: 500; }
+    .prd-tooltip-body table td { padding: 6px 8px; border: 1px solid #DEDFE3; }
+    .prd-tooltip-body .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .prd-tooltip-body .dot-warn { background: #FA8C16; }
+    .prd-tooltip-body .dot-done { background: #52C41A; }
+    .prd-tooltip-body .dot-info { background: #1890FF; }
+    .prd-tooltip-body .dot-new { background: #EB2F96; }
+
+    /* PRD 说明抽屉 */
+    .prd-drawer-btn { position: fixed; z-index: 10002; right: 110px; top: 80px; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; background: #307FE2; color: #fff; border: none; border-radius: 4px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 8px rgba(48,127,226,0.3); }
+    .prd-drawer-btn:hover { background: #2B6FD0; }
+    /* 页签栏 */
+    .prd-drawer-tabs { display: flex; border-bottom: 1px solid #E6E7EB; background: #F7F8FA; padding: 0 20px; height: 42px; min-height: 42px; align-items: flex-end; gap: 0; }
+    .prd-drawer-tab { height: 38px; padding: 0 20px; border: none; background: transparent; color: #758095; font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 150ms; white-space: nowrap; }
+    .prd-drawer-tab:hover { color: #444F66; }
+    .prd-drawer-tab.active { color: #1570EF; border-bottom-color: #1570EF; font-weight: 500; }
+    .prd-drawer-panel { display: none; flex: 1; overflow-y: auto; padding: 24px; }
+    .prd-drawer-panel.active { display: block; }
+    .prd-drawer-panel::-webkit-scrollbar { width: 4px; }
+    .prd-drawer-panel::-webkit-scrollbar-thumb { background: #DEDFE3; border-radius: 50px; }
+    .prd-drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 10003; display: none; }
+    .prd-drawer-overlay.is-open { display: block; }
+    .prd-drawer { position: fixed; top: 0; right: 0; width: 620px; height: 100%; background: #fff; z-index: 10004; display: flex; flex-direction: column; box-shadow: -4px 0 16px rgba(0,0,0,0.15); transform: translateX(100%); transition: transform 250ms ease; }
+    .prd-drawer.is-open { transform: translateX(0); }
+    .prd-drawer-header { height: 56px; min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #E6E7EB; background: #F7F8FA; }
+    .prd-drawer-title { font-size: 16px; font-weight: 500; color: #444F66; }
+    .prd-drawer-close { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; cursor: pointer; border-radius: 4px; color: #758095; font-size: 18px; }
+    .prd-drawer-close:hover { background: #E6E7EB; color: #444F66; }
+    .prd-drawer-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .prd-drawer-body h1 { font-size: 20px; border-bottom: 1px solid #E6E7EB; padding-bottom: 10px; margin-bottom: 16px; }
+    .prd-drawer-body h2 { font-size: 16px; margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #F0F0F0; }
+    .prd-drawer-body h3 { font-size: 14px; margin: 16px 0 8px; }
+    .prd-drawer-body p { margin: 8px 0; }
+    .prd-drawer-body table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+    .prd-drawer-body table th { background: #F5F7FA; padding: 8px 10px; text-align: left; border: 1px solid #DEDFE3; font-weight: 500; }
+    .prd-drawer-body table td { padding: 8px 10px; border: 1px solid #DEDFE3; }
+    .prd-drawer-body ul, .prd-drawer-body ol { padding-left: 22px; margin: 8px 0; }
+    .prd-drawer-body li { margin-bottom: 4px; }
+    .prd-drawer-body code { background: #F5F5F5; padding: 1px 5px; border-radius: 2px; font-size: 13px; }
+    .prd-drawer-body pre { background: #F7F8FA; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 13px; line-height: 1.5; border: 1px solid #E6E7EB; }
+    .prd-drawer-body blockquote { border-left: 3px solid #E6E7EB; padding: 4px 12px; margin: 10px 0; color: #758095; background: #F9FAFB; }
+    .prd-drawer-panel-content { line-height: 1.7; color: #444F66; font-size: 14px; }
+
+    /* 全局标注开关 */
+    .badge-toggle-btn { position: fixed; bottom: 24px; right: 24px; z-index: 10001; width: 44px; height: 44px; border-radius: 50%; background: #307FE2; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(48,127,226,0.35); transition: all 200ms ease; }
+    .badge-toggle-btn:hover { background: #2B6FD0; transform: scale(1.08); }
+    .badge-toggle-btn svg { width: 20px; height: 20px; fill: #fff; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: false, theme: 'base', securityLevel: 'loose' });</script>
+</head>
+<body>
+<!-- Toast 容器 -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ==================== 顶部导航栏 ==================== -->
+<header class="menu-topbar" aria-label="顶部导航">
+  <div class="menu-logo">
+    <div class="menu-logo-inner"></div>
+    <span class="menu-logo-icon"><img src="assets/696_1660/14.svg" alt=""></span>
+    <span class="menu-logo-main">环慧慧<span class="menu-logo-brand">EHS+</span></span>
+    <span class="menu-logo-sub">Enterprise&nbsp;Edition</span>
+    <span class="menu-logo-sep"></span>
+  </div>
+  <nav class="menu-top-nav" aria-label="一级模块导航">
+    <div class="menu-top-track">
+      <button class="menu-top-item" type="button">环境</button>
+      <button class="menu-top-item is-active" type="button">安全</button>
+      <button class="menu-top-item" type="button">EHS教育</button>
+      <button class="menu-top-item" type="button">系统管理</button>
+    </div>
+  </nav>
+  <div class="menu-top-actions">
+    <span class="menu-user"><span class="menu-user-meta"><span>张文和</span></span></span>
+  </div>
+</header>
+
+<!-- ==================== 侧边导航菜单 ==================== -->
+<aside class="menu-shell" aria-label="侧边导航菜单">
+  <div class="menu-side-list">
+    <button class="menu-side-item" type="button">
+      <img src="assets/696_1660/1.svg" alt="">
+      <span class="menu-side-label">风险评估</span>
+      <span class="menu-side-arrow"><img src="assets/696_1660/2.svg" alt=""></span>
+    </button>
+    <div class="menu-sublist is-open">
+      <button class="menu-side-child" type="button">风险管理</button>
+      <button class="menu-side-child is-active" type="button">风险管理与辨识</button>
+      <a href="风险管控设置.html" style="text-decoration:none;"><button class="menu-side-child" type="button">设置</button></a>
+    </div>
+    <button class="menu-side-item" type="button">
+      <img src="assets/696_1660/13.svg" alt="">
+      <span class="menu-side-label">系统配置</span>
+      <span class="menu-side-arrow"><img src="assets/696_1660/12.svg" alt=""></span>
+    </button>
+  </div>
+</aside>
+
+<!-- ==================== 面包屑栏 ==================== -->
+<div class="menu-breadcrumb" aria-label="面包屑导航">
+  <div class="menu-breadcrumb-path">
+    <div class="menu-breadcrumb-icon">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </div>
+    <div class="menu-breadcrumb-tag">
+      <span>风险管理与辨识</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 内容区域 ==================== -->
+<div class="page-content">
+
+  <!-- 页签 -->
+  <div class="tabs-container">
+    <button class="tab-item is-active" data-tab="tabInherent" type="button">固有风险</button>
+    <button class="tab-item" data-tab="tabOperation" type="button">作业风险</button>
+  </div>
+
+  <!-- ==================== 固有风险页签 ==================== -->
+  <div class="tab-panel is-active" id="tabInherent">
+    <!-- 搜索区域 -->
+    <div class="search-area">
+      <div class="search-item">
+        <span class="search-label">风险点名称：</span>
+        <input type="text" class="search-input" placeholder="请输入">
+      </div>
+      <div class="search-item">
+        <span class="search-label">最高风险等级：</span>
+        <select class="search-select" id="searchRiskLevel">
+          <option value="">请选择</option>
+          <option value="1">低风险</option>
+          <option value="2">一般风险</option>
+          <option value="3">较大风险</option>
+          <option value="4">重大风险</option>
+        </select>
+      </div>
+      <div style="flex:1;"></div>
+      <button class="btn-primary" type="button">查询</button>
+      <button class="btn-default" type="button">重置</button>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="action-area" style="justify-content:flex-start;">
+      <div class="action-buttons">
+        <button class="btn-add" type="button" id="btnAddRisk">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          新增
+        </button>
+        <button class="btn-default" type="button" id="btnImport">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          导入
+        </button>
+      </div>
+    </div>
+
+    <!-- 数据表格 -->
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr id="inherentTableHead">
+            <th>风险点名称</th>
+            <th>风险评价方法</th>
+            <th>最高风险等级</th>
+            <th>创建人</th>
+            <th>创建时间</th>
+            <th>操作<span class="th-gear"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1.82.33v.06A2 2 0 1 1 10.35 17l-.06-.06A1.65 1.65 0 0 0 8.6 16.6c-.45 0-.83.18-1.11.47l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 13a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.82-.33v-.06A2 2 0 1 1 13.65 7l.06.06c.28.29.66.47 1.11.47.45 0 .83-.18 1.11-.47l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 11z"/></svg></span></th>
+          </tr>
+        </thead>
+        <tbody id="riskListBody">
+          <tr data-risk-id="risk-001" data-risk-name="测试123" data-risk-type="固有风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="3" data-creator="覃颖-自动化测试专用-AutoTest" data-control-status="none" data-control-round="0" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="覃颖-自动化测试专用-AutoTest" data-risk-link="粉尘涉爆" data-risk-location="30.583291, 114.312876" data-risk-lng="114.312876" data-risk-lat="30.583291" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园A区1号车间" data-risk-describe="涉及粉尘爆炸风险的作业环境，需定期清理积尘" data-risk-analysis-target="智能制造产业园A区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>测试123</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>覃颖-自动化测试专用-AutoTest</td>
+            <td>2026-06-08 14:16:53</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-002" data-risk-name="123" data-risk-type="固有风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="3" data-creator="庞鹏-安环部" data-control-status="active" data-control-round="1" data-start-time="2026-06-10T08:00" data-expected-end-time="2026-06-20T18:00" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="庞鹏-安环部" data-risk-link="涉氨制冷" data-risk-location="30.584152, 114.313542" data-risk-lng="114.313542" data-risk-lat="30.584152" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园B区冷库" data-risk-describe="氨气泄漏存在中毒和冻伤风险" data-risk-analysis-target="智能制造产业园B区" data-risk-source="历史导入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>123</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>庞鹏-安环部</td>
+            <td>2026-08-04 16:07:24</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-003" data-risk-name="测试" data-risk-type="固有风险" data-eval-method="" data-risk-level="" data-creator="唐熙-安环部" data-control-status="done" data-control-round="1" data-start-time="2026-03-03T08:00" data-expected-end-time="2026-03-10T18:00" data-actual-end-time="2026-03-12T10:00" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="唐熙-安环部" data-risk-link="冶金煤气" data-risk-location="30.582518, 114.311982" data-risk-lng="114.311982" data-risk-lat="30.582518" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园C区冶金车间" data-risk-describe="煤气泄漏可能导致一氧化碳中毒" data-risk-analysis-target="智能制造产业园C区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>测试</td>
+            <td>-</td>
+            <td>-</td>
+            <td>唐熙-安环部</td>
+            <td>2026-03-03 18:38:05</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-004" data-risk-name="安全性检查有风险" data-risk-type="固有风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="2" data-creator="比乐-自动化测试专用-AutoTest" data-control-status="none" data-control-round="0" data-risk-sub-type="场所" data-risk-type-code="3" data-risk-person="比乐-自动化测试专用-AutoTest" data-risk-link="有限空间" data-risk-location="30.584920, 114.312438" data-risk-lng="114.312438" data-risk-lat="30.584920" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园D区储罐区" data-risk-describe="有限空间作业存在缺氧和中毒风险" data-risk-analysis-target="智能制造产业园D区" data-risk-source="历史导入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>安全性检查有风险</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-medium">一般风险</span></td>
+            <td>比乐-自动化测试专用-AutoTest</td>
+            <td>2026-03-13 15:46:08</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-005" data-risk-name="基线文护风险" data-risk-type="固有风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="3" data-creator="李惠-自动化测试专用-AutoTest" data-control-status="none" data-control-round="0" data-risk-sub-type="物品" data-risk-type-code="2" data-risk-person="李惠-自动化测试专用-AutoTest" data-risk-link="危险化学品" data-risk-location="30.583745, 114.310823" data-risk-lng="114.310823" data-risk-lat="30.583745" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园E区危化品仓库" data-risk-describe="危化品泄漏可能引发燃爆" data-risk-analysis-target="智能制造产业园E区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>基线文护风险</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>李惠-自动化测试专用-AutoTest</td>
+            <td>2026-01-29 11:27:47</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-006" data-risk-name="消防全链路" data-risk-type="固有风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="3" data-creator="王加明2-镇护队" data-control-status="none" data-control-round="0" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="王加明2-镇护队" data-risk-link="高温熔融" data-risk-location="30.585233, 114.313976" data-risk-lng="114.313976" data-risk-lat="30.585233" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园F区熔炼车间" data-risk-describe="高温熔融金属可能造成灼伤和火灾" data-risk-analysis-target="智能制造产业园F区" data-risk-source="历史导入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>消防全链路</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>王加明2-镇护队</td>
+            <td>2026-01-27 11:30:56</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-007" data-risk-name="测试数据集" data-risk-type="固有风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="1" data-creator="王加明2-镇护队" data-control-status="none" data-control-round="0" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="王加明2-镇护队" data-risk-link="粉尘涉爆" data-risk-location="30.582893, 114.311256" data-risk-lng="114.311256" data-risk-lat="30.582893" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园G区数据中心" data-risk-describe="测试用数据集，模拟粉尘环境" data-risk-analysis-target="智能制造产业园G区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>测试数据集</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-low">低风险</span></td>
+            <td>王加明2-镇护队</td>
+            <td>2026-01-26 15:50:14</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-008" data-risk-name="操作车支风风险" data-risk-type="固有风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="1" data-creator="王加明2-镇护队" data-control-status="none" data-control-round="0" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="王加明2-镇护队" data-risk-link="涉氨制冷" data-risk-location="30.584407, 114.313201" data-risk-lng="114.313201" data-risk-lat="30.584407" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园H区制冷站" data-risk-describe="氨制冷压缩机运行风险" data-risk-analysis-target="智能制造产业园H区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>操作车支风风险</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-low">低风险</span></td>
+            <td>王加明2-镇护队</td>
+            <td>2026-04-28 23:32:54</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-009" data-risk-name="接电电荷风险" data-risk-type="固有风险" data-eval-method="" data-risk-level="" data-creator="王加明2-镇护队" data-control-status="none" data-control-round="0" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="王加明2-镇护队" data-risk-link="冶金煤气" data-risk-location="30.583156, 114.310582" data-risk-lng="114.310582" data-risk-lat="30.583156" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园I区配电室" data-risk-describe="电气接线作业触电风险" data-risk-analysis-target="智能制造产业园I区" data-risk-source="历史导入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>接电电荷风险</td>
+            <td>-</td>
+            <td>-</td>
+            <td>王加明2-镇护队</td>
+            <td>2025-02-05 18:32:33</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-010" data-risk-name="沼气泄漏风险" data-risk-type="固有风险" data-eval-method="" data-risk-level="" data-creator="杨成章2号" data-control-status="none" data-control-round="0" data-risk-sub-type="场所" data-risk-type-code="3" data-risk-person="杨成章2号" data-risk-link="有限空间" data-risk-location="30.585081, 114.311934" data-risk-lng="114.311934" data-risk-lat="30.585081" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园J区沼气站" data-risk-describe="沼气泄漏有中毒和爆炸风险" data-risk-analysis-target="智能制造产业园J区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>沼气泄漏风险</td>
+            <td>-</td>
+            <td>-</td>
+            <td>杨成章2号</td>
+            <td>2024-10-30 11:04:21</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="risk-011" data-risk-name="机械运转风险" data-risk-type="固有风险" data-eval-method="" data-risk-level="" data-creator="赵燕" data-control-status="none" data-control-round="0" data-risk-sub-type="工艺" data-risk-type-code="4" data-risk-person="赵燕" data-risk-link="高温熔融" data-risk-location="30.583912, 114.312753" data-risk-lng="114.312753" data-risk-lat="30.583912" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园K区加工车间" data-risk-describe="机械设备运转中的卷入和切割风险" data-risk-analysis-target="智能制造产业园K区" data-risk-source="历史导入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>机械运转风险</td>
+            <td>-</td>
+            <td>-</td>
+            <td>赵燕</td>
+            <td>2024-08-27 17:51:26</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-identify-link">风险辨识</span>
+                <span class="action-link js-edit-point">编辑风险点</span>
+                <span class="action-link-danger js-delete-point">删除</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <span class="pagination-info" id="inherentPageInfo">共 11 条</span>
+      <select class="pagination-select">
+        <option>15条/页</option>
+        <option>30条/页</option>
+        <option>50条/页</option>
+      </select>
+      <button class="pagination-btn" disabled>&lt;</button>
+      <button class="pagination-btn is-active">1</button>
+      <button class="pagination-btn">&gt;</button>
+      <div class="pagination-jump">
+        <span>前往</span>
+        <input type="text" value="1">
+        <span>页</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 作业风险页签 ==================== -->
+  <div class="tab-panel" id="tabOperation">
+    <div class="search-area">
+      <div class="search-item">
+        <span class="search-label">作业名称：</span>
+        <input type="text" class="search-input" id="opSearchName" placeholder="请输入">
+      </div>
+      <div class="search-item">
+        <span class="search-label">最高风险等级：</span>
+        <select class="search-select" id="opSearchRiskLevel">
+          <option value="">请选择</option>
+          <option value="1">低风险</option>
+          <option value="2">一般风险</option>
+          <option value="3">较大风险</option>
+          <option value="4">重大风险</option>
+        </select>
+      </div>
+      <div style="flex:1;"></div>
+      <button class="btn-primary" type="button">查询</button>
+      <button class="btn-default" type="button">重置</button>
+    </div>
+
+    <div class="action-area" style="justify-content:flex-start;">
+      <div class="action-buttons">
+        <button class="btn-add" type="button" id="btnAddOperationRisk">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          新增
+        </button>
+      </div>
+    </div>
+
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr id="operationTableHead">
+            <th>作业名称</th>
+            <th>风险评价方法</th>
+            <th>最高风险等级</th>
+            <th>创建人</th>
+            <th>创建时间</th>
+            <th>操作<span class="th-gear"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1.82.33v.06A2 2 0 1 1 10.35 17l-.06-.06A1.65 1.65 0 0 0 8.6 16.6c-.45 0-.83.18-1.11.47l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 13a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.82-.33v-.06A2 2 0 1 1 13.65 7l.06.06c.28.29.66.47 1.11.47.45 0 .83-.18 1.11-.47l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 11z"/></svg></span></th>
+          </tr>
+        </thead>
+        <tbody id="opRiskListBody">
+          <tr data-risk-id="op-001" data-risk-name="焊接作业风险" data-risk-type="作业风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="3" data-creator="庞鹏-安环部" data-control-status="active" data-control-round="1" data-start-time="2026-06-15T09:00" data-expected-end-time="2026-12-15T18:00" data-risk-sub-type="" data-risk-type-code="1" data-risk-person="庞鹏-安环部" data-risk-link="高温熔融" data-risk-location="30.584635, 114.313810" data-risk-lng="114.313810" data-risk-lat="30.584635" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园M区焊接车间" data-risk-describe="焊接作业中高温火花和有害气体风险" data-risk-analysis-target="智能制造产业园M区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>焊接作业风险</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>庞鹏-安环部</td>
+            <td>2026-06-10 09:30:00</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-op-step">作业步骤</span>
+                <span class="action-link js-op-edit">编辑作业</span>
+                <span class="action-link-danger js-op-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="op-002" data-risk-name="高处作业风险" data-risk-type="作业风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="2" data-creator="唐熙-安环部" data-control-status="done" data-control-round="2" data-start-time="2026-03-01T08:30" data-expected-end-time="2026-06-01T18:00" data-actual-end-time="2026-05-28T16:45" data-risk-sub-type="" data-risk-type-code="1" data-risk-person="唐熙-安环部" data-risk-link="有限空间" data-risk-location="30.583525, 114.310338" data-risk-lng="114.310338" data-risk-lat="30.583525" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园N区高塔区域" data-risk-describe="高处作业坠落风险" data-risk-analysis-target="智能制造产业园N区" data-risk-source="历史导入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>高处作业风险</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-medium">一般风险</span></td>
+            <td>唐熙-安环部</td>
+            <td>2026-05-20 14:15:00</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-op-step">作业步骤</span>
+                <span class="action-link js-op-edit">编辑作业</span>
+                <span class="action-link-danger js-op-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="op-003" data-risk-name="动火作业风险" data-risk-type="作业风险" data-eval-method="LEC评价法" data-risk-level="3" data-creator="李惠-自动化测试专用-AutoTest" data-control-status="none" data-control-round="0" data-risk-sub-type="" data-risk-type-code="1" data-risk-person="李惠-自动化测试专用-AutoTest" data-risk-link="危险化学品" data-risk-location="30.584219, 114.313650" data-risk-lng="114.313650" data-risk-lat="30.584219" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园P区动火区域" data-risk-describe="动火作业引发火灾和爆炸的风险" data-risk-analysis-target="智能制造产业园P区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>动火作业风险</td>
+            <td>LEC评价法</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>李惠-自动化测试专用-AutoTest</td>
+            <td>2026-04-15 10:00:00</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-op-step">作业步骤</span>
+                <span class="action-link js-op-edit">编辑作业</span>
+                <span class="action-link-danger js-op-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="op-004" data-risk-name="受限空间作业" data-risk-type="作业风险" data-eval-method="风险矩阵法" data-risk-level="1" data-creator="王加明2-镇护队" data-control-status="active" data-control-round="1" data-start-time="2026-06-20T10:00" data-expected-end-time="2026-09-20T18:00" data-risk-sub-type="" data-risk-type-code="1" data-risk-person="王加明2-镇护队" data-risk-link="有限空间" data-risk-location="30.585528, 114.312287" data-risk-lng="114.312287" data-risk-lat="30.585528" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园Q区密闭罐区" data-risk-describe="受限空间内缺氧和有毒气体聚集风险" data-risk-analysis-target="智能制造产业园Q区" data-risk-source="历史导入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>受限空间作业</td>
+            <td>风险矩阵法</td>
+            <td><span class="risk-tag risk-low">低风险</span></td>
+            <td>王加明2-镇护队</td>
+            <td>2026-02-18 16:45:00</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-op-step">作业步骤</span>
+                <span class="action-link js-op-edit">编辑作业</span>
+                <span class="action-link-danger js-op-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-risk-id="op-005" data-risk-name="吊装作业风险" data-risk-type="作业风险" data-eval-method="作业条件危险性评价分析法(LEC)" data-risk-level="2" data-creator="杨成章2号" data-control-status="done" data-control-round="3" data-start-time="2025-09-01T09:00" data-expected-end-time="2026-03-01T18:00" data-actual-end-time="2026-02-28T14:30" data-risk-sub-type="" data-risk-type-code="1" data-risk-person="杨成章2号" data-risk-link="高温熔融" data-risk-location="30.583859, 114.311122" data-risk-lng="114.311122" data-risk-lat="30.583859" data-risk-address="湖北省武汉市江夏区光谷大道智能制造产业园R区吊装平台" data-risk-describe="吊装作业中重物坠落和钢丝绳断裂风险" data-risk-analysis-target="智能制造产业园R区" data-risk-source="手动录入" data-area-code="" data-plan-address="" data-measure="" data-file-urls="[]" data-identification-time="">
+            <td>吊装作业风险</td>
+            <td>作业条件危险性评价分析法(LEC)</td>
+            <td><span class="risk-tag risk-medium">一般风险</span></td>
+            <td>杨成章2号</td>
+            <td>2026-01-08 11:20:00</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-op-step">作业步骤</span>
+                <span class="action-link js-op-edit">编辑作业</span>
+                <span class="action-link-danger js-op-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <span class="pagination-info" id="opPageInfo">共 5 条</span>
+      <select class="pagination-select">
+        <option>15条/页</option>
+        <option>30条/页</option>
+        <option>50条/页</option>
+      </select>
+      <button class="pagination-btn" disabled>&lt;</button>
+      <button class="pagination-btn is-active">1</button>
+      <button class="pagination-btn">&gt;</button>
+      <div class="pagination-jump">
+        <span>前往</span>
+        <input type="text" value="1">
+        <span>页</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 新增风险点抽屉 ==================== -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="drawer" id="addDrawer">
+    <div class="drawer-header">
+      <span class="drawer-title">新增</span>
+      <button class="drawer-close" id="drawerClose" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="form-group">
+        <div class="form-group-label"><span class="required">*</span>风险点名称</div>
+        <div class="form-input-wrapper">
+          <input type="text" class="form-input" id="addRiskName" placeholder="请输入风险点名称">
+          <span class="form-input-count">0 / 255</span>
+        </div>
+        <div class="form-error"></div>
+      </div>
+      <div class="form-group">
+        <div class="form-group-label"><span class="required">*</span>风险点类型</div>
+        <select class="form-select" id="addRiskType">
+          <option value="">请选择风险点类型</option>
+          <option value="固有风险">固有风险</option>
+          <option value="作业风险">作业风险</option>
+        </select>
+        <div class="form-error"></div>
+      </div>
+      <div class="form-group" id="addRiskSubTypeGroup" style="display:none;">
+        <div class="form-group-label"><span class="required">*</span>固有风险类型</div>
+        <select class="form-select" id="addRiskSubType">
+          <option value="">请选择固有风险类型</option>
+          <option value="物品">物品</option>
+          <option value="场所">场所</option>
+          <option value="工艺">工艺</option>
+        </select>
+        <div class="form-error"></div>
+      </div>
+      <div class="form-group">
+        <div class="form-group-label"><span class="required">*</span>负责人员</div>
+        <button class="form-select-btn" type="button" id="addRiskPersonBtn">选择人员</button>
+        <div class="form-error"></div>
+      </div>
+      <div class="form-group" id="addRiskLocationGroup" style="display:none;">
+        <div class="form-group-label"><span class="required">*</span>风险点地点</div>
+        <div class="form-input-wrapper form-input-with-icon">
+          <input type="text" class="form-input" id="addRiskLocation" placeholder="请点击定位图标选择地点坐标" readonly style="cursor:pointer;">
+          <span class="form-input-icon" id="locationIcon" style="cursor:pointer;" title="选择位置坐标">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570EF" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+        </div>
+        <input type="hidden" id="addRiskLng" value="">
+        <input type="hidden" id="addRiskLat" value="">
+        <div class="form-error"></div>
+        <div class="picker-address-value" id="addRiskAddressText" style="display:none; margin-top:8px;">
+          <span class="addr-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </span>
+          <span class="addr-empty" id="addRiskAddress">--</span>
+        </div>
+      </div>
+      <div class="form-group" id="addRiskLinkGroup" style="display:none;">
+        <div class="form-group-label"><span class="required">*</span>风险环节</div>
+        <select class="form-select" id="addRiskLink">
+          <option value="">请选择</option>
+          <option value="粉尘涉爆">粉尘涉爆</option>
+          <option value="有限空间">有限空间</option>
+          <option value="涉氨制冷">涉氨制冷</option>
+          <option value="高温熔融">高温熔融</option>
+          <option value="涂装作业">涂装作业</option>
+          <option value="危险化学品">危险化学品</option>
+        </select>
+        <div class="form-error"></div>
+      </div>
+      <div class="form-group" id="addRiskSourceGroup" style="display:none;">
+        <div class="form-group-label"><span class="required" style="display:none;">*</span>风险分析对象</div>
+        <input type="text" class="form-input" id="addRiskSource" placeholder="请输入风险分析对象">
+        <div class="form-error"></div>
+      </div>
+      <div class="form-group" id="addRiskDescribeGroup" style="display:none;">
+        <div class="form-group-label"><span class="required">*</span>风险描述</div>
+        <div class="form-input-wrapper" style="align-items:flex-end;">
+          <textarea class="form-input" id="addRiskDescribe" placeholder="请输入风险描述" style="height:80px;resize:vertical;padding:8px 12px;line-height:22px;"></textarea>
+          <span class="form-input-count" id="addRiskDescribeCount" style="bottom:6px;">0 / 500</span>
+        </div>
+        <div class="form-error"></div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn-primary" type="button" id="drawerSubmit">保存</button>
+      <button class="btn-default" type="button" id="drawerCancel">返回</button>
+    </div>
+  </aside>
+
+  <!-- ==================== 风险辨识详情抽屉 ==================== -->
+  <div class="drawer-overlay" id="detailDrawerOverlay"></div>
+  <aside class="drawer" id="detailDrawer">
+    <div class="drawer-header">
+      <span class="drawer-title">风险详情</span>
+      <button class="drawer-close" id="detailDrawerClose" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <!-- 危害因素及后果 -->
+      <div class="detail-section">
+        <div class="detail-section-title">危害因素及后果</div>
+        <div class="detail-item">
+          <span class="detail-item-label">危害因素</span>
+          <span class="detail-item-value" id="detailHazardFactor">-</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-item-label">可能后果</span>
+          <span class="detail-item-value" id="detailConsequence">-</span>
+        </div>
+      </div>
+      <!-- 风险评价方法 -->
+      <div class="detail-section">
+        <div class="detail-section-title">风险评价方法</div>
+        <div class="detail-item">
+          <span class="detail-item-label">评价方法</span>
+          <span class="detail-item-value" id="detailEvalMethod">-</span>
+        </div>
+      </div>
+      <!-- 风险等级 -->
+      <div class="detail-section">
+        <div class="detail-section-title">风险等级</div>
+        <div class="detail-item">
+          <span class="detail-item-label">风险等级</span>
+          <span class="detail-item-value" id="detailRiskLevel">-</span>
+        </div>
+      </div>
+      <!-- 事故类型及技术防范措施 -->
+      <div class="detail-section">
+        <div class="detail-section-title">事故类型及技术防范措施</div>
+        <div id="detailCountermeasures"></div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn-default" type="button" id="detailDrawerCancel">关闭</button>
+    </div>
+  </aside>
+
+  <!-- ==================== 开始管控弹窗 ==================== -->
+  <div class="modal-overlay" id="startControlOverlay">
+    <div class="modal" id="startControlModal">
+      <div class="modal-header">
+        <span class="modal-title">开始管控</span>
+        <button class="modal-close js-modal-close" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-tip" id="startControlTip" style="display:none;"></div>
+        <div class="form-group">
+          <div class="form-group-label"><span class="required">*</span>实际管控开始时间</div>
+          <input type="datetime-local" class="datetime-input" id="startControlTime">
+        </div>
+        <div class="form-group">
+          <div class="form-group-label">预计管控结束时间</div>
+          <input type="datetime-local" class="datetime-input" id="startControlExpectedEnd">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" type="button" id="startControlConfirm">确认</button>
+        <button class="btn-default js-modal-close" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 结束管控弹窗 ==================== -->
+  <div class="modal-overlay" id="endControlOverlay">
+    <div class="modal" id="endControlModal">
+      <div class="modal-header">
+        <span class="modal-title">结束管控</span>
+        <button class="modal-close js-modal-close" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <div class="form-group-label">实际管控开始时间</div>
+          <input type="text" class="form-input" id="endControlStartTimeDisplay" readonly disabled>
+        </div>
+        <div class="form-group">
+          <div class="form-group-label">预计管控结束时间</div>
+          <input type="text" class="form-input" id="endControlExpectedEndDisplay" readonly disabled>
+        </div>
+        <div class="form-group">
+          <div class="form-group-label"><span class="required">*</span>实际管控结束时间</div>
+          <input type="datetime-local" class="datetime-input" id="endControlTime">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" type="button" id="endControlConfirm">确认</button>
+        <button class="btn-default js-modal-close" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 管控详情弹窗 ==================== -->
+  <div class="modal-overlay" id="detailControlOverlay">
+    <div class="modal" id="detailControlModal" style="width:560px;">
+      <div class="modal-header">
+        <span class="modal-title" id="detailModalTitle">管控详情</span>
+        <button class="modal-close js-modal-close" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="detailRoundList"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" type="button" id="detailRestartBtn">重新管控</button>
+        <button class="btn-default js-modal-close" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 风险地点选择弹窗 ==================== -->
+  <div class="modal-overlay" id="coordPickerOverlay">
+    <div class="modal" id="coordPickerModal" style="width:580px;">
+      <div class="modal-header">
+        <span class="modal-title">选择风险地点</span>
+        <button class="modal-close js-modal-close" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- 厂区名称 -->
+        <div class="form-group">
+          <div class="form-group-label"><span class="required">*</span>厂区名称</div>
+          <select class="form-select" id="pickerFactory">
+            <option value="">请选择厂区</option>
+            <option value="gz" data-lng="113.3689" data-lat="23.1409">广州天河厂区</option>
+            <option value="sz" data-lng="114.0579" data-lat="22.5431">深圳南山科技园厂区</option>
+            <option value="bj" data-lng="116.4074" data-lat="39.9042">北京朝阳厂区</option>
+            <option value="sh" data-lng="121.4737" data-lat="31.2304">上海浦东临港厂区</option>
+            <option value="cd" data-lng="104.0657" data-lat="30.6592">成都高新区厂区</option>
+            <option value="hz" data-lng="120.1536" data-lat="30.2875">杭州余杭厂区</option>
+          </select>
+        </div>
+        <!-- 提示 -->
+        <div class="picker-tip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          <span>在蓝色厂区内标记点位，使用鼠标左键点击</span>
+        </div>
+        <!-- 地图区域 -->
+        <div class="picker-map-wrap">
+          <div class="picker-map" id="pickerMap">
+            <div class="picker-map-grid"></div>
+            <div class="picker-map-roads">
+              <div class="picker-map-road-h" style="top:40%;height:8px;"></div>
+              <div class="picker-map-road-h" style="top:60%;height:6px;"></div>
+              <div class="picker-map-road-v" style="left:35%;width:6px;"></div>
+              <div class="picker-map-road-v" style="left:65%;width:8px;"></div>
+            </div>
+            <div class="picker-map-factory" id="pickerFactoryArea">
+              <div class="picker-map-factory-label" id="pickerFactoryLabel">厂区范围</div>
+            </div>
+            <div class="picker-map-marker" id="pickerMarker">
+              <svg width="24" height="32" viewBox="0 0 24 32"><path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 20 12 20s12-11 12-20C24 5.373 18.627 0 12 0z" fill="#F64C41"/><circle cx="12" cy="11" r="5" fill="#fff"/></svg>
+            </div>
+          </div>
+        </div>
+        <!-- 详细地址 -->
+        <div class="picker-address-value" id="pickerAddress">
+          <span class="addr-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </span>
+          <span class="addr-empty" id="pickerAddressText">请在厂区地图上点击选择位置</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" type="button" id="coordPickerConfirm">确认</button>
+        <button class="btn-default js-modal-close" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 重新管控二次确认弹窗 ==================== -->
+  <div class="modal-overlay" id="restartConfirmOverlay">
+    <div class="modal confirm-modal" id="restartConfirmModal">
+      <div class="modal-header">
+        <span class="modal-title">确认重新管控</span>
+        <button class="modal-close js-modal-close" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="confirm-body">
+        <div class="confirm-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        </div>
+        <div class="confirm-text" id="restartConfirmText">确认重新启动第x次管控吗？</div>
+        <div class="confirm-sub-text">新轮次管控开始时间建议不早于上一轮管控实际结束时间</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" type="button" id="restartConfirmBtn">确认并开始</button>
+        <button class="btn-default js-modal-close" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 重新管控开始表单弹窗 ==================== -->
+  <div class="modal-overlay" id="restartFormOverlay">
+    <div class="modal" id="restartFormModal">
+      <div class="modal-header">
+        <span class="modal-title">重新管控</span>
+        <button class="modal-close js-modal-close" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-tip" id="restartFormTip"></div>
+        <div class="form-group">
+          <div class="form-group-label"><span class="required">*</span>实际管控开始时间</div>
+          <input type="datetime-local" class="datetime-input" id="restartStartTime">
+        </div>
+        <div class="form-group">
+          <div class="form-group-label">预计管控结束时间</div>
+          <input type="datetime-local" class="datetime-input" id="restartExpectedEnd">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" type="button" id="restartFormConfirm">确认</button>
+        <button class="btn-default js-modal-close" type="button">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 风险辨识详情面板 ==================== -->
+  <div class="identify-panel" id="identifyPanel" style="display:none;">
+    <!-- 标题行：风险辨识名称 -->
+    <div class="identify-header">
+      <span class="identify-name-label">风险辨识名称：</span>
+      <span class="identify-name-value" id="identifyRiskName">-</span>
+    </div>
+
+    <!-- 搜索区域 -->
+    <div class="search-area">
+      <div class="search-item">
+        <span class="search-label">事故类型：</span>
+        <input type="text" class="search-input" id="identifySearchType" placeholder="请输入">
+      </div>
+      <div class="search-item">
+        <span class="search-label">风险等级：</span>
+        <select class="search-select" id="identifySearchLevel">
+          <option value="">请选择</option>
+          <option value="1">低风险</option>
+          <option value="2">一般风险</option>
+          <option value="3">较大风险</option>
+          <option value="4">重大风险</option>
+        </select>
+      </div>
+      <div style="flex:1;"></div>
+      <button class="btn-primary" type="button">查询</button>
+      <button class="btn-default" type="button">重置</button>
+    </div>
+
+    <!-- 操作按钮区 -->
+    <div class="action-area" style="justify-content:flex-start;">
+      <div class="action-buttons">
+        <button class="btn-add" type="button" id="btnAddIdentify">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          新增
+        </button>
+        <button class="btn-back" type="button" id="btnBackFromIdentify">返回</button>
+      </div>
+    </div>
+
+    <!-- 风险辨识数据表格 -->
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr id="identifyTableHead">
+            <th>事故类型</th>
+            <th>危害因素及后果</th>
+            <th>风险等级</th>
+            <th>创建时间</th>
+            <th>操作<span class="th-gear"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1.82.33v.06A2 2 0 1 1 10.35 17l-.06-.06A1.65 1.65 0 0 0 8.6 16.6c-.45 0-.83.18-1.11.47l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 13a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.82-.33v-.06A2 2 0 1 1 13.65 7l.06.06c.28.29.66.47 1.11.47.45 0 .83-.18 1.11.47l.06.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 11z"/></svg></span></th>
+          </tr>
+        </thead>
+        <tbody id="identifyListBody">
+          <tr data-identify-id="id-001">
+            <td>堰试，自动化测试导入的事故类型2</td>
+            <td>测试</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>2026-06-08 14:16:53</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-re-eval">重新评价</span>
+                <span class="action-link js-edit-identify">编辑</span>
+                <span class="action-link js-detail-identify">详情</span>
+                <span class="action-link-danger js-delete-identify">删除</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <span class="pagination-info" id="identifyPageInfo">共 1 条</span>
+      <select class="pagination-select">
+        <option>15条/页</option>
+        <option>30条/页</option>
+        <option>50条/页</option>
+      </select>
+      <button class="pagination-btn" disabled>&lt;</button>
+      <button class="pagination-btn is-active">1</button>
+      <button class="pagination-btn">&gt;</button>
+      <div class="pagination-jump">
+        <span>前往</span>
+        <input type="text" value="1">
+        <span>页</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 作业步骤面板 ==================== -->
+  <div class="identify-panel" id="opStepPanel" style="display:none;">
+    <!-- 搜索区域 -->
+    <div class="search-area">
+      <div class="search-item">
+        <span class="search-label">作业步骤名称：</span>
+        <input type="text" class="search-input" id="opStepSearchName" placeholder="请输入">
+      </div>
+      <div class="search-item">
+        <span class="search-label">事故类型：</span>
+        <input type="text" class="search-input" id="opStepSearchType" placeholder="请输入">
+      </div>
+      <div class="search-item">
+        <span class="search-label">风险等级：</span>
+        <select class="search-select" id="opStepSearchLevel">
+          <option value="">请选择</option>
+          <option value="1">低风险</option>
+          <option value="2">一般风险</option>
+          <option value="3">较大风险</option>
+          <option value="4">重大风险</option>
+        </select>
+      </div>
+      <div style="flex:1;"></div>
+      <button class="btn-primary" type="button">查询</button>
+      <button class="btn-default" type="button">重置</button>
+    </div>
+
+    <!-- 操作按钮区 -->
+    <div class="action-area" style="justify-content:flex-start;">
+      <div>
+        <!-- 作业名称 -->
+        <div class="identify-header" style="margin-bottom:8px;">
+          <span class="identify-name-label">作业名称：</span>
+          <span class="identify-name-value" id="opStepRiskName">-</span>
+        </div>
+        <div class="action-buttons">
+          <button class="btn-add" type="button" id="btnAddOpStep">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            新增
+          </button>
+          <button class="btn-back" type="button" id="btnBackFromOpStep">返回</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 作业步骤数据表格 -->
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr>
+            <th>作业步骤名称</th>
+            <th>事故类型</th>
+            <th>危害因素及后果</th>
+            <th>风险等级</th>
+            <th>创建时间</th>
+            <th>操作<span class="th-gear"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1.82.33v.06A2 2 0 1 1 10.35 17l-.06-.06A1.65 1.65 0 0 0 8.6 16.6c-.45 0-.83.18-1.11.47l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 13a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.82-.33v-.06A2 2 0 1 1 13.65 7l.06.06c.28.29.66.47 1.11.47.45 0 .83-.18 1.11-.47l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 11z"/></svg></span></th>
+          </tr>
+        </thead>
+        <tbody id="opStepListBody">
+          <tr data-step-id="step-001">
+            <td>第一步-作业准备</td>
+            <td>物体打击</td>
+            <td>未正确佩戴安全帽导致头部受伤</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>2026-06-08 14:16:53</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-step-re-eval">重新评价</span>
+                <span class="action-link js-step-edit">编辑</span>
+                <span class="action-link js-step-detail">详情</span>
+                <span class="action-link-danger js-step-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-step-id="step-002">
+            <td>第二步-设备检查</td>
+            <td>机械伤害</td>
+            <td>设备未断电检修导致夹伤</td>
+            <td><span class="risk-tag risk-high">较大风险</span></td>
+            <td>2026-06-08 14:18:22</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-step-re-eval">重新评价</span>
+                <span class="action-link js-step-edit">编辑</span>
+                <span class="action-link js-step-detail">详情</span>
+                <span class="action-link-danger js-step-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+          <tr data-step-id="step-003">
+            <td>第三步-焊接操作</td>
+            <td>灼烫</td>
+            <td>未佩戴防护手套导致手部烫伤</td>
+            <td><span class="risk-tag risk-low">低风险</span></td>
+            <td>2026-06-08 14:19:30</td>
+            <td>
+              <div class="action-links">
+                <span class="action-link js-step-re-eval">重新评价</span>
+                <span class="action-link js-step-edit">编辑</span>
+                <span class="action-link js-step-detail">详情</span>
+                <span class="action-link-danger js-step-delete">删除</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <span class="pagination-info" id="opStepPageInfo">共 3 条</span>
+      <select class="pagination-select">
+        <option>15条/页</option>
+        <option>30条/页</option>
+        <option>50条/页</option>
+      </select>
+      <button class="pagination-btn" disabled>&lt;</button>
+      <button class="pagination-btn is-active">1</button>
+      <button class="pagination-btn">&gt;</button>
+      <div class="pagination-jump">
+        <span>前往</span>
+        <input type="text" value="1">
+        <span>页</span>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ==================== 页签切换 ====================
+document.querySelectorAll('.tab-item').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('is-active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('is-active'));
+    this.classList.add('is-active');
+    const target = document.getElementById(this.dataset.tab);
+    if (target) target.classList.add('is-active');
+  });
+});
+
+// ==================== 风险辨识面板切换 ====================
+(function() {
+  const tabsContainer = document.querySelector('.tabs-container');
+  const identifyPanel = document.getElementById('identifyPanel');
+  const identifyRiskName = document.getElementById('identifyRiskName');
+  const btnBack = document.getElementById('btnBackFromIdentify');
+
+  // 打开风险辨识面板
+  window.openIdentifyPanel = function(riskName) {
+    // 隐藏页签和所有tab-panel
+    tabsContainer.style.display = 'none';
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    // 隐藏作业步骤面板
+    const opStepPanel = document.getElementById('opStepPanel');
+    if (opStepPanel) opStepPanel.style.display = 'none';
+    // 显示风险辨识面板
+    identifyPanel.style.display = 'block';
+    identifyRiskName.textContent = riskName || '-';
+  };
+
+  // 返回固有风险列表（结束辨识）
+  function closeIdentifyPanel() {
+    // 校验：结束辨识前必须存在事故类型记录
+    const identifyRows = document.querySelectorAll('#identifyListBody tr');
+    if (identifyRows.length === 0) {
+      showToast('请先进行风险辨识', 'warning');
+      return;
+    }
+    identifyPanel.style.display = 'none';
+    tabsContainer.style.display = '';
+    // 恢复当前活跃的 tab-panel
+    const activeTab = document.querySelector('.tab-item.is-active');
+    if (activeTab) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.style.display = '');
+      const target = document.getElementById(activeTab.dataset.tab);
+      if (target) target.classList.add('is-active');
+    }
+  }
+
+  // 返回按钮
+  if (btnBack) {
+    btnBack.addEventListener('click', closeIdentifyPanel);
+  }
+
+  // 绑定"风险辨识"按钮事件
+  document.querySelectorAll('.js-identify-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const tr = this.closest('tr');
+      const riskName = tr.dataset.riskName || '';
+      openIdentifyPanel(riskName);
+    });
+  });
+})();
+
+// ==================== 作业步骤面板切换 ====================
+(function() {
+  const tabsContainer = document.querySelector('.tabs-container');
+  const opStepPanel = document.getElementById('opStepPanel');
+  const opStepRiskName = document.getElementById('opStepRiskName');
+  const btnBackOpStep = document.getElementById('btnBackFromOpStep');
+
+  // 打开作业步骤面板
+  window.openOpStepPanel = function(riskName) {
+    // 隐藏页签和所有tab-panel
+    tabsContainer.style.display = 'none';
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    // 隐藏风险辨识面板
+    const identifyPanel = document.getElementById('identifyPanel');
+    if (identifyPanel) identifyPanel.style.display = 'none';
+    // 显示作业步骤面板
+    opStepPanel.style.display = 'block';
+    opStepRiskName.textContent = riskName || '-';
+  };
+
+  // 返回作业风险列表（结束辨识）
+  function closeOpStepPanel() {
+    // 校验：结束辨识前必须存在作业步骤记录
+    const stepRows = document.querySelectorAll('#opStepListBody tr');
+    if (stepRows.length === 0) {
+      showToast('请先进行风险辨识，维护作业步骤信息', 'warning');
+      return;
+    }
+    opStepPanel.style.display = 'none';
+    tabsContainer.style.display = '';
+    // 恢复当前活跃的 tab-panel（确保是作业风险页签）
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('is-active'));
+    const opTab = document.querySelector('.tab-item[data-tab="tabOperation"]');
+    if (opTab) opTab.classList.add('is-active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = '');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('is-active'));
+    const target = document.getElementById('tabOperation');
+    if (target) target.classList.add('is-active');
+  }
+
+  // 返回按钮
+  if (btnBackOpStep) {
+    btnBackOpStep.addEventListener('click', closeOpStepPanel);
+  }
+
+  // 绑定"作业步骤"按钮事件
+  document.querySelectorAll('#tabOperation .js-op-step').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const tr = this.closest('tr');
+      const riskName = tr.dataset.riskName || '';
+      openOpStepPanel(riskName);
+    });
+  });
+})();
+
+// ==================== 工具函数 ====================
+function showToast(message, type) {
+  type = type || 'success';
+  var container = document.getElementById('toastContainer');
+  var el = document.createElement('div');
+  el.className = 'toast toast-' + type;
+  var iconSvg = type === 'success' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>' :
+    type === 'error' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>' :
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
+  el.innerHTML = iconSvg + '<span>' + message + '</span>';
+  container.appendChild(el);
+  setTimeout(function() { el.classList.add('toast-out'); }, 2000);
+  setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 2250);
+}
+// 校验管控/结束辨识前置条件：固有风险须有事故类型，作业风险须有作业步骤
+function checkRiskIdentifyForControl(tr) {
+  const riskType = tr.dataset.riskType;
+  if (riskType === '固有风险') {
+    const identifyRows = document.querySelectorAll('#identifyListBody tr');
+    if (identifyRows.length === 0) {
+      showToast('请先进行风险辨识', 'warning');
+      return false;
+    }
+  } else {
+    // 作业风险
+    const stepRows = document.querySelectorAll('#opStepListBody tr');
+    if (stepRows.length === 0) {
+      showToast('请先进行风险辨识，维护作业步骤信息', 'warning');
+      return false;
+    }
+  }
+  return true;
+}
+
+function nowDateTimeLocal() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function dateAfterDays(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  const pad = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function formatDateTime(dt) {
+  if (!dt) return '-';
+  return dt.replace('T', ' ');
+}
+
+function getRowData(tr) {
+  return {
+    id: tr.dataset.riskId,
+    name: tr.dataset.riskName,
+    type: tr.dataset.riskType,
+    subType: tr.dataset.riskSubType,
+    typeCode: tr.dataset.riskTypeCode,
+    person: tr.dataset.riskPerson,
+    link: tr.dataset.riskLink,
+    location: tr.dataset.riskLocation,
+    lng: tr.dataset.riskLng,
+    lat: tr.dataset.riskLat,
+    address: tr.dataset.riskAddress,
+    describe: tr.dataset.riskDescribe,
+    analysisTarget: tr.dataset.riskAnalysisTarget,
+    source: tr.dataset.riskSource,
+    level: tr.dataset.riskLevel,
+    evalMethod: tr.dataset.evalMethod,
+    creator: tr.dataset.creator,
+    areaCode: tr.dataset.areaCode || '',
+    planAddress: tr.dataset.planAddress || '',
+    measure: tr.dataset.measure || '',
+    fileUrls: tr.dataset.fileUrls || '[]',
+    identificationTime: tr.dataset.identificationTime || '',
+    status: tr.dataset.controlStatus,
+    round: parseInt(tr.dataset.controlRound) || 0,
+    startTime: tr.dataset.startTime || '',
+    expectedEndTime: tr.dataset.expectedEndTime || '',
+    actualEndTime: tr.dataset.actualEndTime || ''
+  };
+}
+
+// 生成模拟历史履历数据
+function generateMockHistory(round, startTime, expectedEndTime, actualEndTime) {
+  const history = [];
+  for (let i = round - 1; i >= 1; i--) {
+    // 每轮往前推大约14天
+    const offset = (round - i) * 14;
+    const d = new Date();
+    d.setDate(d.getDate() - offset);
+    const pad = n => String(n).padStart(2, '0');
+    const fmt = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+    const s = fmt + 'T08:00';
+    const e = fmt.replace(/(\d+)$/, String(Number(fmt.split('-')[2]) + 7)) + 'T18:00';
+    const a = fmt.replace(/(\d+)$/, String(Number(fmt.split('-')[2]) + 5)) + 'T10:00';
+    history.push({
+      round: i,
+      startTime: s,
+      expectedEndTime: e,
+      actualEndTime: a
+    });
+  }
+  return history;
+}
+
+// ==================== 通用弹窗开关 ====================
+function openModal(overlayId) {
+  document.getElementById(overlayId).classList.add('is-open');
+  showModalBadges();
+}
+function closeModal(overlayId) {
+  document.getElementById(overlayId).classList.remove('is-open');
+}
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay.is-open').forEach(el => el.classList.remove('is-open'));
+}
+
+// ==================== 弹窗角标显隐（根据当前活跃页签切换） ====================
+function showModalBadges() {
+  var activeTab = document.querySelector('.tab-item.is-active');
+  var isOp = activeTab && activeTab.dataset.tab === 'tabOperation';
+  ['start','end','detail','restart','restartconfirm'].forEach(function(type) {
+    var inherentBadge = document.getElementById('badge-modal-' + type);
+    var opBadge = document.getElementById('badge-modal-' + type + '-op');
+    if (inherentBadge) inherentBadge.style.display = isOp ? 'none' : '';
+    if (opBadge) opBadge.style.display = isOp ? '' : 'none';
+  });
+}
+
+// 所有弹窗关闭按钮
+document.querySelectorAll('.js-modal-close').forEach(btn => {
+  btn.addEventListener('click', function() {
+    this.closest('.modal-overlay').classList.remove('is-open');
+  });
+});
+// 点击遮罩关闭
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('is-open');
+    }
+  });
+});
+
+// ==================== 分页切换 ====================
+document.querySelectorAll('.pagination-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    if (!this.disabled && !this.classList.contains('is-active')) {
+      document.querySelectorAll('.pagination-btn').forEach(b => b.classList.remove('is-active'));
+      this.classList.add('is-active');
+    }
+  });
+});
+
+// ==================== 新增/编辑抽屉开关 ====================
+(function() {
+  const overlay = document.getElementById('drawerOverlay');
+  const drawer = document.getElementById('addDrawer');
+  const btnAddInherent = document.getElementById('btnAddRisk');
+  const btnAddOperation = document.getElementById('btnAddOperationRisk');
+  const btnClose = document.getElementById('drawerClose');
+  const btnCancel = document.getElementById('drawerCancel');
+  const drawerTitle = drawer.querySelector('.drawer-title');
+  const drawerSubmit = document.getElementById('drawerSubmit');
+
+  // 表单字段引用
+  const nameInput = document.getElementById('addRiskName');
+  const typeSelect = document.getElementById('addRiskType');
+  const subTypeGroup = document.getElementById('addRiskSubTypeGroup');
+  const subTypeSelect = document.getElementById('addRiskSubType');
+  const personBtn = document.getElementById('addRiskPersonBtn');
+  const linkGroup = document.getElementById('addRiskLinkGroup');
+  const linkSelect = document.getElementById('addRiskLink');
+  const locationGroup = document.getElementById('addRiskLocationGroup');
+  const locationInput = document.getElementById('addRiskLocation');
+  const describeGroup = document.getElementById('addRiskDescribeGroup');
+  const describeInput = document.getElementById('addRiskDescribe');
+  const describeCount = document.getElementById('addRiskDescribeCount');
+  const sourceGroup = document.getElementById('addRiskSourceGroup');
+  const sourceSelect = document.getElementById('addRiskSource');
+  const addressInput = document.getElementById('addRiskAddress');
+  const addressText = document.getElementById('addRiskAddressText');
+  const locationIcon = document.getElementById('locationIcon');
+  const lngHidden = document.getElementById('addRiskLng');
+  const latHidden = document.getElementById('addRiskLat');
+
+  // 当前编辑行
+  let editingRow = null;
+  let mode = 'add';
+
+  // 读取设置：从风险管控设置页面的 storage 获取工贸行业配置
+  function getSettings() {
+    try {
+      const raw = localStorage.getItem('risk_control_industry_settings');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed['工贸'] || {};
+      }
+    } catch (e) { /* ignore */ }
+    return {};
+  }
+
+  // 获取单个字段配置
+  // riskType: 当前风险类型（'固有风险'或'作业风险'），用于匹配风险设置页存储的嵌套结构
+  function getFieldCfg(key, riskType) {
+    const cfg = getSettings();
+    // 优先按 riskType 子对象查找（匹配风险设置页的存储结构）
+    if (riskType && cfg[riskType] && cfg[riskType][key] !== undefined) {
+      const field = cfg[riskType][key];
+      return { show: field.show !== false, required: !!field.required };
+    }
+    // 兼容扁平结构（直接 key 查找）
+    if (cfg[key] !== undefined) {
+      const field = cfg[key];
+      return { show: field.show !== false, required: !!field.required };
+    }
+    // 默认：字段显示、非必填
+    return { show: true, required: false };
+  }
+
+  // 根据配置更新字段 label 上的 required 星号
+  function toggleRequiredStar(group, isRequired) {
+    const star = group.querySelector('.required');
+    if (star) star.style.display = isRequired ? '' : 'none';
+  }
+
+  // 根据风险点类型和配置更新字段可见性
+  // 除风险分析对象外，所有显示字段均强制必填（红色星号 + 校验）
+  function updateFieldVisibility(type) {
+    const isInherent = type === '固有风险';
+
+    // 固有风险类型（二级类型）：仅固有风险时显示，强制必填
+    const inherentCfg = getFieldCfg('inherent_risk_type', type);
+    if (isInherent && inherentCfg.show) {
+      subTypeGroup.style.display = '';
+      toggleRequiredStar(subTypeGroup, true);
+    } else {
+      subTypeGroup.style.display = 'none';
+      subTypeSelect.value = '';
+    }
+
+    // 风险点地点：强制必填
+    const locCfg = getFieldCfg('risk_location', type);
+    if (locCfg.show) {
+      locationGroup.style.display = '';
+      toggleRequiredStar(locationGroup, true);
+    } else {
+      locationGroup.style.display = 'none';
+      locationInput.value = '';
+      addressText.style.display = 'none';
+      addressInput.textContent = '--';
+    }
+
+    // 风险环节：强制必填
+    const linkCfg = getFieldCfg('risk_link', type);
+    if (linkCfg.show) {
+      linkGroup.style.display = '';
+      toggleRequiredStar(linkGroup, true);
+    } else {
+      linkGroup.style.display = 'none';
+      linkSelect.value = '';
+    }
+
+    // 风险描述：强制必填
+    const descCfg = getFieldCfg('risk_describe', type);
+    if (descCfg.show) {
+      describeGroup.style.display = '';
+      toggleRequiredStar(describeGroup, true);
+    } else {
+      describeGroup.style.display = 'none';
+      describeInput.value = '';
+      if (describeCount) describeCount.textContent = '0 / 500';
+    }
+
+    // 风险分析对象：非必填，不展示星号
+    const srcCfg = getFieldCfg('risk_analysis_target', type);
+    if (srcCfg.show) {
+      sourceGroup.style.display = '';
+      toggleRequiredStar(sourceGroup, false);
+    } else {
+      sourceGroup.style.display = 'none';
+      sourceSelect.value = '';
+    }
+  }
+
+  // 显示字段错误
+  function showFieldError(el, message) {
+    const formGroup = el.closest('.form-group');
+    formGroup.classList.add('has-error');
+    formGroup.querySelector('.form-error').textContent = message;
+  }
+
+  // 清除单个字段错误
+  function clearFieldError(el) {
+    const formGroup = el.closest('.form-group');
+    if (!formGroup) return;
+    formGroup.classList.remove('has-error');
+    const errorEl = formGroup.querySelector('.form-error');
+    if (errorEl) errorEl.textContent = '';
+  }
+
+  // 清除所有错误
+  function clearAllErrors() {
+    [nameInput, typeSelect, subTypeSelect, personBtn, linkSelect, locationInput, describeInput, sourceSelect, lngHidden, latHidden].forEach(el => {
+      if (el) clearFieldError(el);
+    });
+  }
+
+  // 清空表单
+  function clearForm() {
+    nameInput.value = '';
+    typeSelect.value = '';
+    typeSelect.disabled = false;
+    subTypeSelect.value = '';
+    subTypeGroup.style.display = 'none';
+    personBtn.textContent = '选择人员';
+    linkSelect.value = '';
+    linkGroup.style.display = 'none';
+    locationInput.value = '';
+    lngHidden.value = '';
+    latHidden.value = '';
+    locationGroup.style.display = 'none';
+    addressText.style.display = 'none';
+    addressInput.textContent = '--';
+    describeGroup.style.display = 'none';
+    sourceSelect.value = '';
+    sourceGroup.style.display = 'none';
+    clearAllErrors();
+    const countEl = document.querySelector('.form-input-count');
+    if (countEl) countEl.textContent = '0 / 255';
+    if (describeCount) describeCount.textContent = '0 / 500';
+  }
+
+  // 填充表单（编辑模式）
+  function fillForm(data) {
+    nameInput.value = data.name || '';
+    typeSelect.value = data.type || '';
+    typeSelect.disabled = true;
+    updateFieldVisibility(data.type);
+    if (data.type === '固有风险') {
+      subTypeSelect.value = data.subType || '';
+    }
+    locationInput.value = data.location || '';
+    lngHidden.value = data.lng || '';
+    latHidden.value = data.lat || '';
+    personBtn.textContent = data.person || '选择人员';
+    linkSelect.value = data.link || '';
+    describeInput.value = data.describe || '';
+    sourceSelect.value = data.source || '';
+    // 回填坐标与地址
+    if (data.lng || data.lat) {
+      locationInput.value = (data.lat || '') + ', ' + (data.lng || '');
+      addressText.style.display = '';
+      addressInput.textContent = data.address || '--';
+    } else {
+      addressText.style.display = 'none';
+      addressInput.textContent = '--';
+    }
+    const countEl = document.querySelector('.form-input-count');
+    if (countEl) countEl.textContent = (data.name || '').length + ' / 255';
+    if (describeCount) describeCount.textContent = (data.describe || '').length + ' / 500';
+    clearAllErrors();
+  }
+
+  // 新增表单校验
+  // 除风险分析对象外，所有显示字段均强制必填校验
+  function validateAddForm() {
+    clearAllErrors();
+    let hasError = false;
+    const currentType = typeSelect.value; // 当前选择的 风险点类型
+
+    // 风险点名称（固定必填）
+    if (!nameInput.value.trim()) {
+      showFieldError(nameInput, '请输入风险点名称');
+      hasError = true;
+    }
+
+    // 风险点类型（固定必填）
+    if (!currentType) {
+      showFieldError(typeSelect, '请选择风险点类型');
+      hasError = true;
+    }
+
+    // 负责人员（固定必填）
+    if (personBtn.textContent === '选择人员') {
+      showFieldError(personBtn, '请选择负责人员');
+      hasError = true;
+    }
+
+    // 固有风险类型：显示时强制必填
+    if (subTypeGroup.style.display !== 'none' && !subTypeSelect.value) {
+      showFieldError(subTypeSelect, '请选择固有风险类型');
+      hasError = true;
+    }
+
+    // 风险点地点：显示时强制必填
+    if (locationGroup.style.display !== 'none' && !locationInput.value.trim()) {
+      showFieldError(locationInput, '请点击定位图标选择位置坐标');
+      hasError = true;
+    }
+
+    // 风险环节：显示时强制必填
+    if (linkGroup.style.display !== 'none' && !linkSelect.value) {
+      showFieldError(linkSelect, '请选择风险环节');
+      hasError = true;
+    }
+
+    // 风险描述：显示时强制必填
+    if (describeGroup.style.display !== 'none') {
+      if (!describeInput.value.trim()) {
+        showFieldError(describeInput, '请输入风险描述');
+        hasError = true;
+      } else if (describeInput.value.trim().length > 500) {
+        showFieldError(describeInput, '风险描述不超过500字');
+        hasError = true;
+      }
+    }
+
+    // 风险分析对象：非必填，不校验
+
+    return !hasError;
+  }
+
+  // ==================== 抽屉角标显隐辅助 ====================
+  function showDrawerBadge(m, riskType) {
+    var badgeInherentAdd = document.getElementById('badge-drawer-add');
+    var badgeInherentEdit = document.getElementById('badge-drawer-edit');
+    var badgeOpAdd = document.getElementById('badge-drawer-add-op');
+    var badgeOpEdit = document.getElementById('badge-drawer-edit-op');
+    var isOp = (riskType === '作业风险');
+    if (badgeInherentAdd) badgeInherentAdd.style.display = (!isOp && m === 'add') ? '' : 'none';
+    if (badgeInherentEdit) badgeInherentEdit.style.display = (!isOp && m === 'edit') ? '' : 'none';
+    if (badgeOpAdd) badgeOpAdd.style.display = (isOp && m === 'add') ? '' : 'none';
+    if (badgeOpEdit) badgeOpEdit.style.display = (isOp && m === 'edit') ? '' : 'none';
+  }
+
+  // 根据风险类型打开新增抽屉
+  function openDrawerAsAdd(riskType) {
+    mode = 'add';
+    editingRow = null;
+    clearForm();
+    if (riskType) {
+      typeSelect.value = riskType;
+    }
+    typeSelect.disabled = true; // 新增时固定风险类型不可切换
+    updateFieldVisibility(riskType || '');
+    drawerTitle.textContent = '新增';
+    showDrawerBadge('add', riskType);
+    overlay.classList.add('is-open');
+    drawer.classList.add('is-open');
+  }
+
+  function openDrawerAsEdit(tr) {
+    mode = 'edit';
+    editingRow = tr;
+    const data = {
+      name: tr.dataset.riskName || '',
+      type: tr.dataset.riskType || '',
+      subType: tr.dataset.riskSubType || '',
+      person: tr.dataset.riskPerson || '',
+      link: tr.dataset.riskLink || '',
+      location: tr.dataset.riskLocation || '',
+      coord: tr.dataset.riskCoord || '',
+      lng: tr.dataset.riskLng || '',
+      lat: tr.dataset.riskLat || '',
+      address: tr.dataset.riskAddress || '',
+      describe: tr.dataset.riskDescribe || '',
+      source: tr.dataset.riskAnalysisTarget || tr.dataset.riskSource || ''
+    };
+    fillForm(data);
+    typeSelect.disabled = true; // 编辑时同样固定风险类型不可切换
+    drawerTitle.textContent = '编辑风险点';
+    showDrawerBadge('edit', data.type);
+    overlay.classList.add('is-open');
+    drawer.classList.add('is-open');
+  }
+
+  // 编辑风险点事件委托（挂在当前 IIFE 内，可访问 openDrawerAsEdit）
+  ['riskListBody','opRiskListBody'].forEach(function(id) {
+    var tbody = document.getElementById(id);
+    if (!tbody) return;
+    tbody.addEventListener('click', function(e) {
+      var link = e.target.closest('.js-edit-point, .js-op-edit');
+      if (!link) return;
+      e.stopPropagation();
+      var tr = link.closest('tr');
+      if (tr) openDrawerAsEdit(tr);
+    });
+  });
+
+  function closeDrawer() {
+    overlay.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+    clearForm();
+    typeSelect.disabled = false; // 重置关闭后恢复启用
+    showDrawerBadge('add', '固有风险'); // 重置为固有风险新增角标
+  }
+
+  // 风险点类型切换 → 更新字段可见性
+  typeSelect.addEventListener('change', function() {
+    updateFieldVisibility(this.value);
+  });
+
+  // ==================== 风险地点地图选择器 ====================
+  const pickerMap = document.getElementById('pickerMap');
+  const pickerMarker = document.getElementById('pickerMarker');
+  const pickerFactory = document.getElementById('pickerFactory');
+  const pickerFactoryArea = document.getElementById('pickerFactoryArea');
+  const pickerFactoryLabel = document.getElementById('pickerFactoryLabel');
+  const pickerAddressText = document.getElementById('pickerAddressText');
+
+  // 当前地图上选中的坐标
+  let pickerSelectedLng = null;
+  let pickerSelectedLat = null;
+
+  // mock地址库（按厂区细分）
+  let currentFactoryAddresses = [];
+
+  function getMockAddress(lat, lng) {
+    // 根据坐标范围返回mock地址
+    if (lng > 113.2 && lng < 113.5 && lat > 23.0 && lat < 23.3) {
+      return currentFactoryAddresses[0] || '广东省广州市天河区珠江新城华夏路' + randAddrSuffix();
+    } else if (lng > 113.9 && lng < 114.2 && lat > 22.4 && lat < 22.7) {
+      return currentFactoryAddresses[0] || '广东省深圳市南山区科技园高新南' + randAddrSuffix();
+    } else if (lng > 116.2 && lng < 116.6 && lat > 39.8 && lat < 40.1) {
+      return currentFactoryAddresses[0] || '北京市朝阳区建国路' + randAddrSuffix();
+    } else if (lng > 121.3 && lng < 121.6 && lat > 31.1 && lat < 31.4) {
+      return currentFactoryAddresses[0] || '上海市浦东新区临港新城' + randAddrSuffix();
+    } else if (lng > 103.9 && lng < 104.2 && lat > 30.5 && lat < 30.8) {
+      return currentFactoryAddresses[0] || '四川省成都市高新区天府大道' + randAddrSuffix();
+    } else if (lng > 120.0 && lng < 120.3 && lat > 30.1 && lat < 30.4) {
+      return currentFactoryAddresses[0] || '浙江省杭州市余杭区文一西路' + randAddrSuffix();
+    } else {
+      return '广东省深圳市南山区科技园南区' + randAddrSuffix();
+    }
+  }
+
+  function randAddrSuffix() {
+    const roads = ['一路', '二路', '三路', '四路', '五路', '六路', '七路', '八路'];
+    const nums = ['8', '12', '16', '18', '22', '26', '30', '36'];
+    const road = roads[Math.floor(Math.random() * roads.length)];
+    const num = nums[Math.floor(Math.random() * nums.length)];
+    return road + num + '号';
+  }
+
+  // mock详细地址数据（厂区内的多个点位）
+  const factoryMockData = {
+    gz: {
+      label: '广州天河厂区',
+      centerLng: 113.3689, centerLat: 23.1409,
+      addresses: [
+        '广东省广州市天河区珠江新城华夏路12号（A1生产车间）',
+        '广东省广州市天河区珠江新城华夏路26号（B2原料仓库）',
+        '广东省广州市天河区珠江新城华夏路38号（C3成品仓库）',
+        '广东省广州市天河区花城大道88号（D区办公研发楼）'
+      ]
+    },
+    sz: {
+      label: '深圳南山科技园厂区',
+      centerLng: 114.0579, centerLat: 22.5431,
+      addresses: [
+        '广东省深圳市南山区科技园高新南一路18号（1号厂房）',
+        '广东省深圳市南山区科技园高新南二路26号（2号危化品库）',
+        '广东省深圳市南山区科技园高新南四路8号（污水处理站）',
+        '广东省深圳市南山区科技园南区科苑路15号（锅炉房）'
+      ]
+    },
+    bj: {
+      label: '北京朝阳厂区',
+      centerLng: 116.4074, centerLat: 39.9042,
+      addresses: [
+        '北京市朝阳区建国路88号（A栋生产大楼）',
+        '北京市朝阳区建国路112号（B栋装配车间）',
+        '北京市朝阳区西大望路19号（危废暂存间）',
+        '北京市朝阳区西大望路33号（配电中心）'
+      ]
+    },
+    sh: {
+      label: '上海浦东临港厂区',
+      centerLng: 121.4737, centerLat: 31.2304,
+      addresses: [
+        '上海市浦东新区临港新城海洋一路66号（一期厂房）',
+        '上海市浦东新区临港新城海洋二路88号（二期厂房）',
+        '上海市浦东新区临港新城海港大道120号（危化品罐区）',
+        '上海市浦东新区临港新城环湖路18号（综合动力站）'
+      ]
+    },
+    cd: {
+      label: '成都高新区厂区',
+      centerLng: 104.0657, centerLat: 30.6592,
+      addresses: [
+        '四川省成都市高新区天府大道南段168号（1号车间）',
+        '四川省成都市高新区天府大道南段256号（2号车间）',
+        '四川省成都市高新区益州大道中段88号（原料罐区）',
+        '四川省成都市高新区府城大道99号（变配电站）'
+      ]
+    },
+    hz: {
+      label: '杭州余杭厂区',
+      centerLng: 120.1536, centerLat: 30.2875,
+      addresses: [
+        '浙江省杭州市余杭区文一西路998号（A区厂房）',
+        '浙江省杭州市余杭区文一西路1500号（B区仓库）',
+        '浙江省杭州市余杭区高教路168号（废水处理区）',
+        '浙江省杭州市余杭区良睦路128号（实验检测中心）'
+      ]
+    }
+  };
+
+  // 厂区切换 → 更新地图中心、厂区范围、标记
+  pickerFactory.addEventListener('change', function() {
+    const val = this.value;
+    if (!val) {
+      pickerFactoryArea.style.display = 'none';
+      pickerMarker.classList.remove('is-visible');
+      pickerAddressText.textContent = '请在厂区地图上点击选择位置';
+      pickerAddressText.className = 'addr-empty';
+      pickerSelectedLng = null;
+      pickerSelectedLat = null;
+      return;
+    }
+    const data = factoryMockData[val];
+    if (!data) return;
+    currentFactoryAddresses = data.addresses;
+
+    // 更新厂区区域位置
+    pickerFactoryArea.style.display = 'block';
+    const mapW = pickerMap.clientWidth;
+    const mapH = pickerMap.clientHeight;
+    // 厂区范围：地图坐标映射为约0.03度偏移
+    const lngSpan = 0.04;
+    const latSpan = 0.03;
+    const leftPct = 30;
+    const topPct = 28;
+    const widthPct = 40;
+    const heightPct = 44;
+    pickerFactoryArea.style.left = leftPct + '%';
+    pickerFactoryArea.style.top = topPct + '%';
+    pickerFactoryArea.style.width = widthPct + '%';
+    pickerFactoryArea.style.height = heightPct + '%';
+    pickerFactoryLabel.textContent = data.label;
+
+    // 重置标记
+    pickerMarker.classList.remove('is-visible');
+    pickerAddressText.textContent = '请在蓝色厂区范围内点击标记位置';
+    pickerAddressText.className = 'addr-empty';
+    pickerSelectedLng = null;
+    pickerSelectedLat = null;
+  });
+
+  // 地图点击 → 计算经纬度 + 展示地址
+  pickerMap.addEventListener('click', function(e) {
+    const factoryVal = pickerFactory.value;
+    if (!factoryVal) {
+      showToast('请先选择厂区', 'warning');
+      return;
+    }
+    const data = factoryMockData[factoryVal];
+    if (!data) return;
+
+    const rect = pickerMap.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const mapW = rect.width || pickerMap.clientWidth;
+    const mapH = rect.height || pickerMap.clientHeight;
+
+    // 模拟地图坐标：以厂区中心为基准，按像素偏移映射到经纬度（厂区范围约0.04度×0.03度）
+    const lngSpan = 0.04;
+    const latSpan = 0.03;
+    const lngOffset = ((x / mapW) - 0.5) * lngSpan;
+    const latOffset = (0.5 - (y / mapH)) * latSpan;
+    const lng = data.centerLng + lngOffset;
+    const lat = data.centerLat + latOffset;
+
+    pickerSelectedLng = lng;
+    pickerSelectedLat = lat;
+
+    // 标记位置
+    const leftPct = (x / mapW) * 100;
+    const topPct = (y / mapH) * 100;
+    pickerMarker.style.left = leftPct + '%';
+    pickerMarker.style.top = topPct + '%';
+    pickerMarker.classList.add('is-visible');
+
+    // mock地址
+    const addr = getMockAddress(lat, lng);
+    pickerAddressText.textContent = addr;
+    pickerAddressText.className = '';
+  });
+
+  // 点击地点输入框或定位图标 → 打开坐标选择器
+  function openCoordPicker() {
+    const currentCoord = locationInput.value;
+    if (currentCoord && currentCoord !== '--') {
+      const parts = currentCoord.split(',').map(function(s) { return s.trim(); });
+      if (parts.length === 2) {
+        pickerSelectedLng = parseFloat(parts[1]);
+        pickerSelectedLat = parseFloat(parts[0]);
+      }
+    } else {
+      pickerSelectedLng = null;
+      pickerSelectedLat = null;
+    }
+    pickerFactory.value = '';
+    pickerFactoryArea.style.display = 'none';
+    pickerMarker.classList.remove('is-visible');
+    pickerAddressText.textContent = '请在厂区地图上点击选择位置';
+    pickerAddressText.className = 'addr-empty';
+    openModal('coordPickerOverlay');
+  }
+
+  locationInput.addEventListener('click', openCoordPicker);
+  locationIcon.addEventListener('click', openCoordPicker);
+
+  // 坐标选择器确认
+  document.getElementById('coordPickerConfirm').addEventListener('click', function() {
+    if (!pickerFactory.value) {
+      showToast('请先选择厂区', 'warning'); return;
+    }
+    if (pickerSelectedLng === null || pickerSelectedLat === null) {
+      showToast('请在地图上点击选择风险地点', 'warning'); return;
+    }
+
+    const lngNum = pickerSelectedLng;
+    const latNum = pickerSelectedLat;
+
+    // 更新坐标展示
+    const coordText = latNum.toFixed(6) + ', ' + lngNum.toFixed(6);
+    locationInput.value = coordText;
+    // 同步写入隐藏经纬度字段
+    if (lngHidden) lngHidden.value = lngNum.toFixed(6);
+    if (latHidden) latHidden.value = latNum.toFixed(6);
+
+    // 填充详细地址
+    const addr = pickerAddressText.textContent !== '请在厂区地图上点击选择位置' &&
+                 pickerAddressText.textContent !== '请在蓝色厂区范围内点击标记位置'
+      ? pickerAddressText.textContent
+      : getMockAddress(latNum, lngNum);
+    if (addressText) addressText.style.display = '';
+    if (addressInput) addressInput.textContent = addr;
+
+    closeModal('coordPickerOverlay');
+  });
+
+  // 固有风险tab「新增」按钮 → 打开新增固有风险
+  btnAddInherent.addEventListener('click', function() { openDrawerAsAdd('固有风险'); });
+  // 作业风险tab「新增」按钮 → 打开新增作业风险
+  if (btnAddOperation) {
+    btnAddOperation.addEventListener('click', function() { openDrawerAsAdd('作业风险'); });
+  }
+  btnClose.addEventListener('click', closeDrawer);
+  btnCancel.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+
+  // 保存按钮
+  drawerSubmit.addEventListener('click', function() {
+    if (!validateAddForm()) return;
+
+    // 计算风险类型编码（工贸 riskType 映射）
+    const riskType = typeSelect.value;
+    let riskTypeCode = '';
+    if (riskType === '作业风险') {
+      riskTypeCode = '1';
+    } else if (riskType === '固有风险') {
+      const subTypeValue = subTypeSelect.value;
+      if (subTypeValue === '物品') riskTypeCode = '2';
+      else if (subTypeValue === '场所') riskTypeCode = '3';
+      else if (subTypeValue === '工艺') riskTypeCode = '4';
+    }
+
+    if (mode === 'edit' && editingRow) {
+      editingRow.dataset.riskName = nameInput.value.trim();
+      editingRow.dataset.riskType = riskType;
+      editingRow.dataset.riskSubType = subTypeSelect.value;
+      editingRow.dataset.riskTypeCode = riskTypeCode;
+      editingRow.dataset.riskPerson = personBtn.textContent;
+      editingRow.dataset.riskLink = linkSelect.value;
+      editingRow.dataset.riskLocation = locationInput.value.trim();
+      editingRow.dataset.riskLng = lngHidden.value;
+      editingRow.dataset.riskLat = latHidden.value;
+      editingRow.dataset.riskAddress = addressInput.textContent;
+      editingRow.dataset.riskDescribe = describeInput.value.trim();
+      editingRow.dataset.riskAnalysisTarget = sourceSelect.value.trim();
+      editingRow.dataset.riskSource = sourceSelect.value.trim();
+      // 自动派生字段默认值
+      editingRow.dataset.areaCode = editingRow.dataset.areaCode || '';
+      editingRow.dataset.planAddress = editingRow.dataset.planAddress || addressInput.textContent;
+      editingRow.dataset.measure = editingRow.dataset.measure || '';
+      editingRow.dataset.fileUrls = editingRow.dataset.fileUrls || '[]';
+      if (!editingRow.dataset.identificationTime) {
+        editingRow.dataset.identificationTime = new Date().toISOString().slice(0, 16);
+      }
+      const nameTd = editingRow.querySelector('td:first-child');
+      nameTd.textContent = nameInput.value.trim();
+      closeDrawer();
+      showToast('保存成功');
+    } else {
+      closeDrawer();
+      showToast('保存成功');
+    }
+  });
+
+  // 删除按钮（作业风险tab）
+  document.querySelectorAll('#tabOperation .js-op-delete').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const tr = this.closest('tr');
+      const riskName = tr.dataset.riskName || '';
+      if (confirm('确认删除【' + riskName + '】吗？删除后不可恢复。')) {
+        tr.remove();
+        // 更新计数
+        const tbody = document.getElementById('opRiskListBody');
+        const pageInfo = document.getElementById('opPageInfo');
+        if (tbody && pageInfo) {
+          pageInfo.textContent = '共 ' + tbody.querySelectorAll('tr').length + ' 条';
+        }
+        showToast('删除成功');
+      }
+    });
+  });
+})();
+
+// ==================== 管控核心变量与逻辑 ====================
+let currentControlRow = null;
+
+// 开始管控确认
+document.getElementById('startControlConfirm').addEventListener('click', function() {
+  if (!currentControlRow) return;
+  const startTime = document.getElementById('startControlTime').value;
+  const expectedEnd = document.getElementById('startControlExpectedEnd').value;
+  if (!startTime) { showToast('请填写实际管控开始时间', 'warning'); return; }
+  if (startTime > nowDateTimeLocal()) { showToast('实际管控开始时间不能大于当前时间', 'warning'); return; }
+  if (expectedEnd && expectedEnd <= startTime) { showToast('预计管控结束时间必须大于实际管控开始时间', 'warning'); return; }
+
+  const tr = currentControlRow;
+  const round = parseInt(tr.dataset.controlRound) || 0;
+  tr.dataset.controlStatus = 'active';
+  tr.dataset.controlRound = String(round + 1);
+  tr.dataset.startTime = startTime;
+  tr.dataset.expectedEndTime = expectedEnd;
+  tr.dataset.actualEndTime = '';
+
+  // 更新管控状态单元格
+  updateStatusCell(tr, 'active');
+  // 更新操作列
+  updateControlLinks(tr, 'active');
+
+  closeModal('startControlOverlay');
+  showToast('操作成功');
+  currentControlRow = null;
+});
+
+// 结束管控确认
+document.getElementById('endControlConfirm').addEventListener('click', function() {
+  if (!currentControlRow) return;
+  const actualEnd = document.getElementById('endControlTime').value;
+  if (!actualEnd) { showToast('请填写实际管控结束时间', 'warning'); return; }
+  const tr = currentControlRow;
+  const startTime = tr.dataset.startTime;
+  if (startTime && actualEnd < startTime) { showToast('实际管控结束时间不得早于管控开始时间', 'warning'); return; }
+  if (actualEnd > nowDateTimeLocal()) { showToast('实际管控结束时间不能大于当前时间', 'warning'); return; }
+
+  tr.dataset.controlStatus = 'done';
+  tr.dataset.actualEndTime = actualEnd;
+
+  updateStatusCell(tr, 'done');
+  updateControlLinks(tr, 'done');
+
+  closeModal('endControlOverlay');
+  showToast('操作成功');
+  currentControlRow = null;
+});
+
+// ==================== 辅助：更新管控状态单元格 ====================
+function updateStatusCell(tr, status) {
+  const tds = tr.querySelectorAll('td');
+  // 管控状态td是倒数第二个（最后一个是操作列）
+  // 需要找到包含control-tag的td，或者通过位置判断
+  let statusTd = null;
+  tds.forEach(td => {
+    if (td.querySelector('.control-tag')) { statusTd = td; }
+  });
+  if (!statusTd) return;
+
+  if (status === 'active') {
+    statusTd.innerHTML = '<span class="control-tag control-active">管控中</span>';
+  } else if (status === 'done') {
+    statusTd.innerHTML = '<span class="control-tag control-done">管控结束</span>';
+  } else {
+    statusTd.innerHTML = '<span class="control-tag control-none">未管控</span>';
+  }
+}
+
+// ==================== 辅助：更新操作列中的管控链接 ====================
+function updateControlLinks(tr, newStatus) {
+  const actionLinks = tr.querySelector('.action-links');
+  const editLink = actionLinks.querySelector('.js-edit-point,.js-op-edit');
+
+  // 移除旧的管控链接
+  actionLinks.querySelectorAll('.js-control-start,.js-control-end,.js-control-detail').forEach(el => el.remove());
+
+  // 插入新的管控链接
+  if (newStatus === 'active') {
+    const endLink = document.createElement('span');
+    endLink.className = 'action-link js-control-end';
+    endLink.textContent = '结束管控';
+    endLink.addEventListener('click', function(e) {
+      e.stopPropagation();
+      currentControlRow = tr;
+      const data = getRowData(tr);
+      document.getElementById('endControlStartTimeDisplay').value = formatDateTime(data.startTime);
+      document.getElementById('endControlExpectedEndDisplay').value = formatDateTime(data.expectedEndTime);
+      document.getElementById('endControlTime').value = nowDateTimeLocal();
+      openModal('endControlOverlay');
+    });
+    editLink.insertAdjacentElement('afterend', endLink);
+  } else if (newStatus === 'done') {
+    const detailLink = document.createElement('span');
+    detailLink.className = 'action-link js-control-detail';
+    detailLink.textContent = '管控详情';
+    detailLink.addEventListener('click', function(e) {
+      e.stopPropagation();
+      currentControlRow = tr;
+      openDetailModal(tr);
+    });
+    editLink.insertAdjacentElement('afterend', detailLink);
+  }
+}
+
+// ==================== 管控详情弹窗 ====================
+function openDetailModal(tr) {
+  const data = getRowData(tr);
+  document.getElementById('detailModalTitle').textContent = '管控详情 - ' + data.name;
+
+  const history = generateMockHistory(data.round, data.startTime, data.expectedEndTime, data.actualEndTime);
+
+  const cards = [];
+  const currentIcon = data.status === 'active' ? '\uD83D\uDD39' : '\uD83D\uDD39';
+  cards.push({
+    round: data.round, isCurrent: true,
+    startTime: formatDateTime(data.startTime),
+    expectedEndTime: formatDateTime(data.expectedEndTime),
+    actualEndTime: data.status === 'done' ? formatDateTime(data.actualEndTime) : '-',
+    icon: currentIcon
+  });
+
+  history.forEach(h => {
+    cards.push({ round: h.round, isCurrent: false,
+      startTime: formatDateTime(h.startTime), expectedEndTime: formatDateTime(h.expectedEndTime),
+      actualEndTime: formatDateTime(h.actualEndTime), icon: '\uD83D\uDD38'
+    });
+  });
+
+  const roundListEl = document.getElementById('detailRoundList');
+  roundListEl.innerHTML = cards.map(c =>
+    '<div class="detail-round-card' + (c.isCurrent ? ' is-current' : '') + '">' +
+      '<div class="detail-round-header"><span>' + c.icon + ' 第' + c.round + '次管控</span></div>' +
+      '<div class="detail-round-divider"></div>' +
+      '<div class="detail-round-row"><span class="detail-label">管控开始时间</span><span class="detail-value">' + c.startTime + '</span></div>' +
+      '<div class="detail-round-row"><span class="detail-label">预计结束时间</span><span class="detail-value">' + c.expectedEndTime + '</span></div>' +
+      '<div class="detail-round-row"><span class="detail-label">实际结束时间</span><span class="detail-value">' + c.actualEndTime + '</span></div>' +
+    '</div>'
+  ).join('');
+
+  currentControlRow = tr;
+  openModal('detailControlOverlay');
+}
+
+// ==================== 重新管控 ====================
+document.getElementById('detailRestartBtn').addEventListener('click', function() {
+  if (!currentControlRow) return;
+  const data = getRowData(currentControlRow);
+  document.getElementById('restartConfirmText').textContent = '确定要开启第' + (data.round + 1) + '次管控吗？';
+  closeModal('detailControlOverlay');
+  openModal('restartConfirmOverlay');
+});
+
+document.getElementById('restartConfirmBtn').addEventListener('click', function() {
+  if (!currentControlRow) return;
+  const data = getRowData(currentControlRow);
+
+  document.getElementById('restartFormTip').style.display = 'flex';
+  document.getElementById('restartFormTip').innerHTML =
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' +
+    '正在为【' + data.name + '】启动第' + (data.round + 1) + '次管控';
+
+  document.getElementById('restartStartTime').value = nowDateTimeLocal();
+  document.getElementById('restartExpectedEnd').value = '';
+  closeModal('restartConfirmOverlay');
+  openModal('restartFormOverlay');
+});
+
+document.getElementById('restartFormConfirm').addEventListener('click', function() {
+  if (!currentControlRow) return;
+  const startTime = document.getElementById('restartStartTime').value;
+  const expectedEnd = document.getElementById('restartExpectedEnd').value;
+  if (!startTime) { showToast('请填写实际管控开始时间', 'warning'); return; }
+  if (startTime > nowDateTimeLocal()) { showToast('实际管控开始时间不能大于当前时间', 'warning'); return; }
+  if (expectedEnd && expectedEnd <= startTime) { showToast('预计管控结束时间必须大于实际管控开始时间', 'warning'); return; }
+
+  const tr = currentControlRow;
+  const round = parseInt(tr.dataset.controlRound) || 0;
+
+  tr.dataset.controlStatus = 'active';
+  tr.dataset.controlRound = String(round + 1);
+  tr.dataset.startTime = startTime;
+  tr.dataset.expectedEndTime = expectedEnd;
+  tr.dataset.actualEndTime = '';
+
+  updateStatusCell(tr, 'active');
+  updateControlLinks(tr, 'active');
+
+  closeModal('restartFormOverlay');
+  showToast('操作成功');
+  currentControlRow = null;
+});
+</script>
+
+<script>
+// ==================== 风险管控设置同步 ====================
+(function() {
+  // 读取工贸行业的管控设置
+  let gongmaoCfg = {};
+  try {
+    const raw = localStorage.getItem('risk_control_industry_settings');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      gongmaoCfg = parsed['工贸'] || {};
+    }
+  } catch (e) { /* ignore */ }
+
+  // 管控功能默认开启
+  const enable_risk_control = true;
+
+  // 1. 支持风险管控 → 动态插入管控状态列和管控操作
+  if (enable_risk_control) {
+    // 插入管控状态列（固有风险 & 作业风险两张表），放在创建人前面（第4列）
+    ['#inherentTableHead','#operationTableHead'].forEach(headSel => {
+      const theadRow = document.querySelector(headSel);
+      if (theadRow) {
+        const creatorTh = theadRow.querySelector('th:nth-child(4)');
+        const ctrlTh = document.createElement('th');
+        ctrlTh.textContent = '管控状态';
+        creatorTh.insertAdjacentElement('beforebegin', ctrlTh);
+      }
+    });
+
+    // 插入管控操作链接（固有风险 & 作业风险两张表）
+    ['#riskListBody','#opRiskListBody'].forEach(bodySel => {
+      document.querySelectorAll(bodySel + ' > tr').forEach(tr => {
+        const status = tr.dataset.controlStatus || 'none';
+        const creatorTd = tr.querySelector('td:nth-child(4)');
+        const opTd = tr.querySelector('td:last-child');
+
+        // 插入管控状态单元格（在创建人前面）
+        const statusTd = document.createElement('td');
+        if (status === 'none') {
+          statusTd.innerHTML = '<span class="control-tag control-none">未管控</span>';
+        } else if (status === 'active') {
+          statusTd.innerHTML = '<span class="control-tag control-active">管控中</span>';
+        } else if (status === 'done') {
+          statusTd.innerHTML = '<span class="control-tag control-done">管控结束</span>';
+        }
+        creatorTd.insertAdjacentElement('beforebegin', statusTd);
+
+        // 在操作列插入管控操作链接
+        const actionLinks = opTd.querySelector('.action-links');
+        const editLink = actionLinks.querySelector('.js-edit-point,.js-op-edit');
+
+        if (!editLink) return;
+
+        if (status === 'none') {
+          const startLink = document.createElement('span');
+          startLink.className = 'action-link js-control-start';
+          startLink.textContent = '开始管控';
+          editLink.insertAdjacentElement('afterend', startLink);
+        } else if (status === 'active') {
+          const endLink = document.createElement('span');
+          endLink.className = 'action-link js-control-end';
+          endLink.textContent = '结束管控';
+          editLink.insertAdjacentElement('afterend', endLink);
+        } else if (status === 'done') {
+          const detailLink = document.createElement('span');
+          detailLink.className = 'action-link js-control-detail';
+          detailLink.textContent = '管控详情';
+          editLink.insertAdjacentElement('afterend', detailLink);
+        }
+      });
+    });
+
+    // 绑定管控事件（开始/结束/详情）
+    bindControlEvents();
+  }
+})();
+
+// ==================== 统一绑定管控事件 ====================
+function bindControlEvents() {
+  const bodies = ['#riskListBody','#opRiskListBody'];
+
+  // 开始管控
+  bodies.forEach(body => {
+    document.querySelectorAll(body + ' .js-control-start').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const tr = this.closest('tr');
+        // 校验前置条件：必须已完成风险辨识
+        if (!checkRiskIdentifyForControl(tr)) return;
+        currentControlRow = tr;
+        document.getElementById('startControlTip').style.display = 'none';
+        document.getElementById('startControlTime').value = nowDateTimeLocal();
+        document.getElementById('startControlExpectedEnd').value = '';
+        document.querySelector('#startControlModal .modal-title').textContent = '开始管控';
+        openModal('startControlOverlay');
+      });
+    });
+  });
+
+  // 结束管控
+  bodies.forEach(body => {
+    document.querySelectorAll(body + ' .js-control-end').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const tr = this.closest('tr');
+        currentControlRow = tr;
+        const data = getRowData(tr);
+        document.getElementById('endControlStartTimeDisplay').value = formatDateTime(data.startTime);
+        document.getElementById('endControlExpectedEndDisplay').value = formatDateTime(data.expectedEndTime);
+        document.getElementById('endControlTime').value = nowDateTimeLocal();
+        openModal('endControlOverlay');
+      });
+    });
+  });
+
+  // 管控详情
+  bodies.forEach(body => {
+    document.querySelectorAll(body + ' .js-control-detail').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const tr = this.closest('tr');
+        currentControlRow = tr;
+        openDetailModal(tr);
+      });
+    });
+  });
+}
+// ==================== 风险辨识详情抽屉 ====================
+(function() {
+  const detailOverlay = document.getElementById('detailDrawerOverlay');
+  const detailDrawer = document.getElementById('detailDrawer');
+
+  // mock详情数据
+  const mockDetailData = {
+    hazardFactor: '未正确佩戴安全帽、未设置安全警示标识、设备防护罩缺失',
+    consequence: '可能导致人员头部受伤、高处坠落、机械卷入等严重人身伤害事故',
+    evalMethod: 'LEC评价法（格雷厄姆-金尼法）',
+    riskLevel: '较大风险',
+    countermeasures: [
+      {
+        type: '物体打击',
+        measures: [
+          '进入作业现场必须正确佩戴符合GB2811标准的安全帽，帽衬与帽壳连接牢固，下颌带系紧。',
+          '在危险区域设置明显的安全警示标识，标识应符合GB2894标准要求，定期检查标识完好性。'
+        ]
+      },
+      {
+        type: '机械伤害',
+        measures: [
+          '所有旋转、传动设备必须安装完好的防护罩或防护栏，防护装置与设备连锁，打开即停机。',
+          '操作旋转机械设备时严禁戴手套，袖口、下摆必须扎紧，长发必须盘入帽内。'
+        ]
+      },
+      {
+        type: '高处坠落',
+        measures: [
+          '高处作业必须系挂安全带，设置安全网，作业平台设置不低于1.2m的防护栏杆。',
+          '作业前进行安全技术交底，明确各岗位风险及应急处置措施，交底双方签字确认。'
+        ]
+      }
+    ]
+  };
+
+  function openDetailDrawer(row) {
+    // 从行数据获取基本信息
+    const cells = row.querySelectorAll('td');
+    let factorText = cells.length > 1 ? (cells[1].textContent || '').trim() : '';
+    // 如果是步骤表格，危害因素在第3列(index=2)
+    if (cells.length > 2 && row.closest('#opStepListBody')) {
+      factorText = cells[2].textContent.trim();
+    }
+
+    // 使用mock数据填充
+    document.getElementById('detailHazardFactor').textContent = mockDetailData.hazardFactor;
+    document.getElementById('detailConsequence').textContent = mockDetailData.consequence;
+    document.getElementById('detailEvalMethod').textContent = mockDetailData.evalMethod;
+    document.getElementById('detailRiskLevel').textContent = mockDetailData.riskLevel;
+
+    const div = document.getElementById('detailCountermeasures');
+    div.innerHTML = mockDetailData.countermeasures.map(function(group) {
+      return '<div class="detail-accident-group">' +
+        '<div class="detail-accident-type">' + group.type + '</div>' +
+        '<ol class="detail-accident-measures">' +
+        group.measures.map(function(m) { return '<li>' + m + '</li>'; }).join('') +
+        '</ol>' +
+        '</div>';
+    }).join('');
+
+    detailOverlay.classList.add('is-open');
+    detailDrawer.classList.add('is-open');
+  }
+
+  function closeDetailDrawer() {
+    detailOverlay.classList.remove('is-open');
+    detailDrawer.classList.remove('is-open');
+  }
+
+  // 关闭按钮
+  document.getElementById('detailDrawerClose').addEventListener('click', closeDetailDrawer);
+  document.getElementById('detailDrawerCancel').addEventListener('click', closeDetailDrawer);
+  detailOverlay.addEventListener('click', closeDetailDrawer);
+
+  // 绑定辨识面板中「详情」按钮
+  function bindDetailLinks(selector) {
+    document.querySelectorAll(selector).forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var tr = this.closest('tr');
+        if (tr) openDetailDrawer(tr);
+      });
+    });
+  }
+  bindDetailLinks('.js-detail-identify');
+  bindDetailLinks('.js-step-detail');
+
+  // 后续动态添加的行也需要绑定（MutationObserver）
+  var observeTargets = ['#identifyListBody', '#opStepListBody'];
+  observeTargets.forEach(function(sel) {
+    var el = document.getElementById(sel.replace('#', ''));
+    if (!el) return;
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mut) {
+        mut.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1) {
+            if (node.querySelectorAll) {
+              node.querySelectorAll('.js-detail-identify, .js-step-detail').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                  e.stopPropagation();
+                  var tr = this.closest('tr');
+                  if (tr) openDetailDrawer(tr);
+                });
+              });
+            }
+          }
+        });
+      });
+    });
+    observer.observe(el, { childList: true });
+  });
+})();
+</script>
+
+<!-- ==================== PRD 标注系统 ==================== -->
+
+<!-- PRD 说明抽屉 -->
+<div class="prd-drawer-overlay" id="prdDrawerOverlay"></div>
+<aside class="prd-drawer" id="prdDrawer">
+  <div class="prd-drawer-header">
+    <span class="prd-drawer-title">风险管理与辨识 · PRD说明</span>
+    <button class="prd-drawer-close" id="prdDrawerClose" type="button">&times;</button>
+  </div>
+  <div class="prd-drawer-tabs" id="prdDrawerTabs">
+    <button class="prd-drawer-tab active" data-tab="page">页面PRD</button>
+    <button class="prd-drawer-tab" data-tab="overall">整体PRD</button>
+  </div>
+  <div class="prd-drawer-body" id="prdDrawerBody">
+    <div class="prd-drawer-panel active" id="prdDrawerPanelPage">
+      <div class="prd-drawer-panel-content" id="prdPanelPageContent"></div>
+    </div>
+    <div class="prd-drawer-panel" id="prdDrawerPanelOverall">
+      <div class="prd-drawer-panel-content" id="prdPanelOverallContent"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- PRD 说明按钮 -->
+<button class="prd-drawer-btn" id="prdDrawerBtn" type="button" title="查看PRD文档（页面PRD / 整体PRD）">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+  PRD说明
+</button>
+
+<!-- 全局标注开关 -->
+<button class="badge-toggle-btn" id="badgeToggleBtn" type="button" title="显示/隐藏标注角标">
+  <svg id="badgeToggleEyeOff" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+  <svg id="badgeToggleEyeOn" viewBox="0 0 24 24" style="display:none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+</button>
+
+<script>
+(function() {
+'use strict';
+
+// ==================== PRD 标注数据 ====================
+// 仅覆盖本次功能范围：风险管控（新增/编辑抽屉 + 管控状态 + 管控操作 + 管控详情）
+// 格式：{ id, target, pos, title, tooltip, optional? }
+// pos: 'afterend'=紧贴目标后方 / 'beforebegin'=紧贴目标前方 / 'afterbegin'=目标内部最前
+var badgeDefs = [
+  // ====== [1] 新增按钮（固有风险） ======
+  {
+    id: 1,
+    target: '#btnAddRisk',
+    pos: 'afterend',
+    title: '新增固有风险',
+    tooltip: '<p><strong>权限：</strong>有菜单权限的管理员可见此按钮</p>'+
+      '<p><strong>点击 → 打开右侧新增抽屉</strong>，风险点类型固定为「固有风险」不可切换</p>'+
+      '<p><span class="status-dot dot-done"></span> 抽屉中各字段的改造说明详见抽屉角标</p>'
+  },
+  // ====== [2] 管控状态列 ======
+  {
+    id: 2,
+    selector: '#inherentTableHead th',
+    matchText: '管控状态',
+    pos: 'afterbegin',
+    title: '管控状态列',
+    tooltip: '<p><strong>管控状态由后端根据 control_start_time / control_actual_end_time 派生计算</strong>，不持久化存储：</p>'+
+      '<table><tr><th>状态</th><th>标签样式</th><th>条件</th><th>操作列展示</th></tr>'+
+      '<tr><td><span class="control-tag control-none">未管控</span></td><td>灰底灰字</td><td><code>control_start_time IS NULL</code></td><td>【开始管控】</td></tr>'+
+      '<tr><td><span class="control-tag control-active">管控中</span></td><td>蓝底蓝字</td><td><code>start_time有值 AND actual_end_time IS NULL</code></td><td>【结束管控】</td></tr>'+
+      '<tr><td><span class="control-tag control-done">管控结束</span></td><td>绿底绿字</td><td><code>actual_end_time IS NOT NULL</code></td><td>【管控详情】</td></tr></table>'+
+      '<p><span class="status-dot dot-warn"></span> 管控功能由<strong>租户级配置开关</strong>控制：<code>enable_risk_control</code> = true 时才展示此列。</p>'
+  },
+  // ====== [3] 编辑风险点按钮（固有风险） ======
+  {
+    id: 3,
+    selector: '#riskListBody .js-edit-point',
+    pos: 'afterend',
+    title: '编辑固有风险',
+    tooltip: '<p><strong>权限：</strong>有菜单权限的管理员可见</p>'+
+      '<p><strong>点击 → 打开编辑抽屉</strong>，表单预填充当前行数据，<strong>风险点类型不可修改</strong>，确认后更新主表</p>'+
+      '<p><span class="status-dot dot-done"></span> 编辑不触发外部推送。抽屉各字段说明详见抽屉角标</p>'
+  },
+  // ====== [4] 开始管控按钮（固有风险） ======
+  {
+    id: 4,
+    selector: '#riskListBody .js-control-start',
+    pos: 'afterend',
+    optional: true,
+    title: '开始管控',
+    tooltip: '<p><strong>仅在「未管控」状态下出现</strong>，点击 → 弹出"开始管控"弹窗</p>'+
+      '<p><strong>前置校验：</strong>点击时须先校验风险辨识是否已完成（`identifyListBody` 须有事故类型记录），未完成则提示「请先进行风险辨识」并阻止弹窗。</p>'+
+      '<p><strong>填写字段：</strong></p>'+
+      '<ul><li><strong>实际管控开始时间</strong>：不能大于当前时间</li>'+
+      '<li><strong>预计管控结束时间</strong>：必须大于开始时间</li></ul>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>start_time + expected_end_time</code></li>'+
+      '<li>管控轮次 <code>round + 1</code></li>'+
+      '<li>状态变为「管控中」</li>'+
+      '<li>操作列按钮变为【结束管控】</li></ol>'+
+      '<p><span class="status-dot dot-done"></span> 开始管控不触发外部推送。</p>'
+  },
+  // ====== [5] 结束管控按钮（固有风险） ======
+  {
+    id: 5,
+    selector: '#riskListBody .js-control-end',
+    pos: 'afterend',
+    optional: true,
+    title: '结束管控',
+    tooltip: '<p><strong>仅在「管控中」状态下出现</strong>，点击 → 弹出"结束管控"弹窗</p>'+
+      '<p><strong>填写字段：</strong></p>'+
+      '<ul><li><strong>实际管控结束时间</strong>：不得早于开始时间，不能大于当前时间</li></ul>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>actual_end_time</code></li>'+
+      '<li>复制主表数据到履历表（归档）</li>'+
+      '<li>状态变为「管控结束」</li>'+
+      '<li>操作列按钮变为【管控详情】</li>'+
+      '<li><span class="status-dot dot-warn"></span> <strong>触发外部推送（END事件）</strong></li></ol>'+
+      '<p><strong>推送包含字段：</strong><code>risk_id / round / start_time / expected_end_time / actual_end_time</code></p>'
+  },
+  // ====== [6] 管控详情按钮（固有风险） ======
+  {
+    id: 6,
+    selector: '#riskListBody .js-control-detail',
+    pos: 'afterend',
+    optional: true,
+    title: '管控详情',
+    tooltip: '<p><strong>仅在「管控结束」状态下出现</strong>，点击 → 弹出"管控详情"弹窗</p>'+
+      '<p><strong>弹窗内容（只读）：</strong></p>'+
+      '<ul><li>当前轮次管控信息（开始/预计结束/实际结束时间）</li>'+
+      '<li>历史管控轮次履历（从履历表读取）</li>'+
+      '<li>每轮显示：开始时间、预计结束时间、实际结束时间</li></ul>'+
+      '<p><strong>弹窗底部操作：</strong></p>'+
+      '<ul><li>显示【重新管控】按钮</li>'+
+      '<li>点击后弹出二次确认 → 确认后打开重新管控表单弹窗</li></ul>'+
+      '<p><span class="status-dot dot-done"></span> 重新管控会触发新的管控周期，轮次+1。</p>'
+  },
+  // ====== [7] 新增固有风险弹窗（抽屉） ======
+  {
+    id: 7,
+    target: '#addDrawer .drawer-header',
+    pos: 'afterbegin',
+    modeId: 'badge-drawer-add',
+    title: '新增固有风险抽屉',
+    tooltip: '<p><strong>抽屉标题为"新增"时进入新增模式</strong>，风险点类型固定为「固有风险」不可切换</p>'+
+      '<p><span class="status-dot dot-done"></span> 新增后不触发外部推送（管控时间未填）。每个字段的改造说明如下：</p>'+
+      '<table><tr><th>表单字段</th><th>改造类型</th><th>接口参数</th><th>验证/映射说明</th></tr>'+
+      '<tr><td>风险点名称</td><td><span class="control-tag control-none">已有</span></td><td><code>name</code></td><td>文本输入，上限 255 字；直接映射推送</td></tr>'+
+      '<tr><td>风险点类型</td><td><span class="control-tag control-active">已改造</span></td><td><code>riskType</code></td><td>固定为「固有风险」不可切换；推送时由<strong>固有风险类型</strong>决定具体编码（2/3/4）</td></tr>'+
+      '<tr><td>固有风险类型</td><td><span class=\"status-dot dot-warn\" style=\"display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle;\"></span>新增字段</td><td><code>riskType</code></td><td>下拉三选一：物品(2)/场所(3)/工艺(4)；<strong>仅固有风险时显示</strong>，必填；编辑模式回显历史值</td></tr>'+
+      '<tr><td>负责人员</td><td><span class="control-tag control-none">已有</span></td><td><code>dutyUserName</code></td><td>人员选择器；推送时<strong>提取纯姓名</strong>、去除部门后缀</td></tr>'+
+      '<tr><td>风险点地点</td><td><span class=\"status-dot dot-warn\" style=\"display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle;\"></span>改造字段</td><td><code>areaCode</code> + <code>planAddress</code></td><td>点击地图图标选取经纬度坐标 → <strong>逆地理编码</strong>派生区域编码和详细地址；坐标只读展示，地址自动回填；配置控制显隐</td></tr>'+
+      '<tr><td>风险分析对象</td><td><span class="control-tag control-none">已有</span></td><td>—</td><td>选择风险源（非接口直接字段，仅本地使用）</td></tr>'+
+      '<tr><td>风险环节</td><td><span class="status-dot dot-warn" style="display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle;"></span>新增字段</td><td><code>riskLink</code></td><td>下拉选择（粉尘涉爆/涉氨制冷/冶金煤气/有限空间作业/燃爆毒危化品使用/高温熔融）；配置控制显隐，但<strong>推送时始终必填</strong></td></tr>'+
+      '<tr><td>风险描述</td><td><span class="status-dot dot-warn" style="display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle;"></span>新增字段</td><td><code>describe</code></td><td>多行文本输入；配置控制显隐，但<strong>推送时始终必填</strong></td></tr></table>'+
+      '<p><span class="status-dot dot-warn"></span> 配置控制显隐的字段：数据始终收集存储，仅 UI 层按配置开关决定是否渲染。</p>'
+  },
+  // ====== [8] 编辑固有风险弹窗（抽屉） ======
+  {
+    id: 8,
+    target: '#addDrawer .drawer-header',
+    pos: 'afterbegin',
+    modeId: 'badge-drawer-edit',
+    hidden: true,
+    title: '编辑固有风险抽屉',
+    tooltip: '<p><strong>抽屉标题为"编辑风险点"时进入编辑模式</strong></p>'+
+      '<p>与新增模式共享同一抽屉组件，各字段的差异说明如下：</p>'+
+      '<table><tr><th>表单字段</th><th>新增 vs 编辑差异</th><th>接口参数</th><th>验证/映射说明</th></tr>'+
+      '<tr><td>风险点名称</td><td>预填充当前行值</td><td><code>name</code></td><td>可修改，上限 255 字；直接映射</td></tr>'+
+      '<tr><td>风险点类型</td><td><strong>不可修改</strong>（保持原值）</td><td><code>riskType</code></td><td>禁用状态，由固有风险类型决定编码（2/3/4）</td></tr>'+
+      '<tr><td>固有风险类型</td><td>回显历史选择值，<strong>可修改</strong></td><td><code>riskType</code></td><td>下拉可选：物品(2)/场所(3)/工艺(4)；修改后影响推送编码</td></tr>'+
+      '<tr><td>负责人员</td><td>预填充当前行值</td><td><code>dutyUserName</code></td><td>可重新选择；推送时提取纯姓名</td></tr>'+
+      '<tr><td>风险点地点</td><td>预填充当前坐标+地址</td><td><code>areaCode</code> + <code>planAddress</code></td><td>可重新选取坐标，重新触发逆地理编码</td></tr>'+
+      '<tr><td>风险分析对象</td><td>预填充当前值</td><td>—</td><td>仅本地使用</td></tr>'+
+      '<tr><td>风险环节</td><td>预填充当前值</td><td><code>riskLink</code></td><td>下拉可选；配置控制显隐</td></tr>'+
+      '<tr><td>风险描述</td><td>预填充当前值</td><td><code>describe</code></td><td>可修改；配置控制显隐</td></tr></table>'+
+      '<p><span class="status-dot dot-done"></span> 编辑模式确认后<strong>更新主表字段</strong>而非插入新记录，<strong>不触发外部推送</strong>。</p>'+
+      '<p><span class="status-dot dot-warn"></span> 风险点类型字段在编辑模式下同样禁用，防止类型切换导致数据不一致。</p>'
+  },
+  // ====== [9] 开始管控弹窗（固有风险） ======
+  {
+    id: 9,
+    target: '#startControlModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-start',
+    title: '开始管控弹窗',
+    tooltip: '<p><strong>点击表格行中"开始管控" → 弹出此弹窗</strong></p>'+
+      '<p><strong>表单字段：</strong></p>'+
+      '<table><tr><th>字段</th><th>必填</th><th>校验规则</th></tr>'+
+      '<tr><td>实际管控开始时间</td><td>是</td><td>不能大于当前时间</td></tr>'+
+      '<tr><td>预计管控结束时间</td><td>否</td><td>若填写则必须大于开始时间</td></tr></table>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>start_time</code> / <code>expected_end_time</code></li>'+
+      '<li>管控轮次 <code>round + 1</code></li>'+
+      '<li>状态变为「管控中」</li></ol>'
+  },
+  // ====== [10] 结束管控弹窗（固有风险） ======
+  {
+    id: 10,
+    target: '#endControlModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-end',
+    title: '结束管控弹窗',
+    tooltip: '<p><strong>点击表格行中"结束管控" → 弹出此弹窗</strong></p>'+
+      '<p><strong>回显字段（只读）：</strong>实际管控开始时间、预计管控结束时间</p>'+
+      '<p><strong>填写字段：</strong></p>'+
+      '<table><tr><th>字段</th><th>必填</th><th>校验规则</th></tr>'+
+      '<tr><td>实际管控结束时间</td><td>是</td><td>不得早于管控开始时间，不能大于当前时间</td></tr></table>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>actual_end_time</code></li>'+
+      '<li>归档到履历表</li>'+
+      '<li>状态变为「管控结束」</li>'+
+      '<li><span class="status-dot dot-warn"></span> <strong>触发外部推送（END事件）</strong></li></ol>'
+  },
+  // ====== [11] 管控详情弹窗（固有风险） ======
+  {
+    id: 11,
+    target: '#detailControlModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-detail',
+    title: '管控详情弹窗',
+    tooltip: '<p><strong>点击表格行中"管控详情" → 弹出此弹窗</strong></p>'+
+      '<p><strong>弹窗内容（只读）：</strong></p>'+
+      '<ul><li>弹窗标题显示为「管控详情 - {风险名称}」</li>'+
+      '<li>展示所有管控轮次的详细信息</li>'+
+      '<li>每轮显示：管控开始时间、预计结束时间、实际结束时间</li>'+
+      '<li>当前轮次高亮标识</li></ul>'+
+      '<p><strong>底部按钮：</strong></p>'+
+      '<ul><li>【重新管控】：点击后进入重新管控流程</li>'+
+      '<li>【关闭】：关闭弹窗</li></ul>'
+  },
+  // ====== [12] 重新开始管控弹窗（固有风险） ======
+  {
+    id: 12,
+    target: '#restartFormModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-restart',
+    title: '重新管控弹窗',
+    tooltip: '<p><strong>管控详情弹窗 → 点击"重新管控" → 二次确认 → 弹出此弹窗</strong></p>'+
+      '<p><strong>弹窗顶部提示：</strong>显示"正在为【xxx】启动第N次管控"</p>'+
+      '<p><strong>表单字段：</strong></p>'+
+      '<table><tr><th>字段</th><th>必填</th><th>校验规则</th></tr>'+
+      '<tr><td>实际管控开始时间</td><td>是</td><td>建议不早于上一轮实际结束时间</td></tr>'+
+      '<tr><td>预计管控结束时间</td><td>否</td><td>若填写则必须大于开始时间</td></tr></table>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>归档上一轮管控到履历表</li>'+
+      '<li>开启新一轮管控（round+1，状态变为「管控中」）</li></ol>'+
+      '<p><span class="status-dot dot-done"></span> 重新管控会创建新的管控周期。</p>'
+  },
+  // ====== [13] 新增按钮（作业风险） ======
+  {
+    id: 13,
+    target: '#btnAddOperationRisk',
+    pos: 'afterend',
+    title: '新增作业风险',
+    tooltip: '<p><strong>权限：</strong>有菜单权限的管理员可见此按钮</p>'+
+      '<p><strong>点击 → 打开右侧新增抽屉</strong>，风险点类型固定为「作业风险」不可切换</p>'+
+      '<p><span class="status-dot dot-done"></span> 抽屉中各字段的改造说明详见抽屉角标</p>'
+  },
+  // ====== [14] 管控状态列（作业风险） ======
+  {
+    id: 14,
+    selector: '#operationTableHead th',
+    matchText: '管控状态',
+    pos: 'afterbegin',
+    title: '管控状态列（作业风险）',
+    tooltip: '<p><strong>管控状态由后端根据 control_start_time / control_actual_end_time 派生计算</strong>，不持久化存储：</p>'+
+      '<table><tr><th>状态</th><th>标签样式</th><th>条件</th><th>操作列展示</th></tr>'+
+      '<tr><td><span class="control-tag control-none">未管控</span></td><td>灰底灰字</td><td><code>control_start_time IS NULL</code></td><td>【开始管控】</td></tr>'+
+      '<tr><td><span class="control-tag control-active">管控中</span></td><td>蓝底蓝字</td><td><code>start_time有值 AND actual_end_time IS NULL</code></td><td>【结束管控】</td></tr>'+
+      '<tr><td><span class="control-tag control-done">管控结束</span></td><td>绿底绿字</td><td><code>actual_end_time IS NOT NULL</code></td><td>【管控详情】</td></tr></table>'+
+      '<p><span class="status-dot dot-warn"></span> 管控功能由<strong>租户级配置开关</strong>控制：<code>enable_risk_control</code> = true 时才展示此列。</p>'
+  },
+  // ====== [15] 编辑风险点按钮（作业风险） ======
+  {
+    id: 15,
+    selector: '#opRiskListBody .js-op-edit',
+    pos: 'afterend',
+    title: '编辑作业风险',
+    tooltip: '<p><strong>权限：</strong>有菜单权限的管理员可见</p>'+
+      '<p><strong>点击 → 打开编辑抽屉</strong>，表单预填充当前行数据，<strong>风险点类型不可修改</strong>，确认后更新主表</p>'+
+      '<p><span class="status-dot dot-done"></span> 编辑不触发外部推送。抽屉各字段说明详见抽屉角标</p>'
+  },
+  // ====== [16] 开始管控按钮（作业风险） ======
+  {
+    id: 16,
+    selector: '#opRiskListBody .js-control-start',
+    pos: 'afterend',
+    optional: true,
+    title: '开始管控（作业风险）',
+    tooltip: '<p><strong>仅在「未管控」状态下出现</strong>，点击 → 弹出"开始管控"弹窗</p>'+
+      '<p><strong>前置校验：</strong>点击时须先校验作业步骤是否已维护（`opStepListBody` 须有作业步骤记录），未维护则提示「请先进行风险辨识，维护作业步骤信息」并阻止弹窗。</p>'+
+      '<p><strong>填写字段：</strong></p>'+
+      '<ul><li><strong>实际管控开始时间</strong>：不能大于当前时间</li>'+
+      '<li><strong>预计管控结束时间</strong>：必须大于开始时间</li></ul>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>start_time + expected_end_time</code></li>'+
+      '<li>管控轮次 <code>round + 1</code></li>'+
+      '<li>状态变为「管控中」</li></ol>'+
+      '<p><span class="status-dot dot-done"></span> 开始管控不触发外部推送。</p>'
+  },
+  // ====== [17] 结束管控按钮（作业风险） ======
+  {
+    id: 17,
+    selector: '#opRiskListBody .js-control-end',
+    pos: 'afterend',
+    optional: true,
+    title: '结束管控（作业风险）',
+    tooltip: '<p><strong>仅在「管控中」状态下出现</strong>，点击 → 弹出"结束管控"弹窗</p>'+
+      '<p><strong>填写字段：</strong></p>'+
+      '<ul><li><strong>实际管控结束时间</strong>：不得早于开始时间，不能大于当前时间</li></ul>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>actual_end_time</code></li>'+
+      '<li>复制主表数据到履历表（归档）</li>'+
+      '<li>状态变为「管控结束」</li>'+
+      '<li><span class="status-dot dot-warn"></span> <strong>触发外部推送（END事件）</strong></li></ol>'+
+      '<p><strong>推送包含字段：</strong><code>risk_id / round / start_time / expected_end_time / actual_end_time</code></p>'
+  },
+  // ====== [18] 管控详情按钮（作业风险） ======
+  {
+    id: 18,
+    selector: '#opRiskListBody .js-control-detail',
+    pos: 'afterend',
+    optional: true,
+    title: '管控详情（作业风险）',
+    tooltip: '<p><strong>仅在「管控结束」状态下出现</strong>，点击 → 弹出"管控详情"弹窗</p>'+
+      '<p><strong>弹窗内容（只读）：</strong></p>'+
+      '<ul><li>当前轮次管控信息（开始/预计结束/实际结束时间）</li>'+
+      '<li>历史管控轮次履历（从履历表读取）</li>'+
+      '<li>每轮显示：开始时间、预计结束时间、实际结束时间</li></ul>'+
+      '<p><strong>弹窗底部操作：</strong></p>'+
+      '<ul><li>显示【重新管控】按钮</li>'+
+      '<li>点击后弹出二次确认 → 确认后打开重新管控表单弹窗</li></ul>'+
+      '<p><span class="status-dot dot-done"></span> 重新管控会触发新的管控周期，轮次+1。</p>'
+  },
+  // ====== [19] 新增作业风险弹窗（抽屉） ======
+  {
+    id: 19,
+    target: '#addDrawer .drawer-header',
+    pos: 'afterbegin',
+    modeId: 'badge-drawer-add-op',
+    hidden: true,
+    title: '新增作业风险抽屉',
+    tooltip: '<p><strong>抽屉标题为"新增"时进入新增模式</strong>，风险点类型固定为「作业风险」不可切换</p>'+
+      '<p><span class="status-dot dot-done"></span> 新增后不触发外部推送（管控时间未填）。每个字段的改造说明如下：</p>'+
+      '<table><tr><th>表单字段</th><th>改造类型</th><th>接口参数</th><th>验证/映射说明</th></tr>'+
+      '<tr><td>作业名称</td><td><span class="control-tag control-none">已有</span></td><td><code>name</code></td><td>文本输入，上限 255 字；直接映射推送</td></tr>'+
+      '<tr><td>风险点类型</td><td><span class="control-tag control-active">已改造</span></td><td><code>riskType</code></td><td>固定为「作业风险」不可切换；推送时<strong>固定传 1</strong></td></tr>'+
+      '<tr><td>负责人员</td><td><span class="control-tag control-none">已有</span></td><td><code>dutyUserName</code></td><td>人员选择器；推送时<strong>提取纯姓名</strong>、去除部门后缀</td></tr>'+
+      '<tr><td>风险点地点</td><td><span class=\"status-dot dot-warn\" style=\"display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle;\"></span>改造字段</td><td><code>areaCode</code> + <code>planAddress</code></td><td>点击地图图标选取经纬度坐标 → <strong>逆地理编码</strong>派生区域编码和详细地址；坐标只读展示，地址自动回填；配置控制显隐</td></tr>'+
+      '<tr><td>风险分析对象</td><td><span class="control-tag control-none">已有</span></td><td>—</td><td>选择风险源（非接口直接字段，仅本地使用）</td></tr>'+
+      '<tr><td>风险环节</td><td><span class="status-dot dot-warn" style="display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle;"></span>新增字段</td><td><code>riskLink</code></td><td>下拉选择（粉尘涉爆/涉氨制冷/冶金煤气/有限空间作业/燃爆毒危化品使用/高温熔融）；配置控制显隐，但<strong>推送时始终必填</strong></td></tr>'+
+      '<tr><td>风险描述</td><td><span class="status-dot dot-warn" style="display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle;"></span>新增字段</td><td><code>describe</code></td><td>多行文本输入；配置控制显隐，但<strong>推送时始终必填</strong></td></tr></table>'+
+      '<p><span class="status-dot dot-warn"></span> 作业风险<strong>无固有风险类型</strong>字段，推送时 riskType 固定为 1。配置控制显隐的字段：数据始终收集存储，仅 UI 层按配置开关决定是否渲染。</p>'
+  },
+  // ====== [20] 编辑作业风险弹窗（抽屉） ======
+  {
+    id: 20,
+    target: '#addDrawer .drawer-header',
+    pos: 'afterbegin',
+    modeId: 'badge-drawer-edit-op',
+    hidden: true,
+    title: '编辑作业风险抽屉',
+    tooltip: '<p><strong>抽屉标题为"编辑风险点"时进入编辑模式</strong></p>'+
+      '<p>与新增模式共享同一抽屉组件，各字段的差异说明如下：</p>'+
+      '<table><tr><th>表单字段</th><th>新增 vs 编辑差异</th><th>接口参数</th><th>验证/映射说明</th></tr>'+
+      '<tr><td>作业名称</td><td>预填充当前行值</td><td><code>name</code></td><td>可修改，上限 255 字；直接映射</td></tr>'+
+      '<tr><td>风险点类型</td><td><strong>不可修改</strong>（保持作业风险）</td><td><code>riskType</code></td><td>禁用状态，推送时固定传 1</td></tr>'+
+      '<tr><td>负责人员</td><td>预填充当前行值</td><td><code>dutyUserName</code></td><td>可重新选择；推送时提取纯姓名</td></tr>'+
+      '<tr><td>风险点地点</td><td>预填充当前坐标+地址</td><td><code>areaCode</code> + <code>planAddress</code></td><td>可重新选取坐标，重新触发逆地理编码</td></tr>'+
+      '<tr><td>风险分析对象</td><td>预填充当前值</td><td>—</td><td>仅本地使用</td></tr>'+
+      '<tr><td>风险环节</td><td>预填充当前值</td><td><code>riskLink</code></td><td>下拉可选；配置控制显隐</td></tr>'+
+      '<tr><td>风险描述</td><td>预填充当前值</td><td><code>describe</code></td><td>可修改；配置控制显隐</td></tr></table>'+
+      '<p><span class="status-dot dot-done"></span> 编辑模式确认后<strong>更新主表字段</strong>而非插入新记录，<strong>不触发外部推送</strong>。</p>'+
+      '<p><span class="status-dot dot-warn"></span> 作业风险无固有风险类型字段，风险点类型同样禁用，防止切换到固有风险。</p>'
+  },
+  // ====== [21] 开始管控弹窗（作业风险） ======
+  {
+    id: 21,
+    target: '#startControlModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-start-op',
+    hidden: true,
+    title: '开始管控弹窗（作业风险）',
+    tooltip: '<p><strong>作业风险表格行中点击"开始管控" → 弹出此弹窗</strong></p>'+
+      '<p><strong>表单字段：</strong></p>'+
+      '<table><tr><th>字段</th><th>必填</th><th>校验规则</th></tr>'+
+      '<tr><td>实际管控开始时间</td><td>是</td><td>不能大于当前时间</td></tr>'+
+      '<tr><td>预计管控结束时间</td><td>否</td><td>若填写则必须大于开始时间</td></tr></table>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>start_time</code> / <code>expected_end_time</code></li>'+
+      '<li>管控轮次 <code>round + 1</code></li>'+
+      '<li>状态变为「管控中」</li></ol>'
+  },
+  // ====== [22] 结束管控弹窗（作业风险） ======
+  {
+    id: 22,
+    target: '#endControlModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-end-op',
+    hidden: true,
+    title: '结束管控弹窗（作业风险）',
+    tooltip: '<p><strong>作业风险表格行中点击"结束管控" → 弹出此弹窗</strong></p>'+
+      '<p><strong>回显字段（只读）：</strong>实际管控开始时间、预计管控结束时间</p>'+
+      '<p><strong>填写字段：</strong></p>'+
+      '<table><tr><th>字段</th><th>必填</th><th>校验规则</th></tr>'+
+      '<tr><td>实际管控结束时间</td><td>是</td><td>不得早于管控开始时间，不能大于当前时间</td></tr></table>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>更新主表 <code>actual_end_time</code></li>'+
+      '<li>归档到履历表</li>'+
+      '<li>状态变为「管控结束」</li>'+
+      '<li><span class="status-dot dot-warn"></span> <strong>触发外部推送（END事件）</strong></li></ol>'
+  },
+  // ====== [23] 管控详情弹窗（作业风险） ======
+  {
+    id: 23,
+    target: '#detailControlModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-detail-op',
+    hidden: true,
+    title: '管控详情弹窗（作业风险）',
+    tooltip: '<p><strong>作业风险表格行中点击"管控详情" → 弹出此弹窗</strong></p>'+
+      '<p><strong>弹窗内容（只读）：</strong></p>'+
+      '<ul><li>弹窗标题显示为「管控详情 - {作业名称}」</li>'+
+      '<li>展示所有管控轮次的详细信息</li>'+
+      '<li>每轮显示：管控开始时间、预计结束时间、实际结束时间</li>'+
+      '<li>当前轮次高亮标识</li></ul>'+
+      '<p><strong>底部按钮：</strong></p>'+
+      '<ul><li>【重新管控】：点击后进入重新管控流程</li>'+
+      '<li>【关闭】：关闭弹窗</li></ul>'
+  },
+  // ====== [24] 重新开始管控弹窗（作业风险） ======
+  {
+    id: 24,
+    target: '#restartFormModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-restart-op',
+    hidden: true,
+    title: '重新管控弹窗（作业风险）',
+    tooltip: '<p><strong>管控详情弹窗 → 点击"重新管控" → 二次确认 → 弹出此弹窗</strong></p>'+
+      '<p><strong>弹窗顶部提示：</strong>显示"正在为【xxx】启动第N次管控"</p>'+
+      '<p><strong>表单字段：</strong></p>'+
+      '<table><tr><th>字段</th><th>必填</th><th>校验规则</th></tr>'+
+      '<tr><td>实际管控开始时间</td><td>是</td><td>建议不早于上一轮实际结束时间</td></tr>'+
+      '<tr><td>预计管控结束时间</td><td>否</td><td>若填写则必须大于开始时间</td></tr></table>'+
+      '<p><strong>确认后：</strong></p>'+
+      '<ol><li>归档上一轮管控到履历表</li>'+
+      '<li>开启新一轮管控（round+1，状态变为「管控中」）</li></ol>'+
+      '<p><span class="status-dot dot-done"></span> 重新管控会创建新的管控周期。</p>'
+  },
+  // ====== [25] 确认重新管控二次确认弹窗（固有风险） ======
+  {
+    id: 25,
+    target: '#restartConfirmModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-restartconfirm',
+    title: '确认重新管控',
+    tooltip: '<p><strong>管控详情弹窗 → 点击"重新管控" → 弹出此二次确认弹窗</strong></p>'+
+      '<p><strong>弹窗内容：</strong></p>'+
+      '<ul><li>警告图标 + 确认文案："确定要开启第<strong>N</strong>次管控吗？"（N = 当前轮次 + 1）</li>'+
+      '<li>副提示："新轮次管控开始时间建议不早于上一轮管控实际结束时间"（仅提示，不强制拦截）</li></ul>'+
+      '<p><strong>底部操作：</strong></p>'+
+      '<table><tr><th>按钮</th><th>行为</th></tr>'+
+      '<tr><td>【确认并开始】</td><td>关闭此弹窗 → 打开"重新管控"表单弹窗，预填当前时间</td></tr>'+
+      '<tr><td>【取消】</td><td>关闭此弹窗，回到管控详情弹窗，无变更</td></tr></table>'+
+      '<p><span class="status-dot dot-warn"></span> 此弹窗为操作前拦截确认，防止误触重新管控。</p>'+
+      '<p><span class="status-dot dot-done"></span> 确认后才进入表单填写阶段，此时尚未归档上一轮数据。</p>'
+  },
+  // ====== [26] 确认重新管控二次确认弹窗（作业风险） ======
+  {
+    id: 26,
+    target: '#restartConfirmModal .modal-header',
+    pos: 'afterbegin',
+    modeId: 'badge-modal-restartconfirm-op',
+    hidden: true,
+    title: '确认重新管控（作业风险）',
+    tooltip: '<p><strong>管控详情弹窗 → 点击"重新管控" → 弹出此二次确认弹窗</strong></p>'+
+      '<p><strong>弹窗内容：</strong></p>'+
+      '<ul><li>警告图标 + 确认文案："确定要开启第<strong>N</strong>次管控吗？"（N = 当前轮次 + 1）</li>'+
+      '<li>副提示："新轮次管控开始时间建议不早于上一轮管控实际结束时间"（仅提示，不强制拦截）</li></ul>'+
+      '<p><strong>底部操作：</strong></p>'+
+      '<table><tr><th>按钮</th><th>行为</th></tr>'+
+      '<tr><td>【确认并开始】</td><td>关闭此弹窗 → 打开"重新管控"表单弹窗，预填当前时间</td></tr>'+
+      '<tr><td>【取消】</td><td>关闭此弹窗，回到管控详情弹窗，无变更</td></tr></table>'+
+      '<p><span class="status-dot dot-warn"></span> 此弹窗为操作前拦截确认，防止误触重新管控。</p>'
+  }
+];
+
+// ==================== 全局状态 ====================
+var activeTooltip = null;
+var isDragging = false;
+var dragStartX, dragStartY, dragStartLeft, dragStartTop;
+var badgesVisible = true;
+
+// ==================== 创建浮窗 ====================
+var tooltipEl = document.createElement('div');
+tooltipEl.className = 'prd-tooltip';
+tooltipEl.innerHTML = '<div class="prd-tooltip-header"><span class="prd-tooltip-title"></span><button class="prd-tooltip-close" type="button">&times;</button></div><div class="prd-tooltip-body"></div>';
+document.body.appendChild(tooltipEl);
+
+var tooltipClose = tooltipEl.querySelector('.prd-tooltip-close');
+tooltipClose.addEventListener('click', function(e) { e.stopPropagation(); hideTooltip(); });
+
+// 浮窗拖拽
+tooltipEl.addEventListener('mousedown', function(e) {
+  if (e.target === tooltipClose) return;
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  dragStartLeft = parseInt(tooltipEl.style.left) || 0;
+  dragStartTop = parseInt(tooltipEl.style.top) || 0;
+  tooltipEl.style.cursor = 'move';
+  e.preventDefault();
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (!isDragging) return;
+  var dx = e.clientX - dragStartX;
+  var dy = e.clientY - dragStartY;
+  tooltipEl.style.left = (dragStartLeft + dx) + 'px';
+  tooltipEl.style.top = (dragStartTop + dy) + 'px';
+});
+
+document.addEventListener('mouseup', function() {
+  if (isDragging) { isDragging = false; tooltipEl.style.cursor = ''; }
+});
+
+function showTooltip(badgeId, x, y) {
+  if (isDragging) return;
+  var d = badgeDefs.find(function(b) { return b.id === badgeId; });
+  if (!d) return;
+  tooltipEl.querySelector('.prd-tooltip-title').textContent = '[' + d.id + '] ' + d.title;
+  tooltipEl.querySelector('.prd-tooltip-body').innerHTML = d.tooltip;
+  tooltipEl.style.display = 'block';
+  // 智能定位：默认在鼠标右下，溢出则反向
+  var tw = tooltipEl.offsetWidth || 450;
+  var th = tooltipEl.offsetHeight;
+  var left = x + 10;
+  var top = y + 10;
+  if (left + tw > window.innerWidth - 10) left = x - tw - 10;
+  if (left < 10) left = 10;
+  if (top + th > window.innerHeight - 10) top = y - th - 10;
+  if (top < 10) top = 10;
+  tooltipEl.style.left = left + 'px';
+  tooltipEl.style.top = top + 'px';
+  activeTooltip = badgeId;
+}
+
+function hideTooltip() { tooltipEl.style.display = 'none'; activeTooltip = null; }
+
+// ==================== 注入角标 ====================
+function makeBadgeHTML(id, extraAttrs) {
+  var attrs = extraAttrs || '';
+  return '<span class="prd-badge-wrap"' + attrs + ' style="display:inline-flex;align-items:center;margin-left:4px;position:relative;vertical-align:middle;">'
+    + '<span class="prd-badge" data-badge-id="' + id + '" style="position:static!important;">' + id + '</span>'
+    + '</span>';
+}
+
+function injectBadges() {
+  badgeDefs.forEach(function(d) {
+    var el = null;
+
+    // 方式1：直接 target 选择器
+    if (d.target) {
+      el = document.querySelector(d.target);
+    }
+    // 方式2：selector + matchText 模糊匹配（找第一个包含指定文本的元素）
+    if (!el && d.selector && d.matchText) {
+      var candidates = document.querySelectorAll(d.selector);
+      for (var i = 0; i < candidates.length; i++) {
+        if (candidates[i].textContent.trim().indexOf(d.matchText) !== -1) {
+          el = candidates[i];
+          break;
+        }
+      }
+    }
+    // 方式3：纯 selector（取第一个）
+    if (!el && d.selector && !d.matchText) {
+      el = document.querySelector(d.selector);
+    }
+
+    if (!el) {
+      if (!d.optional) { console.warn('[PRD标注] 未找到目标:', d.id, d.target || d.selector); }
+      return;
+    }
+
+    var extra = '';
+    if (d.modeId) {
+      extra = ' id="' + d.modeId + '"';
+      if (d.hidden) extra += ' style="display:none;"';
+    }
+    var html = makeBadgeHTML(d.id, extra);
+    el.insertAdjacentHTML(d.pos, html);
+  });
+
+  // 统一绑定 hover 事件
+  document.querySelectorAll('.prd-badge').forEach(function(badge) {
+    badge.addEventListener('mouseenter', function(e) {
+      var id = parseInt(this.getAttribute('data-badge-id'));
+      showTooltip(id, e.clientX, e.clientY);
+      e.stopPropagation();
+    });
+    badge.addEventListener('mousemove', function(e) {
+      var id = parseInt(this.getAttribute('data-badge-id'));
+      if (activeTooltip === id) {
+        var tw = tooltipEl.offsetWidth || 450;
+        var th = tooltipEl.offsetHeight;
+        var l = e.clientX + 10, t = e.clientY + 10;
+        if (l + tw > window.innerWidth - 10) l = e.clientX - tw - 10;
+        if (l < 10) l = 10;
+        if (t + th > window.innerHeight - 10) t = e.clientY - th - 10;
+        if (t < 10) t = 10;
+        tooltipEl.style.left = l + 'px';
+        tooltipEl.style.top = t + 'px';
+      }
+    });
+  });
+}
+
+// 点击空白关闭浮窗
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.prd-badge') && !e.target.closest('.prd-tooltip')) {
+    hideTooltip();
+  }
+});
+
+// ==================== PRD 抽屉 ====================
+
+// ── 整体功能 PRD 内容 ──
+var overallPrdContent = '<h1>风险管理与辨识 · 整体功能 PRD</h1>\n'+
+'<h2>1. 引言</h2>\n'+
+'<h3>1.1 背景与目标</h3>\n'+
+'<p><strong>核心背景：工贸在线平台监管数据上报需求。</strong></p>\n'+
+'<p>工贸在线系统要求企业通过标准接口上报风险管控数据（<code>POST /company/data/riskData</code>），共 <strong>15 个必填/可选字段</strong>。当前系统（环慧慧 EHS+）已具备风险点录入与辨识基础能力，但存在以下差距：</p>\n'+
+'<table><tr><th>差距项</th><th>详情</th></tr>'+
+'<tr><td>字段缺失</td><td>风险环节、风险描述两个字段在系统中尚未落地，需新增</td></tr>'+
+'<tr><td>字典映射不一致</td><td>固有风险类型需映射为工贸编码（物品→2/场所→3/工艺→4）</td></tr>'+
+'<tr><td>地址交互升级</td><td>从纯文本升级为地图选坐标+逆地理编码自动填充</td></tr>'+
+'<tr><td>管控措施聚合</td><td>推送工贸时需取所有措施的集合汇总（不去重）</td></tr>'+
+'<tr><td>管控功能缺失</td><td>管控全流程为全新功能，管控结束时自动触发推送</td></tr>'+
+'<tr><td>配置灵活度不足</td><td>需按风险类型维度控制字段显隐和必填</td></tr></table>\n'+
+'<p><strong>目标：</strong>以满足工贸在线数据上报合规要求为核心驱动力，完成字段映射改造、管控流程与数据推送联动、以及字段配置能力建设。</p>\n'+
+'<h3>1.2 用户价值</h3>\n'+
+'<table><tr><th>用户角色</th><th>价值</th></tr>'+
+'<tr><td>系统管理员</td><td>1. 按风险类型维度灵活配置字段显隐与必填<br/>2. 统一管理固有风险和作业风险<br/>3. 发起管控并追踪管控状态与历史<br/>4. 管控结束后自动推送数据至工贸在线</td></tr></table>\n'+
+'<h3>1.3 功能范围</h3>\n'+
+'<p><strong>包含：</strong></p><ul>'+
+'<li><strong>接口推送</strong>：管控结束后自动推送标准化JSON至工贸（15字段完整映射）</li>'+
+'<li><strong>风险管理与辨识页面</strong>：双Tab列表、新增/编辑抽屉、地图选坐标、辨识子表、管控全流程</li>'+
+'<li><strong>风险管控设置页面</strong>：显示设置+操作设置</li></ul>'+
+'<p><strong>不包含：</strong>批量导入导出、工贸侧接收逻辑、逆地理编码后端实现、其他行业平台上报</p>\n'+
+'<hr>\n'+
+'<h2>2. 角色与权限</h2>\n'+
+'<table><tr><th>角色</th><th>菜单权限</th><th>操作权限</th><th>数据范围</th></tr>'+
+'<tr><td>系统管理员</td><td>风险管理与辨识、风险设置</td><td>CRUD风险点+辨识+管控全流程+配置</td><td>本企业全部</td></tr></table>\n'+
+'<blockquote>数据范围：所有角色仅可见本企业（<code>societyCode</code>）数据。</blockquote>\n'+
+'<hr>\n'+
+'<h2>3. 名词解释</h2>\n'+
+'<table><tr><th>术语</th><th>定义</th></tr>'+
+'<tr><td>风险点</td><td>企业内存在安全风险的具体点位（场所/设备/物料/作业）</td></tr>'+
+'<tr><td>固有风险</td><td>由物品、场所、工艺等固有属性决定的静态风险</td></tr>'+
+'<tr><td>作业风险</td><td>由作业活动引发的动态风险</td></tr>'+
+'<tr><td>风险辨识</td><td>危害识别、风险评价、制定防范措施的过程</td></tr>'+
+'<tr><td>风险等级</td><td>系统4级：低风险(1)、一般风险(2)、较大风险(3)、重大风险(4)，与工贸在线字典完全一致</td></tr>'+
+'<tr><td>管控</td><td>管控状态追踪流程：开始→管控中→结束；结束时触发推送</td></tr>'+
+'<tr><td>管控轮次</td><td>同一风险点可多次管控，每次为一个轮次</td></tr>'+
+'<tr><td>显示设置</td><td>按风险类型维度控制字段显隐与必填</td></tr>'+
+'<tr><td>操作设置</td><td>全局开关，控制管控操作入口显隐</td></tr>'+
+'<tr><td>逆地理编码</td><td>经纬度→行政区划编码+结构化地址</td></tr></table>\n'+
+'<hr>\n'+
+'<h2>4. 核心业务流程图</h2>\n'+
+'<h3>4.1 风险点全生命周期</h3>\n'+
+'<pre class="mermaid">\n'+
+'flowchart TD\n'+
+'    A[进入风险管理与辨识] --> B{选择风险类型}\n'+
+'    B -->|固有风险| C[新增/编辑/删除固有风险点]\n'+
+'    B -->|作业风险| D[新增/编辑/删除作业风险点]\n'+
+'    C --> E[填写表单：名称/类型/环节/描述/等级/责任人/坐标]\n'+
+'    D --> F[填写表单：作业名称/环节/描述/等级/责任人/坐标]\n'+
+'    E --> G[表单校验]\n'+
+'    F --> G\n'+
+'    G -->|校验失败| H[错误字段红框提示]\n'+
+'    H --> E\n'+
+'    G -->|校验通过| I[保存并刷新列表]\n'+
+'</pre>\n'+
+'<h3>4.2 风险管控流程</h3>\n'+
+'<pre class="mermaid">\n'+
+'flowchart TD\n'+
+'    A[新增风险] --> B[风险辨识]\n'+
+'    B --> C[进行管控]\n'+
+'    C --> D[管控结束]\n'+
+'    D --> E{grade是否匹配\\n工贸在线风险等级}\n'+
+'    E -->|是: 低/一般/较大/重大风险| F[组装JSON → 传送工贸在线]\n'+
+'    E -->|否: 不在映射范围内| G[跳过传送，记录日志]\n'+
+'    F --> H{是否重新管控}\n'+
+'    H -->|是| I[重新管控]\n'+
+'    I --> C\n'+
+'    H -->|否| J[完成]\n'+
+'</pre>\n'+
+'<blockquote><strong>多次管控多次传送：</strong>每次管控结束均触发一次传送。重新管控后再次结束管控时，再次组装数据传送，取最新管控轮次起止时间。仅传送符合风险等级（低风险/一般风险/较大风险/重大风险）的数据。</blockquote>\n'+
+'<h3>4.3 设置配置流程</h3>\n'+
+'<pre class="mermaid">\n'+
+'flowchart TD\n'+
+'    A[进入风险设置] --> B{左侧菜单}\n'+
+'    B -->|显示设置| C[选择风险类型Tab]\n'+
+'    B -->|操作设置| H[管控开关单选项]\n'+
+'    C --> D{选择类型}\n'+
+'    D -->|固有风险| E[配置5个字段显隐/必填]\n'+
+'    D -->|作业风险| F[配置4个字段显隐/必填]\n'+
+'    E --> G[保存 → localStorage]\n'+
+'    F --> G\n'+
+'    H --> I[选择支持/不支持]\n'+
+'    I --> G\n'+
+'    G --> J[Toast: 保存成功]\n'+
+'    J --> K[风险管理页下次加载时读取]\n'+
+'</pre>\n'+
+'<hr>\n'+
+'<h2>5. 数据模型</h2>\n'+
+'<h3>5.1 风险点主表</h3>\n'+
+'<table><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr>'+
+'<tr><td>riskId</td><td>string</td><td>✓</td><td>主键</td></tr>'+
+'<tr><td>name</td><td>string</td><td>✓</td><td>风险点/作业名称</td></tr>'+
+'<tr><td>riskType</td><td>enum</td><td>✓</td><td>固有风险/作业风险</td></tr>'+
+'<tr><td>inherentRiskType</td><td>enum</td><td>条件</td><td>物品(2)/场所(3)/工艺(4)</td></tr>'+
+'<tr><td>riskLink</td><td>enum</td><td>条件</td><td>6项风险环节下拉</td></tr>'+
+'<tr><td>riskDescribe</td><td>string</td><td>条件</td><td>风险描述(500字)</td></tr>'+
+'<tr><td>grade</td><td>int</td><td>✓</td><td>最高风险等级1-4</td></tr>'+
+'<tr><td>dutyPerson</td><td>string</td><td>✓</td><td>负责人员</td></tr>'+
+'<tr><td>lng/lat</td><td>float</td><td>—</td><td>经纬度坐标</td></tr>'+
+'<tr><td>planAddress</td><td>string</td><td>—</td><td>逆地理编码详细地址</td></tr>'+
+'<tr><td>areaCode</td><td>string</td><td>—</td><td>行政区划编码</td></tr>'+
+'<tr><td>identificationTime</td><td>datetime</td><td>—</td><td>最新辨识时间</td></tr>'+
+'<tr><td>measure</td><td>string</td><td>—</td><td>管控措施汇总</td></tr>'+
+'<tr><td>controlStatus</td><td>enum</td><td>—</td><td>none/active/done</td></tr>'+
+'<tr><td>controlRound</td><td>int</td><td>—</td><td>当前轮次</td></tr></table>\n'+
+'<h3>5.2 关联表</h3>\n'+
+'<table><tr><th>表名</th><th>核心字段</th></tr>'+
+'<tr><td>风险辨识记录</td><td>事故类型、危害因素、可能后果、风险等级、防范措施</td></tr>'+
+'<tr><td>管控轮次</td><td>开始时间、预计结束时间、实际结束时间</td></tr>'+
+'<tr><td>作业步骤</td><td>步骤名称、事故类型、危害因素、风险等级</td></tr></table>\n'+
+'<h3>5.3 配置数据结构（localStorage）</h3>\n'+
+'<p><strong>显示设置 Key：</strong><code>risk_control_industry_settings</code></p>\n'+
+'<pre>{"工贸":{"固有风险":{"inherent_risk_type":{"show":true,"required":true},...},"作业风险":{...}}}</pre>\n'+
+'<p><strong>操作设置 Key：</strong><code>risk_control_operation_settings</code></p>\n'+
+'<pre>{"controlSupport":"yes"}</pre>\n'+
+'<hr>\n'+
+'<h2>6. 用例图</h2>\n'+
+'<p>系统管理员 → 新增/编辑/删除风险点 → 风险辨识管理 → 开始管控 → 结束管控 → 推送工贸；同时配置显示设置+操作设置。</p>\n'+
+'<hr>\n'+
+'<h2>7. 非功能性需求</h2>\n'+
+'<h3>7.1 性能</h3>\n'+
+'<table><tr><th>指标</th><th>要求</th></tr>'+
+'<tr><td>列表首屏加载</td><td>≤2s</td></tr><tr><td>抽屉打开</td><td>≤500ms</td></tr>'+
+'<tr><td>管控弹窗</td><td>≤300ms</td></tr><tr><td>推送</td><td>异步非阻塞</td></tr><tr><td>分页</td><td>10条/页</td></tr></table>\n'+
+'<h3>7.2 安全性</h3>\n'+
+'<ul><li>前端菜单权限控制入口显隐；后端CUD权限校验</li><li>仅返回本企业数据</li><li>推送携带认证凭证</li><li>XSS防护</li><li>管控时间校验</li></ul>\n'+
+'<h3>7.3 兼容性</h3>\n'+
+'<p>Chrome 90+/Edge 90+/Firefox 88+，最低1280×720，推荐1920×1080</p>\n'+
+'<h3>7.4 可维护性</h3>\n'+
+'<ul><li>配置热生效（下次加载自动同步）</li><li>新增字段需修改配置清单+抽屉+接口映射</li><li>推送日志记录</li><li>推送失败不阻塞主流程</li></ul>\n'+
+'<hr>\n'+
+'<h2>8. 页面清单</h2>\n'+
+'<table><tr><th>页面</th><th>文件</th><th>说明</th></tr>'+
+'<tr><td>风险管理与辨识</td><td><code>风险管理与辨识.html</code></td><td>核心页面：双Tab列表、抽屉、辨识子表、管控全流程</td></tr>'+
+'<tr><td>风险管控设置</td><td><code>风险设置.html</code></td><td>配置页面：字段显隐/必填+管控开关</td></tr></table>\n'+
+'<hr>\n'+
+'<h2>9. 业务规则（17条）</h2>\n'+
+'<table><tr><th>#</th><th>规则</th></tr>'+
+'<tr><td>1</td><td>取消「是否显示」→「是否必填」自动取消+置灰</td></tr>'+
+'<tr><td>2</td><td>必填仅在显示=ON时可勾选；必填=ON时需前端校验非空</td></tr>'+
+'<tr><td>3</td><td>固有风险类型仅固有风险Tab展示</td></tr>'+
+'<tr><td>4</td><td>固有风险5字段，作业风险4字段</td></tr>'+
+'<tr><td>5</td><td>风险分析对象默认不展示+不必填</td></tr>'+
+'<tr><td>6</td><td>显示/操作设置面板互斥切换</td></tr>'+
+'<tr><td>7</td><td>无恢复默认按钮</td></tr>'+
+'<tr><td>8</td><td>操作设置默认=支持；不支持→隐藏管控入口</td></tr>'+
+'<tr><td>9</td><td>风险等级4级：低风险(1)、一般风险(2)、较大风险(3)、重大风险(4)，系统原生级别，无需映射</td></tr>'+
+'<tr><td>10</td><td>固有风险类型编码：物品→2，场所→3，工艺→4；作业→1</td></tr>'+
+'<tr><td>11</td><td>多轮管控取最新轮次起止时间</td></tr>'+
+'<tr><td>12</td><td>辨识时间取max(创建时间)</td></tr>'+
+'<tr><td>13</td><td>仅结束管控时推送</td></tr>'+
+'<tr><td>14</td><td>推送失败不阻塞主流程</td></tr>'+
+'<tr><td>15</td><td>管控状态下仍可编辑/删除风险点</td></tr>'+
+'<tr><td>16</td><td>dutyUserName仅传姓名去部门后缀</td></tr>'+
+'<tr><td>17</td><td>fileUrls固定传[]</td></tr></table>\n'+
+'<hr>\n'+
+'<h2>10. 工贸接口映射总表</h2>\n'+
+'<p><strong>接口：</strong><code>POST /company/data/riskData</code> | JSON数组 | 管控结束确认后触发</p>\n'+
+'<table><tr><th>#</th><th>接口参数</th><th>系统来源</th><th>状态</th><th>说明</th></tr>'+
+'<tr><td>1</td><td>outId</td><td>riskId</td><td>✅</td><td>风险点主键</td></tr>'+
+'<tr><td>2</td><td>societyCode</td><td>企业信息配置</td><td>✅</td><td>后端注入</td></tr>'+
+'<tr><td>3</td><td>name</td><td>风险点/作业名称</td><td>✅</td><td>直接映射</td></tr>'+
+'<tr><td>4</td><td>controlTimeStart</td><td>最新管控轮startTime</td><td>➕</td><td>yyyy-MM-dd HH:mm:ss</td></tr>'+
+'<tr><td>5</td><td>controlTimeEnd</td><td>最新管控轮actualEndTime</td><td>➕</td><td>yyyy-MM-dd HH:mm:ss</td></tr>'+
+'<tr><td>6</td><td>riskType</td><td>固有风险类型→编码</td><td>⚠️</td><td>1/2/3/4数字编码</td></tr>'+
+'<tr><td>7</td><td>riskLink</td><td>风险环节</td><td>⚠️</td><td>配置控制显隐但数据始终收集</td></tr>'+
+'<tr><td>8</td><td>measure</td><td>子表防范措施汇总</td><td>🔄</td><td>汇总拼接，不去重</td></tr>'+
+'<tr><td>9</td><td>describe</td><td>风险描述</td><td>⚠️</td><td>配置控制显隐</td></tr>'+
+'<tr><td>10</td><td>areaCode</td><td>逆地理编码</td><td>⚠️</td><td>经纬度→行政区划</td></tr>'+
+'<tr><td>11</td><td>planAddress</td><td>逆地理编码</td><td>⚠️</td><td>经纬度→详细地址</td></tr>'+
+'<tr><td>12</td><td>dutyUserName</td><td>负责人员(去后缀)</td><td>✅</td><td>仅传姓名</td></tr>'+
+'<tr><td>13</td><td>grade</td><td>最高风险等级</td><td>⚠️</td><td>4级编码</td></tr>'+
+'<tr><td>14</td><td>identificationTime</td><td>max(辨识创建时间)</td><td>⚠️</td><td>自动派生</td></tr>'+
+'<tr><td>15</td><td>fileUrls</td><td>固定值</td><td>🔒</td><td>[]</td></tr></table>\n'+
+'<hr>\n'+
+'<h2>11. 附录</h2>\n'+
+'<p><strong>参考文档：</strong>工贸在线数据接口规范.pdf、风险管控功能_PRD.md、风险管理与辨识_PRD.md</p>\n'+
+'<p><strong>待确认：</strong>逆地理编码服务、areaCode数据来源</p>\n'+
+'<p style="color:#758095;font-size:12px;">版本 v1.3 · 2026-06-24</p>\n';
+
+// ── 页面 PRD 内容 ──
+var prdContent = '<h1>风险管理与辨识 · 接口映射改造 PRD</h1>\n'+
+'<h2>1. 范围</h2>\n'+
+'<p>针对 <strong>风险管理与辨识页面</strong>，包含 <strong>固有风险</strong> 和 <strong>作业风险</strong> 两个页签：</p>\n'+
+'<table><tr><th>页签</th><th>说明</th></tr>'+
+'<tr><td>固有风险</td><td>原始风险点全生命周期：新增/编辑抽屉、表格行、管控流程、风险辨识子表</td></tr>'+
+'<tr><td>作业风险</td><td>作业过程风险动态管理：新增/编辑抽屉、表格行、管控流程、作业步骤子表</td></tr></table>\n'+
+'<p>两个页签走<strong>同一套接口推送逻辑</strong>，仅 <code>riskType</code> 取值来源不同：作业风险→固定 1，固有风险→由固有风险类型决定 2/3/4。</p>\n'+
+
+// ── 2. 角色与权限 ──
+'<h2>2. 角色与权限</h2>\n'+
+'<p>该功能对<strong>有菜单权限的管理员</strong>开放全部操作，无需区分具体管理员角色。</p>\n'+
+'<table><tr><th>功能点</th><th>有菜单权限的管理员</th></tr>'+
+'<tr><td>风险管控设置</td><td>读/写</td></tr>'+
+'<tr><td>新增风险点</td><td>✓（按钮可见）</td></tr>'+
+'<tr><td>编辑风险点</td><td>✓（按钮可见）</td></tr>'+
+'<tr><td>开始管控</td><td>✓</td></tr>'+
+'<tr><td>结束管控</td><td>✓</td></tr>'+
+'<tr><td>查看管控详情</td><td>✓</td></tr>'+
+'<tr><td>重新管控</td><td>✓</td></tr>'+
+'<tr><td>查看管控状态列</td><td>✓</td></tr></table>\n'+
+'<blockquote>数据范围：仅可见本企业数据。管控状态列由租户配置开关 <code>enable_risk_control</code> 控制是否展示。</blockquote>\n'+
+
+// ── 3. 字段映射总览 ──
+'<h2>3. 接口字段全景总表</h2>\n'+
+'<p>接口路径：<code>/eito/crunii-eito-out/out/company/data/riskData</code>，共 15 个字段</p>\n'+
+'<table><tr><th>#</th><th>接口参数</th><th>含义</th><th>必填</th><th>来源</th><th>映射状态</th><th>传值格式/映射逻辑</th></tr>'+
+'<tr><td>1</td><td><code>societyCode</code></td><td>企业信用代码</td><td>是</td><td>企业信息配置</td><td>✅ 已有</td><td>后端自动获取，页面无需关注</td></tr>'+
+'<tr><td>2</td><td><code>name</code></td><td>风险项名称</td><td>是</td><td>抽屉名称字段</td><td>✅ 已有</td><td>固有→风险点名称，作业→作业名称</td></tr>'+
+'<tr><td>3</td><td><code>controlTimeStart</code></td><td>管控开始时间</td><td>是</td><td>开始管控弹窗</td><td>➕ 新增</td><td>格式 <code>yyyy-MM-dd HH:mm:ss</code></td></tr>'+
+'<tr><td>4</td><td><code>controlTimeEnd</code></td><td>管控结束时间</td><td>是</td><td>结束管控弹窗</td><td>➕ 新增</td><td>实际结束时间，格式同上</td></tr>'+
+'<tr><td>5</td><td><code>riskType</code></td><td>风险类型</td><td>是</td><td>抽屉类型+子类型</td><td>⚠️ 需改造</td><td>数字编码：作业=1，物品=2，场所=3，工艺=4</td></tr>'+
+'<tr><td>6</td><td><code>riskLink</code></td><td>风险环节</td><td>是</td><td>抽屉风险环节</td><td>➕ 新增</td><td>配置控制显隐，推送始终必填</td></tr>'+
+'<tr><td>7</td><td><code>measure</code></td><td>管控措施</td><td>是</td><td>子表自动汇总</td><td>🔄 自动派生</td><td>事故类型防范措施汇总，不去重</td></tr>'+
+'<tr><td>8</td><td><code>describe</code></td><td>描述</td><td>是</td><td>抽屉风险描述</td><td>➕ 新增</td><td>配置控制显隐，推送始终必填</td></tr>'+
+'<tr><td>9</td><td><code>areaCode</code></td><td>区域编码</td><td>是</td><td>坐标逆地理编码</td><td>⚠️ 待对接</td><td>由经纬度坐标逆地理编码获取</td></tr>'+
+'<tr><td>10</td><td><code>planAddress</code></td><td>详细地址</td><td>是</td><td>坐标逆地理编码</td><td>⚠️ 待对接</td><td>由经纬度坐标逆地理编码获取</td></tr>'+
+'<tr><td>11</td><td><code>dutyUserName</code></td><td>责任人</td><td>是</td><td>人员选择器</td><td>✅ 已有</td><td>提取纯姓名，去除部门后缀</td></tr>'+
+'<tr><td>12</td><td><code>grade</code></td><td>风险等级</td><td>是</td><td>最高风险等级</td><td>⚠️ 需改造</td><td>数字编码：1=低风险/2=一般风险/3=较大风险/4=重大风险</td></tr>'+
+'<tr><td>13</td><td><code>identificationTime</code></td><td>辨识时间</td><td>是</td><td>最新辨识创建时间</td><td>⚠️ 需改造</td><td>取最新风险辨识记录创建时间</td></tr>'+
+'<tr><td>14</td><td><code>fileUrls</code></td><td>附件URL数组</td><td>否</td><td>固定空</td><td>🔒 固定为空</td><td>当前版本固定传 <code>[]</code></td></tr>'+
+'<tr><td>15</td><td><code>outId</code></td><td>主键</td><td>是</td><td>行 data-risk-id</td><td>✅ 已有</td><td>直接映射</td></tr></table>\n'+
+
+// ── 4. 字典映射 ──
+'<h2>4. 字典映射</h2>\n'+
+'<h3>4.1 riskType（风险类型）— 数字编码映射</h3>\n'+
+'<table><tr><th>数字编码</th><th>中文名称</th><th>来源</th></tr>'+
+'<tr><td>1</td><td>作业</td><td>页签为"作业风险"时固定传此值</td></tr>'+
+'<tr><td>2</td><td>物品</td><td>固有风险 → 固有风险类型选择"物品"</td></tr>'+
+'<tr><td>3</td><td>场所</td><td>固有风险 → 固有风险类型选择"场所"</td></tr>'+
+'<tr><td>4</td><td>工艺</td><td>固有风险 → 固有风险类型选择"工艺"</td></tr></table>\n'+
+'<p><strong>固有风险类型</strong>是本次新增字段（抽屉中下拉三选一），仅在风险点类型=固有风险时显示。</p>\n'+
+'<h3>4.2 grade（风险等级）— 数字编码映射</h3>\n'+
+'<table><tr><th>系统等级</th><th>编码</th><th>说明</th></tr>'+
+'<tr><td>低风险</td><td>1</td><td>系统原生4级，与工贸在线完全一致</td></tr>'+
+'<tr><td>一般风险</td><td>2</td><td>系统原生4级，与工贸在线完全一致</td></tr>'+
+'<tr><td>较大风险</td><td>3</td><td>系统原生4级，与工贸在线完全一致</td></tr>'+
+'<tr><td>重大风险</td><td>4</td><td>系统原生4级，与工贸在线完全一致</td></tr></table>\n'+
+'<blockquote>系统风险等级就是4级（低/一般/较大/重大），与工贸在线字典完全一致，推送时直接传数字编码，无需映射改造。</blockquote>\n'+
+
+// ── 5. 抽屉字段详解 ──
+'<h2>5. 抽屉字段完整说明</h2>\n'+
+'<p>新增/编辑抽屉共享同一组件，从上至下字段排序如下：</p>\n'+
+'<table><tr><th>#</th><th>字段名</th><th>控件</th><th>必填</th><th>改造类型</th><th>接口参数</th><th>验证/映射说明</th></tr>'+
+'<tr><td>1</td><td>风险点名称 / 作业名称</td><td>input(text)</td><td>是</td><td>已有</td><td><code>name</code></td><td>上限255字，直接映射</td></tr>'+
+'<tr><td>2</td><td>风险点类型</td><td>select(固有/作业)</td><td>是</td><td>已改造</td><td><code>riskType</code></td><td><strong>新增/编辑时均禁用不可修改</strong>；由页签决定取值</td></tr>'+
+'<tr><td>3</td><td>固有风险类型</td><td>select(物品/场所/工艺)</td><td>条件</td><td>🆕 新增</td><td><code>riskType</code></td><td>仅固有风险显示；影响推送编码2/3/4；配置控制显隐</td></tr>'+
+'<tr><td>4</td><td>负责人员</td><td>btn(人员选择)</td><td>是</td><td>已有</td><td><code>dutyUserName</code></td><td>选择人员后自动提取纯姓名，去除部门后缀</td></tr>'+
+'<tr><td>5</td><td>风险点地点</td><td>input(readonly)+地图图标</td><td>条件</td><td>🔄 改造</td><td><code>areaCode</code>+<code>planAddress</code></td><td>点击地图选取经纬度→逆地理编码派生区域编码+详细地址；配置控制显隐</td></tr>'+
+'<tr><td>6</td><td>风险环节</td><td>select(6项)</td><td>条件</td><td>🆕 新增</td><td><code>riskLink</code></td><td>粉尘涉爆/涉氨制冷/冶金煤气/有限空间作业/燃爆毒危化品使用/高温熔融；配置控制显隐</td></tr>'+
+'<tr><td>7</td><td>风险描述</td><td>textarea(500字)</td><td>条件</td><td>🆕 新增</td><td><code>describe</code></td><td>配置控制显隐；推送始终必填</td></tr>'+
+'<tr><td>8</td><td>风险分析对象</td><td>select</td><td>否</td><td>已有</td><td>—</td><td>仅本地使用，非接口直接字段</td></tr></table>\n'+
+'<p><strong>自动派生字段（不出现在抽屉中）</strong>：<code>measure</code>（子表汇总）、<code>areaCode</code>/<code>planAddress</code>（逆地理编码）、<code>fileUrls</code>（固定[]）。</p>\n'+
+'<h3>5.1 新增 vs 编辑差异</h3>\n'+
+'<table><tr><th>模式</th><th>风险点类型</th><th>表单预填充</th><th>提交行为</th><th>是否触发推送</th></tr>'+
+'<tr><td>新增</td><td>禁用（不可修改）</td><td>全部为空</td><td>INSERT 新记录</td><td>否</td></tr>'+
+'<tr><td>编辑</td><td>禁用（不可修改）</td><td>预填充当前行全部数据</td><td>UPDATE 主表字段</td><td>否</td></tr></table>\n'+
+'<blockquote>编辑模式下除风险点类型外，其余字段均可修改；确认后更新主表对应字段。</blockquote>\n'+
+
+// ── 6. 配置控制字段 ──
+'<h2>6. 配置控制字段</h2>\n'+
+'<p>以下 <strong>4 个字段</strong> 由「风险管控设置」配置页控制显隐和必填：</p>\n'+
+'<ol><li><strong>固有风险类型</strong> — 决定 riskType 编码 2/3/4</li>'+
+'<li><strong>风险点地点</strong> — 地图坐标选取，派生 areaCode + planAddress</li>'+
+'<li><strong>风险环节</strong> — 6 项下拉，映射 riskLink</li>'+
+'<li><strong>风险描述</strong> — 多行文本，映射 describe</li></ol>\n'+
+'<blockquote>在工贸接口推送时，这 4 个字段<strong>视同全部显示且全部必填</strong>：无论配置页如何设置，保存时均应收集这些字段的值；推送时若值为空，后端返回错误。</blockquote>\n'+
+
+// ── 7. 自动派生字段 ──
+'<h2>7. 自动派生字段</h2>\n'+
+'<h3>7.1 measure（管控措施）</h3>\n'+
+'<p>来源：风险点下所有风险辨识/作业步骤记录中<strong>事故类型对应的防范措施</strong>汇总，不去重，用"；"拼接。子表中"防范措施"字段<strong>已有数据</strong>，汇总逻辑直接对接现有子表结构。</p>\n'+
+'<p>触发时机：每次子表保存（新增/编辑/删除辨识记录或作业步骤）后重新计算。</p>\n'+
+'<pre>示例：\\n事故类型"物体打击"→防范措施"正确佩戴安全帽；设置安全警示标识"\\n事故类型"机械伤害"→防范措施"安装防护罩；严禁戴手套操作"\\n→ measure = "正确佩戴安全帽；设置安全警示标识；安装防护罩；严禁戴手套操作"</pre>\n'+
+'<h3>7.2 areaCode + planAddress（区域编码 + 详细地址）</h3>\n'+
+'<p>来源：用户在地图上选取经纬度坐标后，调用<strong>逆地理编码</strong>服务，从返回的结构化地址中分别提取区域编码和详细地址。</p>\n'+
+'<p>⚠️ 逆地理编码接口<strong>待确认</strong>：需排查是否已有现成服务；若无，需对接外部地图 API（腾讯地图/高德地图）。</p>\n'+
+'<h3>7.3 identificationTime（辨识时间）</h3>\n'+
+'<p>取该风险点下所有风险辨识记录中<strong>最新的创建时间</strong>。子表保存后同步更新。</p>\n'+
+'<h3>7.4 controlTimeStart / controlTimeEnd</h3>\n'+
+'<p>同一风险点存在多个管控周期时，取<strong>最新管控周期</strong>的起止时间。开始管控/结束管控操作时更新。</p>\n'+
+'<h3>7.5 fileUrls</h3>\n'+
+'<p>当前版本<strong>固定为空数组</strong> <code>[]</code>，页面不提供上传入口，后续版本扩展。</p>\n'+
+
+// ── 8. 管控流程 ──
+'<h2>8. 管控流程</h2>\n'+
+'<h3>8.1 状态流转</h3>\n'+
+'<table><tr><th>状态</th><th>标签</th><th>条件</th><th>操作列展示</th></tr>'+
+'<tr><td>未管控</td><td>灰底灰字</td><td>control_start_time IS NULL</td><td>【开始管控】</td></tr>'+
+'<tr><td>管控中</td><td>蓝底蓝字</td><td>start_time有值 AND actual_end_time IS NULL</td><td>【结束管控】</td></tr>'+
+'<tr><td>管控结束</td><td>绿底绿字</td><td>actual_end_time IS NOT NULL</td><td>【管控详情】</td></tr></table>\n'+
+'<h3>8.2 开始管控</h3>\n'+
+'<p>点击【开始管控】→ 弹窗填写实际管控开始时间（必填，≤当前时间）、预计管控结束时间（非必填，若填则&gt;开始时间）→ 确认后更新主表，状态变为"管控中"，轮次+1。</p>\n'+
+'<h3>8.3 结束管控</h3>\n'+
+'<p>点击【结束管控】→ 弹窗回显开始时间/预计结束时间（只读），填写实际管控结束时间（必填，≥开始时间且≤当前时间）→ 确认后归档到履历表，状态变为"管控结束"，<strong>触发外部推送（END事件）</strong>。</p>\n'+
+'<h3>8.4 重新管控</h3>\n'+
+'<p>管控详情弹窗 → 点击【重新管控】→ 二次确认 → 打开重新管控弹窗 → 填写新一轮开始/预计结束时间 → 确认后归档上一轮、开启新一轮（round+1，状态恢复"管控中"）。</p>\n'+
+
+// ── 9. 推送时机 ──
+'<h2>9. 推送时机</h2>\n'+
+'<table><tr><th>触发动作</th><th>是否推送</th><th>说明</th></tr>'+
+'<tr><td>新增风险点</td><td>❌ 否</td><td>管控时间尚未填写</td></tr>'+
+'<tr><td>编辑风险点</td><td>❌ 否</td><td>仅本地变更，不触发外部同步</td></tr>'+
+'<tr><td>结束管控（确认后）</td><td>✅ 是</td><td>END事件，推送完整15字段数据</td></tr></table>\n'+
+'<blockquote>推送仅发生在<strong>结束管控</strong>确认后，包含 risk_id / round / start_time / expected_end_time / actual_end_time 等全部接口字段。</blockquote>\n'+
+
+// ── 10. 接口入参示例 ──
+'<h2>10. 接口入参示例</h2>\n'+
+'<pre>[\n'+
+'  {\n'+
+'    "outId": "risk-001",\n'+
+'    "societyCode": "91500103MA6001XX0X",\n'+
+'    "name": "测试123",\n'+
+'    "controlTimeStart": "2026-06-10 08:00:00",\n'+
+'    "controlTimeEnd": "2026-06-20 10:00:00",\n'+
+'    "riskType": "2",\n'+
+'    "riskLink": "粉尘涉爆",\n'+
+'    "measure": "正确佩戴安全帽；设置安全警示标识；安装防护罩；严禁戴手套操作；系挂安全带；设置防护栏杆",\n'+
+'    "describe": "粉尘浓度超标可能导致爆炸",\n'+
+'    "areaCode": "500101001",\n'+
+'    "planAddress": "新南路66号",\n'+
+'    "dutyUserName": "覃颖",\n'+
+'    "grade": "4",\n'+
+'    "identificationTime": "2026-06-15 11:20:00",\n'+
+'    "fileUrls": []\n'+
+'  }\n'+
+']</pre>\n'+
+
+// ── 11. 待确认事项 ──
+'<h2>11. 待确认事项</h2>\n'+
+'<ol>'+
+'<li><strong>逆地理编码服务</strong>：需排查是否已有现成接口，若无需自建或对接外部地图 API（腾讯地图/高德地图）。一次调用即可同时返回 areaCode 和 planAddress。</li>'+
+'<li><strong>配置页交互</strong>：风险管控设置页面中4个字段的开关需与抽屉显隐/必填逻辑联动。</li>'+
+'</ol>\n';
+
+// ==================== PRD 抽屉（含页签切换） ====================
+var prdDrawerOverlay = document.getElementById('prdDrawerOverlay');
+var prdDrawer = document.getElementById('prdDrawer');
+var prdDrawerBtn = document.getElementById('prdDrawerBtn');
+var prdDrawerClose = document.getElementById('prdDrawerClose');
+var prdPanelPageContent = document.getElementById('prdPanelPageContent');
+var prdPanelOverallContent = document.getElementById('prdPanelOverallContent');
+var prdPanelPage = document.getElementById('prdDrawerPanelPage');
+var prdPanelOverall = document.getElementById('prdDrawerPanelOverall');
+var prdTabs = document.getElementById('prdDrawerTabs');
+
+var prdContentsLoaded = { page: false, overall: false };
+
+function openPrdDrawer() {
+  // 首次打开时加载当前活跃页签内容
+  var activeTab = prdTabs.querySelector('.prd-drawer-tab.active');
+  if (activeTab) {
+    loadPrdPanelContent(activeTab.dataset.tab);
+  }
+  prdDrawerOverlay.classList.add('is-open');
+  prdDrawer.classList.add('is-open');
+}
+
+function closePrdDrawer() {
+  prdDrawerOverlay.classList.remove('is-open');
+  prdDrawer.classList.remove('is-open');
+}
+
+function loadPrdPanelContent(tabName) {
+  if (prdContentsLoaded[tabName]) return;
+  prdContentsLoaded[tabName] = true;
+
+  if (tabName === 'page') {
+    prdPanelPageContent.innerHTML = prdContent;
+  } else if (tabName === 'overall') {
+    prdPanelOverallContent.innerHTML = overallPrdContent;
+  }
+  // 渲染 Mermaid 流程图
+  if (typeof mermaid !== 'undefined') {
+    var panel = tabName === 'page' ? prdPanelPageContent : prdPanelOverallContent;
+    mermaid.run({ nodes: panel.querySelectorAll('pre.mermaid') });
+  }
+}
+
+function switchPrdTab(tabName) {
+  // 更新页签激活状态
+  prdTabs.querySelectorAll('.prd-drawer-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tab === tabName);
+  });
+  // 切换面板可见
+  prdPanelPage.classList.toggle('active', tabName === 'page');
+  prdPanelOverall.classList.toggle('active', tabName === 'overall');
+  // 懒加载内容
+  loadPrdPanelContent(tabName);
+}
+
+prdDrawerBtn.addEventListener('click', openPrdDrawer);
+prdDrawerClose.addEventListener('click', closePrdDrawer);
+prdDrawerOverlay.addEventListener('click', function(e) {
+  if (e.target === prdDrawerOverlay) closePrdDrawer();
+});
+
+prdTabs.addEventListener('click', function(e) {
+  var tab = e.target.closest('.prd-drawer-tab');
+  if (!tab) return;
+  switchPrdTab(tab.dataset.tab);
+});
+
+// ESC 关闭
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && prdDrawer.classList.contains('is-open')) {
+    closePrdDrawer();
+  }
+});
+
+// ==================== 全局标注开关 ====================
+var badgeToggleBtn = document.getElementById('badgeToggleBtn');
+var eyeOff = document.getElementById('badgeToggleEyeOff');
+var eyeOn = document.getElementById('badgeToggleEyeOn');
+
+badgeToggleBtn.addEventListener('click', function() {
+  badgesVisible = !badgesVisible;
+  if (badgesVisible) {
+    document.body.classList.remove('prd-badge-hidden');
+    eyeOff.style.display = '';
+    eyeOn.style.display = 'none';
+    badgeToggleBtn.title = '隐藏标注角标';
+  } else {
+    document.body.classList.add('prd-badge-hidden');
+    eyeOff.style.display = 'none';
+    eyeOn.style.display = '';
+    badgeToggleBtn.title = '显示标注角标';
+  }
+  hideTooltip();
+});
+
+// ==================== 初始化 ====================
+document.addEventListener('DOMContentLoaded', function() {
+  injectBadges();
+});
+
+// 如果 DOM 已 ready 则立即执行
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  injectBadges();
+}
+
+})();
+</script>
+
+</body>
+</html>

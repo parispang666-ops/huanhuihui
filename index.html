@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工贸安全 · 页面导航</title>
+  <style>
+    /* ==================== 2.0 Design Tokens ==================== */
+    :root {
+      --color-brand: #1570EF;
+      --color-brand-hover: #2E90FA;
+      --color-brand-active: #175CD3;
+      --color-danger: #F64C41;
+      --color-text-primary: #444F66;
+      --color-text-secondary: #758095;
+      --color-text-placeholder: #9EA4AE;
+      --color-text-disabled: #B3B9C4;
+      --color-bg-page: #F7F8FA;
+      --color-bg-surface: #FFFFFF;
+      --color-bg-muted: #F7F8F9;
+      --color-brand-light: #EFF8FF;
+      --color-border: #DEDFE3;
+      --color-divider: #E6E7EB;
+      --radius-component: 4px;
+      --font-family-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      --shadow-topbar: 0 1px 4px rgba(31, 42, 55, .10);
+      --shadow-brand: 0 1px 5px rgba(21,112,239,.05), 0 4px 2.5px rgba(21,112,239,.08), 0 2px 2px rgba(21,112,239,.25);
+      --focus-ring: 0 0 0 2px #D9E1FF;
+      --transition: 150ms ease;
+      --sidebar-width: 240px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-family-ui);
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--color-text-primary);
+      background: var(--color-bg-page);
+      overflow: hidden;
+    }
+
+    button, input, textarea {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    /* ===== LAYOUT ===== */
+    .app-container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* ==================== SIDEBAR 2.0 ==================== */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--color-bg-surface);
+      box-shadow: 0 6px 30px 5px rgba(67, 82, 111, 0.05);
+      flex-shrink: 0;
+      user-select: none;
+      z-index: 20;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-component);
+      background: var(--color-brand);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+
+    .sidebar-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sidebar-title-brand {
+      color: var(--color-brand);
+    }
+
+    .sidebar-subtitle {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    /* ---- NAV LIST ---- */
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px 8px 16px;
+      overflow-y: auto;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      border-radius: 50px;
+      background: var(--color-divider);
+    }
+
+    /* ---- NAV GROUP HEADER ---- */
+    .nav-group-header {
+      width: 224px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-component);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: background-color var(--transition), color var(--transition);
+    }
+
+    .nav-group-header:hover {
+      background: var(--color-bg-muted);
+      color: var(--color-text-primary);
+    }
+
+    .nav-group-header .arrow {
+      width: 16px;
+      height: 16px;
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+
+    .nav-group-header .arrow svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+
+    .nav-group-header .arrow.open {
+      transform: rotate(90deg);
+    }
+
+    .nav-group-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .nav-group-header .badge {
+      background: var(--color-bg-muted);
+      color: var(--color-text-secondary);
+      font-size: 11px;
+      line-height: 18px;
+      padding: 0 6px;
+      border-radius: 10px;
+      font-weight: 400;
+    }
+
+    /* ---- NAV CHILDREN ---- */
+    .nav-children {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-children.expanded {
+      display: flex;
+    }
+
+    /* ---- NAV ITEM ---- */
+    .nav-item {
+      width: 224px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-component);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      gap: 10px;
+      text-align: left;
+      white-space: nowrap;
+      transition: background-color var(--transition), color var(--transition);
+    }
+
+    .nav-item:hover {
+      background: var(--color-bg-muted);
+      color: var(--color-text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--color-brand);
+      color: #fff;
+      box-shadow: var(--shadow-brand);
+    }
+
+    .nav-item .nav-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--color-text-placeholder);
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+
+    .nav-item.active .nav-dot {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+    }
+
+    .nav-item.level-1 {
+      padding-left: 16px;
+    }
+
+    .nav-item.level-2 {
+      padding-left: 48px;
+    }
+
+    .nav-item.level-3 {
+      padding-left: 60px;
+    }
+
+    /* ---- SUBGROUP HEADER ---- */
+    .nav-subgroup-header {
+      width: 224px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px 9px 32px;
+      border-radius: var(--radius-component);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      text-align: left;
+      transition: background-color var(--transition), color var(--transition);
+      font-weight: 500;
+    }
+
+    .nav-subgroup-header:hover {
+      background: var(--color-bg-muted);
+      color: var(--color-text-primary);
+    }
+
+    .nav-subgroup-header .arrow {
+      width: 14px;
+      height: 14px;
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+
+    .nav-subgroup-header .arrow svg {
+      width: 10px;
+      height: 10px;
+      fill: currentColor;
+    }
+
+    .nav-subgroup-header .arrow.open {
+      transform: rotate(90deg);
+    }
+
+    .nav-subgroup-header .label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* divider */
+    .nav-divider {
+      width: 208px;
+      height: 1px;
+      background: var(--color-divider);
+      margin: 8px 12px;
+      flex-shrink: 0;
+    }
+
+    /* sidebar footer */
+    .sidebar-footer {
+      width: 240px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 9px 16px 9px 24px;
+      border-top: 1px solid var(--color-divider);
+      background: var(--color-bg-surface);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ---- RESIZER ---- */
+    .sidebar-resizer {
+      width: 4px;
+      cursor: col-resize;
+      background: transparent;
+      flex-shrink: 0;
+      transition: background var(--transition);
+      position: relative;
+      z-index: 21;
+    }
+
+    .sidebar-resizer:hover,
+    .sidebar-resizer:active {
+      background: var(--color-brand);
+    }
+
+    /* ==================== MAIN CONTENT ==================== */
+    .main-content {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--color-bg-page);
+      overflow: hidden;
+    }
+
+    .content-toolbar {
+      height: 48px;
+      min-height: 48px;
+      background: var(--color-bg-surface);
+      border-bottom: 1px solid var(--color-divider);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 8px;
+    }
+
+    .content-toolbar .breadcrumb {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .content-toolbar .breadcrumb .sep {
+      color: var(--color-text-placeholder);
+    }
+
+    .content-toolbar .breadcrumb .current {
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+
+    .content-frame-wrapper {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .content-frame-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: var(--color-bg-surface);
+    }
+
+    .content-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--color-text-placeholder);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .content-placeholder svg {
+      width: 64px;
+      height: 64px;
+      opacity: 0.15;
+    }
+
+    .content-placeholder.hidden {
+      display: none;
+    }
+
+    /* ==================== PRD 说明按钮 ==================== */
+    .toolbar-info-btn {
+      height: 32px;
+      padding: 0 16px;
+      border-radius: 4px;
+      border: 1px solid #1890ff;
+      background: #EFF8FF;
+      color: #1890ff;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 150ms;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .toolbar-info-btn:hover { background: #D6EEFF; }
+    .toolbar-info-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* ==================== PRD 抽屉 ==================== */
+    .prd-drawer-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.45); z-index: 9980; display: none;
+    }
+    .prd-drawer-overlay.show { display: block; }
+
+    .prd-drawer {
+      position: fixed; top: 0; right: -650px; width: 650px; height: 100vh;
+      background: #FFFFFF; z-index: 9981; box-shadow: -4px 0 20px rgba(0,0,0,0.12);
+      transition: right 300ms ease; display: flex; flex-direction: column;
+    }
+    .prd-drawer.open { right: 0; }
+
+    .prd-drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px; border-bottom: 1px solid #E6E7EB; flex-shrink: 0;
+    }
+    .prd-drawer-title { font-size: 16px; font-weight: 600; color: #444F66; }
+
+    .prd-drawer-close {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer; border-radius: 4px;
+      font-size: 20px; color: #758095; transition: all 150ms;
+    }
+    .prd-drawer-close:hover { background: #F0F0F0; color: #333; }
+
+    .prd-drawer-body {
+      flex: 1; overflow-y: auto; padding: 24px; font-size: 14px; line-height: 1.6; color: #444F66;
+    }
+    .prd-drawer-body::-webkit-scrollbar { width: 4px; }
+    .prd-drawer-body::-webkit-scrollbar-thumb { background: #DEDFE3; border-radius: 50px; }
+
+    .prd-drawer-body h1 { font-size: 22px; margin: 0 0 16px; }
+    .prd-drawer-body h2 { font-size: 18px; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #E6E7EB; }
+    .prd-drawer-body h3 { font-size: 15px; margin: 18px 0 8px; }
+    .prd-drawer-body p { margin: 0 0 10px; }
+    .prd-drawer-body ul, .prd-drawer-body ol { margin: 6px 0 10px; padding-left: 20px; }
+    .prd-drawer-body li { margin-bottom: 4px; }
+    .prd-drawer-body table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+    .prd-drawer-body table th, .prd-drawer-body table td { border: 1px solid #DEDFE3; padding: 6px 10px; text-align: left; }
+    .prd-drawer-body table th { background: #F7F8F9; font-weight: 500; }
+    .prd-drawer-body code { background: #F7F8FA; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
+    .prd-drawer-body pre { background: #F7F8FA; padding: 12px 16px; border-radius: 4px; overflow-x: auto; font-size: 12px; line-height: 1.5; }
+    .prd-drawer-body blockquote { border-left: 3px solid #D0D5DD; padding: 6px 12px; margin: 10px 0; background: #F7F8FA; color: #758095; }
+    .prd-drawer-body hr { border: none; border-top: 1px solid #E6E7EB; margin: 20px 0; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: false, theme: 'base', securityLevel: 'loose' });</script>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div>
+        <div class="sidebar-title">环慧慧<span class="sidebar-title-brand">EHS+</span></div>
+        <div class="sidebar-subtitle">Enterprise Edition</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <!-- ===== 一、电脑端 ===== -->
+      <div class="nav-group-header" onclick="toggleGroup('pc')">
+        <span class="arrow open" id="arrow-pc">
+          <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+        <span class="nav-group-label">一、电脑端</span>
+        <span class="badge">3页</span>
+      </div>
+
+      <div class="nav-children expanded" id="children-pc">
+
+        <!-- 企业信息配置 -->
+        <div class="nav-item level-2" data-page="企业信息配置" data-file="企业信息配置_20250616.html" onclick="switchPage(this)">
+          <span class="nav-dot"></span>企业信息配置
+        </div>
+
+        <!-- 风险管理与辨识 -->
+        <div class="nav-item level-2" data-page="风险管理与辨识" data-file="风险管理与辨识.html" onclick="switchPage(this)">
+          <span class="nav-dot"></span>风险管理与辨识
+        </div>
+
+        <!-- 风险设置 -->
+        <div class="nav-item level-2" data-page="风险设置" data-file="风险设置.html" onclick="switchPage(this)">
+          <span class="nav-dot"></span>风险设置
+        </div>
+
+      </div>
+
+      <div class="nav-divider"></div>
+
+      <!-- ===== 二、小程序 ===== -->
+      <div class="nav-group-header" onclick="toggleGroup('miniapp')">
+        <span class="arrow open" id="arrow-miniapp">
+          <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </span>
+        <span class="nav-group-label">二、小程序</span>
+        <span class="badge">0页</span>
+      </div>
+
+      <div class="nav-children expanded" id="children-miniapp">
+      </div>
+
+    </nav>
+
+    <div class="sidebar-footer">环慧慧EHS+ © 2026</div>
+  </aside>
+
+  <!-- resizer -->
+  <div class="sidebar-resizer" id="resizer"></div>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main-content">
+    <div class="content-toolbar">
+      <div class="breadcrumb">
+        环慧慧EHS+ <span class="sep">›</span>
+        <span id="breadcrumb-platform" class="current">电脑端</span>
+        <span class="sep">›</span>
+        <span id="breadcrumb-page" class="current">风险管理与辨识</span>
+      </div>
+      <button class="toolbar-info-btn" id="infoBtn" title="查看接口对接说明">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        说明
+      </button>
+    </div>
+
+    <div class="content-frame-wrapper">
+      <div class="content-placeholder" id="placeholder">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        </svg>
+        <span>请从左侧菜单选择页面查看</span>
+      </div>
+      <iframe id="content-frame" src="风险管理与辨识.html" onload="onFrameLoad()"
+              style="display:block;"></iframe>
+    </div>
+  </main>
+
+  <!-- ==================== PRD 说明抽屉 ==================== -->
+  <div class="prd-drawer-overlay" id="prdDrawerOverlay"></div>
+  <div class="prd-drawer" id="prdDrawer">
+    <div class="prd-drawer-header">
+      <span class="prd-drawer-title">工贸在线接口对接 · 整体功能说明</span>
+      <button class="prd-drawer-close" id="prdDrawerClose" title="关闭">×</button>
+    </div>
+    <div class="prd-drawer-body" id="prdDrawerBody"></div>
+  </div>
+
+</div>
+
+<script>
+  // ===== STATE =====
+  const state = {
+    groups: { pc: true, miniapp: true },
+    subgroups: { 'pc-risk': true }
+  };
+
+  // ===== TOGGLE GROUP =====
+  function toggleGroup(groupId) {
+    state.groups[groupId] = !state.groups[groupId];
+    const children = document.getElementById('children-' + groupId);
+    const arrow = document.getElementById('arrow-' + groupId);
+
+    if (state.groups[groupId]) {
+      children.classList.add('expanded');
+      arrow.classList.add('open');
+    } else {
+      children.classList.remove('expanded');
+      arrow.classList.remove('open');
+    }
+  }
+
+  // ===== TOGGLE SUBGROUP =====
+  function toggleSubGroup(subGroupId) {
+    state.subgroups[subGroupId] = !state.subgroups[subGroupId];
+    const children = document.getElementById('children-' + subGroupId);
+    const arrow = document.getElementById('arrow-' + subGroupId);
+
+    if (state.subgroups[subGroupId]) {
+      children.classList.add('expanded');
+      arrow.classList.add('open');
+    } else {
+      children.classList.remove('expanded');
+      arrow.classList.remove('open');
+    }
+  }
+
+  // ===== SWITCH PAGE =====
+  function switchPage(el) {
+    document.querySelectorAll('.nav-item.active').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+
+    const pageName = el.getAttribute('data-page');
+    const fileName = el.getAttribute('data-file');
+
+    document.getElementById('placeholder').classList.add('hidden');
+    const frame = document.getElementById('content-frame');
+    frame.style.display = 'block';
+    frame.src = fileName;
+
+    const platformEl = document.getElementById('breadcrumb-platform');
+    const pageEl = document.getElementById('breadcrumb-page');
+
+    if (fileName.includes('小程序')) {
+      platformEl.textContent = '小程序';
+    } else {
+      platformEl.textContent = '电脑端';
+    }
+    pageEl.textContent = pageName;
+
+    localStorage.setItem('gzgm-active-page', fileName);
+    localStorage.setItem('gzgm-active-page-name', pageName);
+    localStorage.setItem('gzgm-active-platform', platformEl.textContent);
+  }
+
+  function onFrameLoad() {}
+
+  // ===== RESIZER =====
+  (function() {
+    const resizer = document.getElementById('resizer');
+    const sidebar = document.querySelector('.sidebar');
+    let startX, startWidth;
+
+    resizer.addEventListener('mousedown', function(e) {
+      startX = e.clientX;
+      startWidth = sidebar.offsetWidth;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    });
+
+    function onMouseMove(e) {
+      const dx = e.clientX - startX;
+      const newWidth = startWidth + dx;
+      if (newWidth >= 200 && newWidth <= 400) {
+        sidebar.style.width = newWidth + 'px';
+        sidebar.style.minWidth = newWidth + 'px';
+        document.documentElement.style.setProperty('--sidebar-width', newWidth + 'px');
+      }
+    }
+
+    function onMouseUp() {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+  })();
+
+  // ===== INIT =====
+  (function init() {
+    const savedFile = localStorage.getItem('gzgm-active-page');
+    const savedName = localStorage.getItem('gzgm-active-page-name');
+    const savedPlatform = localStorage.getItem('gzgm-active-platform');
+
+    if (savedFile && savedName) {
+      const target = document.querySelector(`.nav-item[data-file="${savedFile}"]`);
+      if (target) {
+        document.querySelectorAll('.nav-item.active').forEach(item => item.classList.remove('active'));
+        target.classList.add('active');
+        document.getElementById('placeholder').classList.add('hidden');
+        const frame = document.getElementById('content-frame');
+        frame.style.display = 'block';
+        frame.src = savedFile;
+        document.getElementById('breadcrumb-page').textContent = savedName;
+        if (savedPlatform) document.getElementById('breadcrumb-platform').textContent = savedPlatform;
+      }
+    }
+  })();
+
+  // ==================== PRD 说明抽屉 ====================
+  const prdOverlay = document.getElementById('prdDrawerOverlay');
+  const prdDrawer = document.getElementById('prdDrawer');
+  const prdBody = document.getElementById('prdDrawerBody');
+  let prdLoaded = false;
+
+  function openPrdDrawer() {
+    prdOverlay.classList.add('show');
+    prdDrawer.classList.add('open');
+    if (!prdLoaded) {
+      prdBody.innerHTML = parseMarkdown(prdMdContent);
+      if (typeof mermaid !== 'undefined') {
+        mermaid.run({ nodes: prdBody.querySelectorAll('pre.mermaid') });
+      }
+      prdLoaded = true;
+    }
+  }
+
+  function closePrdDrawer() {
+    prdOverlay.classList.remove('show');
+    prdDrawer.classList.remove('open');
+  }
+
+  document.getElementById('infoBtn').addEventListener('click', openPrdDrawer);
+  document.getElementById('prdDrawerClose').addEventListener('click', closePrdDrawer);
+  prdOverlay.addEventListener('click', closePrdDrawer);
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && prdDrawer.classList.contains('open')) {
+      closePrdDrawer();
+    }
+  });
+
+  // Markdown解析器
+  function parseMarkdown(md) {
+    var html = md;
+    // mermaid
+    html = html.replace(/\x60\x60\x60mermaid\n([\s\S]*?)\x60\x60\x60/g, '<pre class="mermaid">$1</pre>');
+    html = html.replace(/\x60\x60\x60(\w*)\n([\s\S]*?)\x60\x60\x60/g, '<pre><code>$2</code></pre>');
+    // 行内代码
+    html = html.replace(/\x60([^\x60]+)\x60/g, '<code>$1</code>');
+    // 标题
+    html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    // 引用
+    html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+    // 分割线
+    html = html.replace(/^---$/gm, '<hr>');
+    // 粗体
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // 斜体
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    // 无序列表
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+    // 表格
+    html = html.replace(/\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)*)/g, function(match, header, rows) {
+      var hcells = header.split('|').filter(function(c) { return c.trim(); }).map(function(c) { return '<th>' + c.trim() + '</th>'; }).join('');
+      var rhtml = rows.trim().split('\n').map(function(row) {
+        var cells = row.split('|').filter(function(c) { return c.trim(); }).map(function(c) { return '<td>' + c.trim() + '</td>'; }).join('');
+        return '<tr>' + cells + '</tr>';
+      }).join('');
+      return '<table><thead><tr>' + hcells + '</tr></thead><tbody>' + rhtml + '</tbody></table>';
+    });
+    // 段落
+    html = html.split('\n\n').map(function(block) {
+      block = block.trim();
+      if (!block) return '';
+      if (/^<(h[1-4]|table|ul|ol|hr|blockquote|pre)/.test(block)) return block;
+      return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+    }).join('\n');
+    return html;
+  }
+
+  // PRD Markdown内容
+  var prdMdContent = '# 工贸在线接口对接 · 整体功能 PRD\n' +
+    '\n' +
+    '## 1. 引言\n' +
+    '\n' +
+    '### 1.1 背景与目标\n' +
+    '\n' +
+    '**核心背景：环慧慧EHS+系统向工贸在线平台的数据上报需求。**\n' +
+    '\n' +
+    '工贸在线平台（`eitohq.cn`）要求企业通过标准 REST 接口上报三类安全监管数据，共涉及 **3 个接口、54 个字段**：\n' +
+    '\n' +
+    '| 接口 | 路径 | 字段数 | 推送时机 |\n' +
+    '|------|------|:------:|----------|\n' +
+    '| 企业基础信息接口 | `POST /company/data/register` | 17 项 | 企业信息配置页保存时 |\n' +
+    '| 风险数据接口 | `POST /company/data/riskData` | 15 项 | 管控结束确认后 |\n' +
+    '| 隐患数据接口 | `POST /company/data/troubleData` | 22 项 | 隐患验收通过后 |\n' +
+    '\n' +
+    '当前系统（环慧慧EHS+）已具备企业信息维护、风险点管理与辨识、隐患排查等基础能力，但存在以下差距：\n' +
+    '\n' +
+    '| 差距项 | 详情 |\n' +
+    '|--------|------|\n' +
+    '| **字段缺失** | 风险数据接口中风险环节、风险描述尚未落地 |\n' +
+    '| **字典映射不一致** | 固有风险类型接口要求 4 类（作业/物品/场所/工艺）vs 系统当前「固有风险」「作业风险」两类 |\n' +
+    '| **地址交互升级** | 风险地址从纯文本升级为「地图选坐标 + 逆地理编码自动填充 areaCode/planAddress」 |\n' +
+    '| **管控措施聚合** | 各辨识记录管控措施需汇总后推送（不去重） |\n' +
+    '| **配置灵活度不足** | 需集中化设置按风险类型控制字段显隐和必填 |\n' +
+    '| **隐患字段映射** | 隐患数据接口 22 个字段与现有隐患排查功能逐一映射，不涉及页面改造 |\n' +
+    '\n' +
+    '**目标：** 以满足工贸在线数据上报合规要求为核心驱动力，完成企业信息、风险数据接口的字段落地与页面改造，隐患数据接口的纯字段映射（无页面改造），确保环慧慧EHS+可完整、准确、及时地向工贸在线推送标准化合规数据。\n' +
+    '\n' +
+    '### 1.2 用户价值\n' +
+    '\n' +
+    '| 用户角色 | 价值 |\n' +
+    '|----------|------|\n' +
+    '| 系统管理员 | 1. 维护企业基础信息并一键推送至工贸在线<br/>2. 按风险类型灵活配置字段显隐与必填<br/>3. 统一管理固有风险和作业风险，进行风险辨识与评价<br/>4. 对风险点发起管控并追踪管控状态与历史<br/>5. 管控结束后自动推送风险数据至工贸在线<br/>6. 利用已有隐患排查功能，完结后自动将已有字段映射推送至工贸在线 |\n' +
+    '| 工贸在线平台 | 接收标准化的企业信息、风险管控、隐患排查数据用于安全监管 |\n' +
+    '\n' +
+    '### 1.3 功能范围\n' +
+    '\n' +
+    '**包含：**\n' +
+    '\n' +
+    '| 模块 | 接口 | 涉及页面 |\n' +
+    '|------|------|----------|\n' +
+    '| 企业信息 | `POST /company/data/register` | `企业信息配置_20250616.html` — 企业信息表单录入与保存推送 |\n' +
+    '| 风险数据 | `POST /company/data/riskData` | `风险管理与辨识.html` — 双 Tab 列表、新增/编辑抽屉、地图选坐标、风险辨识子表、管控全流程；`风险设置.html` — 字段显隐/必填配置 + 管控开关 |\n' +
+    '| 隐患数据 | `POST /company/data/troubleData` | 隐患排查相关页面（已有、当前工作区外） — **纯字段映射**，已有功能字段与接口字段逐一对应，无页面改造 |\n' +
+    '\n' +
+    '**不包含：**\n' +
+    '- 高风险作业接口（`highJobData`）—— 暂不在本期范围\n' +
+    '- 工贸系统侧数据接收与处理逻辑\n' +
+    '- 逆地理编码服务的后端实现（由前端调用外部地图服务实现）\n' +
+    '- 大批量数据导入/导出功能\n' +
+    '- 移动端适配\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 2. 角色与权限\n' +
+    '\n' +
+    '| 角色 | 菜单权限 | 操作权限 | 数据范围 |\n' +
+    '|------|----------|----------|----------|\n' +
+    '| 系统管理员 | 「企业信息配置」「风险管理与辨识」「风险设置」「隐患汇报」菜单 | 企业信息编辑保存 + 风险点 CRUD + 风险辨识 + 管控全流程 + 显示设置/操作设置配置 + 隐患汇报/整改/验收全流程 | 本企业全部 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 3. 名词解释\n' +
+    '\n' +
+    '| 术语 | 定义 |\n' +
+    '|------|------|\n' +
+    '| **工贸在线** | 政府安全监管平台（`eitohq.cn`），要求企业通过标准 REST 接口上报安全监管数据 |\n' +
+    '| **环慧慧EHS+** | 企业侧 EHS 管理平台，作为数据生产方向工贸在线推送数据 |\n' +
+    '| **企业基础信息接口** | 工贸在线 `POST /company/data/register`，用于上报/更新企业档案信息（17 项参数） |\n' +
+    '| **风险数据接口** | 工贸在线 `POST /company/data/riskData`，用于上报风险管控数据（15 项参数），管控结束后推送 |\n' +
+    '| **隐患数据接口** | 工贸在线 `POST /company/data/troubleData`，用于上报隐患排查治理数据（22 项参数），验收通过后仅推送一般隐患和重大隐患 |\n' +
+    '| **societyCode** | 企业社会信用代码（18 位），运营端维护、企业端只读，作为所有接口的标识参数 |\n' +
+    '| **风险点** | 企业内存在安全风险的具体点位，可以是场所、设备、物料或作业活动 |\n' +
+    '| **固有风险** | 由物品(2)、场所(3)、工艺(4)等固有属性决定的静态风险 |\n' +
+    '| **作业风险** | 由作业活动引发的动态风险，riskType 固定传编码 1 |\n' +
+    '| **风险辨识** | 对风险点进行的危害识别、风险评价、制定防范措施的过程 |\n' +
+    '| **风险等级映射** | 系统 4 级：低风险(1)、一般风险(2)、较大风险(3)、重大风险(4)，与工贸在线编码完全一致 |\n' +
+    '| **管控** | 风险点管控状态追踪完整流程，含开始管控、管控中、结束管控三个状态 |\n' +
+    '| **管控轮次** | 同一风险点可多次管控，每次为一个轮次(round)，推送取最新轮次起止时间 |\n' +
+    '| **逆地理编码** | 将经纬度坐标转换为行政区划编码(areaCode)和结构化地址(planAddress) |\n' +
+    '| **隐患五落实** | 工贸接口要求的 5 项整改落实内容：整改目标、整改时限、整改措施、整改责任、整改资金 |\n' +
+    '| **显示设置** | 按风险类型维度控制新增/编辑抽屉中各字段显隐与必填 |\n' +
+    '| **操作设置** | 全局开关，控制是否展示管控操作入口和管控状态列 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 4. 接口全景架构\n' +
+    '\n' +
+    '### 4.1 接口总览\n' +
+    '\n' +
+    '```\n' +
+    '┌─────────────────────────────────────────────────────────────┐\n' +
+    '│                      环慧慧EHS+                              │\n' +
+    '│                                                             │\n' +
+    '│  ┌─────────────────┐  ┌──────────────────┐  ┌──────────────┐│\n' +
+    '│  │ 企业信息配置页面  │  │ 风险管理与辨识页面 │  │ 隐患排查页面  ││\n' +
+    '│  │ (已有)          │  │ (已有)           │  │ (已有)        ││\n' +
+    '│  └────────┬────────┘  └────────┬─────────┘  └──────┬───────┘│\n' +
+    '│           │                    │                     │         │\n' +
+    '│           ▼                    ▼                     ▼         │\n' +
+    '│  ┌─────────────────────────────────────────────────────────┐  │\n' +
+    '│  │              工贸在线接口推送层                           │  │\n' +
+    '│  │  · 签名认证（timestamp+nonce+accessKey+sign MD5）         │  │\n' +
+    '│  │  · 数据组装与字段映射                                    │  │\n' +
+    '│  │  · 异步推送 & 失败重试                                   │  │\n' +
+    '│  └─────────────────────────────────────────────────────────┘  │\n' +
+    '└───────────────────┬─────────────────────────────────────────┘\n' +
+    '                    │\n' +
+    '                    ▼  HTTPS POST (JSON Array)\n' +
+    '┌─────────────────────────────────────────────────────────────┐\n' +
+    '│                    工贸在线平台 (eitohq.cn)                   │\n' +
+    '│                                                             │\n' +
+    '│  POST /company/data/register     ← 企业基础信息              │\n' +
+    '│  POST /company/data/riskData     ← 风险管控数据              │\n' +
+    '│  POST /company/data/troubleData  ← 隐患排查数据              │\n' +
+    '└─────────────────────────────────────────────────────────────┘\n' +
+    '```\n' +
+    '\n' +
+    '### 4.2 认证机制（三接口通用）\n' +
+    '\n' +
+    '| 请求头参数 | 类型 | 说明 |\n' +
+    '|:-----------|------|------|\n' +
+    '| `timestamp` | `long` | 请求发起时的系统毫秒时间戳 |\n' +
+    '| `nonce` | `string` | 10 位随机字符串，每次请求不同 |\n' +
+    '| `accessKey` | `string` | 系统分配的访问密钥 |\n' +
+    '| `sign` | `string` | MD5("eito" + timestamp + nonce + secretKey) |\n' +
+    '\n' +
+    '### 4.3 通用响应格式\n' +
+    '\n' +
+    '| 参数名 | 类型 | 说明 |\n' +
+    '|--------|------|------|\n' +
+    '| `success` | `boolean` | `true` / `false` |\n' +
+    '| `errorCode` | `string` | `"00000"` = 成功 |\n' +
+    '| `errorMessage` | `string` | 错误描述 |\n' +
+    '| `errorDetail` | `object`/`null` | 错误详情 |\n' +
+    '| `data` | `object` | 业务返回数据 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 5. 核心业务流程图\n' +
+    '\n' +
+    '### 5.1 企业信息 → 工贸注册\n' +
+    '\n' +
+    '```mermaid\n' +
+    'flowchart TD\n' +
+    '    A[进入企业信息配置] --> B[加载已有数据回显]\n' +
+    '    B --> C{是否为首次配置}\n' +
+    '    C -->|是| D[首次：表单为空，用户填写]\n' +
+    '    C -->|否| E[编辑：回填数据，用户修改]\n' +
+    '    D --> F[填写/修改各字段]\n' +
+    '    E --> F\n' +
+    '    F --> G[点击保存]\n' +
+    '    G --> H{表单校验}\n' +
+    '    H -->|校验失败| I[错误字段红框提示]\n' +
+    '    I --> F\n' +
+    '    H -->|校验通过| J[组装 JSON + 签名]\n' +
+    '    J --> K[POST /company/data/register]\n' +
+    '    K --> L{响应}\n' +
+    '    L -->|success=true| M[提示保存成功]\n' +
+    '    L -->|success=false| N[提示失败原因]\n' +
+    '```\n' +
+    '\n' +
+    '### 5.2 风险管控数据 → 工贸上报\n' +
+    '\n' +
+    '```mermaid\n' +
+    'flowchart TD\n' +
+    '    A[新增风险] --> B[风险辨识]\n' +
+    '    B --> C[进行管控]\n' +
+    '    C --> D[管控结束]\n' +
+    '    D --> E{grade 是否匹配<br/>工贸在线风险等级}\n' +
+    '    E -->|是: 低/一般/较大/重大风险| F[组装JSON → 传送工贸在线]\n' +
+    '    E -->|否: 不在映射范围内| G[跳过传送，记录日志]\n' +
+    '    F --> H{是否重新管控}\n' +
+    '    H -->|是| I[重新管控]\n' +
+    '    I --> C\n' +
+    '    H -->|否| J[完成]\n' +
+    '```\n' +
+    '\n' +
+    '> **多次管控多次传送**：每次管控结束均触发一次传送。重新管控后再次结束管控时，再次组装数据传送，取最新管控轮次起止时间。仅传送符合风险等级（低风险/一般风险/较大风险/重大风险）的数据。\n' +
+    '\n' +
+    '### 5.3 隐患数据 → 工贸上报\n' +
+    '\n' +
+    '```mermaid\n' +
+    'flowchart TD\n' +
+    '    A[隐患上报] --> B[隐患整改]\n' +
+    '    B --> C[隐患验收]\n' +
+    '    C --> D{验收是否通过}\n' +
+    '    D -->|通过| E{隐患等级是否为<br/>一般隐患/重大隐患}\n' +
+    '    D -->|不通过| B\n' +
+    '    E -->|是| F[组装JSON → 传送工贸在线]\n' +
+    '    E -->|否: 其他等级| G[跳过传送]\n' +
+    '```\n' +
+    '\n' +
+    '> **仅传送一般隐患和重大隐患**：验收通过后，仅隐患等级为「一般隐患」和「重大隐患」的数据传送至工贸在线，其他等级不传送。\n' +
+    '\n' +
+    '### 5.4 设置配置流程\n' +
+    '\n' +
+    '```mermaid\n' +
+    'flowchart TD\n' +
+    '    A[进入风险设置] --> B{左侧菜单}\n' +
+    '    B -->|显示设置| C[选择风险类型 Tab]\n' +
+    '    B -->|操作设置| H[管控开关单选项]\n' +
+    '    C --> D{固有风险 / 作业风险}\n' +
+    '    D --> E[字段配置表：勾选显隐/必填]\n' +
+    '    E --> F[保存 → localStorage]\n' +
+    '    H --> I[选择 支持/不支持]\n' +
+    '    I --> F\n' +
+    '    F --> G[Toast: 保存成功！]\n' +
+    '    G --> J[风险管理与辨识页下次加载时读取]\n' +
+    '```\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 6. 数据模型\n' +
+    '\n' +
+    '### 6.1 整体实体关系图\n' +
+    '\n' +
+    '```mermaid\n' +
+    'erDiagram\n' +
+    '    ENTERPRISE ||--|| RISK_POINT : owns\n' +
+    '    ENTERPRISE ||--o{ TROUBLE_RECORD : has\n' +
+    '    RISK_POINT ||--o{ RISK_IDENTIFICATION : has\n' +
+    '    RISK_POINT ||--o{ CONTROL_ROUND : has\n' +
+    '    RISK_POINT ||--o{ JOB_STEP : has\n' +
+    '    TROUBLE_RECORD ||--o{ TROUBLE_RECTIFY : has\n' +
+    '    TROUBLE_RECORD ||--o{ TROUBLE_REVIEW : has\n' +
+    '    TROUBLE_RECORD ||--o{ FLOW_NODE : has\n' +
+    '    ENTERPRISE {\n' +
+    '        string societyCode PK\n' +
+    '        string companyName\n' +
+    '        string companyType\n' +
+    '        string industry\n' +
+    '        string signAreaCode\n' +
+    '        string signAddress\n' +
+    '        string proAreaCode\n' +
+    '        string proAddress\n' +
+    '        string managerName\n' +
+    '        string managerPhone\n' +
+    '        int employeeNum\n' +
+    '        string scale\n' +
+    '        string isBigSafe\n' +
+    '        string safeLevel\n' +
+    '        string isFourOne\n' +
+    '        string fourOneType\n' +
+    '    }\n' +
+    '    RISK_POINT {\n' +
+    '        string riskId PK\n' +
+    '        string societyCode FK\n' +
+    '        string name\n' +
+    '        string riskType\n' +
+    '        string inherentRiskType\n' +
+    '        int grade\n' +
+    '        string dutyPerson\n' +
+    '        string riskLink\n' +
+    '        string riskDescribe\n' +
+    '        string riskAnalysisTarget\n' +
+    '        string evalMethod\n' +
+    '        string lng\n' +
+    '        string lat\n' +
+    '        string areaCode\n' +
+    '        string planAddress\n' +
+    '        string measure\n' +
+    '        string controlStatus\n' +
+    '        int controlRound\n' +
+    '        datetime identificationTime\n' +
+    '        string outId\n' +
+    '    }\n' +
+    '    RISK_IDENTIFICATION {\n' +
+    '        string id PK\n' +
+    '        string riskId FK\n' +
+    '        string accidentType\n' +
+    '        string hazardFactor\n' +
+    '        string consequence\n' +
+    '        int riskLevel\n' +
+    '        string measure\n' +
+    '        datetime createTime\n' +
+    '    }\n' +
+    '    CONTROL_ROUND {\n' +
+    '        int round PK\n' +
+    '        string riskId FK\n' +
+    '        datetime startTime\n' +
+    '        datetime expectedEndTime\n' +
+    '        datetime actualEndTime\n' +
+    '    }\n' +
+    '    JOB_STEP {\n' +
+    '        string id PK\n' +
+    '        string riskId FK\n' +
+    '        string stepName\n' +
+    '        string accidentType\n' +
+    '        string hazardFactor\n' +
+    '        string consequence\n' +
+    '        int riskLevel\n' +
+    '        datetime createTime\n' +
+    '    }\n' +
+    '    TROUBLE_RECORD {\n' +
+    '        string outId PK\n' +
+    '        string societyCode FK\n' +
+    '        datetime checkTime\n' +
+    '        string troubleLocation\n' +
+    '        string troubleDescribe\n' +
+    '        string source\n' +
+    '        string checkUserName\n' +
+    '        string troubleLevel\n' +
+    '        string implementFive\n' +
+    '        datetime rectifierTime\n' +
+    '        string rectifierUserName\n' +
+    '        string rectifierDesc\n' +
+    '        datetime reviewTime\n' +
+    '        string reviewUserName\n' +
+    '        string reviewDesc\n' +
+    '    }\n' +
+    '    TROUBLE_RECTIFY {\n' +
+    '        string id PK\n' +
+    '        string troubleId FK\n' +
+    '        datetime rectifierTime\n' +
+    '        string rectifierUserName\n' +
+    '        string rectifierDesc\n' +
+    '        string rectifierFileUrls\n' +
+    '    }\n' +
+    '    TROUBLE_REVIEW {\n' +
+    '        string id PK\n' +
+    '        string troubleId FK\n' +
+    '        datetime reviewTime\n' +
+    '        string reviewUserName\n' +
+    '        string reviewDesc\n' +
+    '        string reviewFileUrls\n' +
+    '    }\n' +
+    '    FLOW_NODE {\n' +
+    '        string id PK\n' +
+    '        string troubleId FK\n' +
+    '        string nodeId\n' +
+    '        string nodeName\n' +
+    '        string handleUser\n' +
+    '        datetime handleTime\n' +
+    '        string status\n' +
+    '        string remark\n' +
+    '    }\n' +
+    '```\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 7. 页面清单与关联文档\n' +
+    '\n' +
+    '| 页面名称 | 文件路径 | 说明 |\n' +
+    '|----------|----------|------|\n' +
+    '| 企业信息配置 | `企业信息配置_20250616.html` | 企业档案维护，保存时推送至 register |\n' +
+    '| 风险管理与辨识 | `风险管理与辨识.html` | 核心页面：固有/作业风险双 Tab，管控全流程，结束时推送 riskData |\n' +
+    '| 风险设置 | `风险设置.html` | 配置页：字段显隐/必填 + 管控开关 |\n' +
+    '| 隐患汇报 | 现有系统页面 | 已有功能字段与 troubleData 22 字段逐一映射，无页面改造 |\n' +
+    '| 特殊作业票列表 | `特殊作业票_列表.html` | 本期不涉及 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 8. 接口字段映射总表\n' +
+    '\n' +
+    '### 8.1 接口一：企业基础信息（POST /company/data/register）\n' +
+    '\n' +
+    '> 仅 companyName 和 societyCode 为已有字段；其余 14 个字段均需在本页面新增填写入口。\n' +
+    '\n' +
+    '| # | 接口参数 | 含义 | 类型 | 必填 | 映射状态 |\n' +
+    '|:--:|----------|------|------|:----:|:--------:|\n' +
+    '| 1 | companyName | 企业名称 | string | 是 | ✅ 已有 |\n' +
+    '| 2 | societyCode | 社会信用代码 | string | 是 | ✅ 已有 |\n' +
+'| 3 | companyType | 企业类型 | string | 是 | ➕ 新增 |\n' +
+'| 4 | industry | 所属行业 | string | 是 | ➕ 新增 |\n' +
+'| 5 | signAreaCode | 注册地址-区域编码 | string | 是 | ➕ 新增 |\n' +
+'| 6 | signAddress | 注册地址-详细 | string | 是 | ➕ 新增 |\n' +
+'| 7 | proAreaCode | 生产地址-区域编码 | string | 是 | ➕ 新增 |\n' +
+'| 8 | proAddress | 生产地址-详细 | string | 是 | ➕ 新增 |\n' +
+'| 9 | managerName | 主要负责人 | string | 是 | ➕ 新增 |\n' +
+'| 10 | managerPhone | 负责人联系方式 | string | 是 | ➕ 新增 |\n' +
+'| 11 | employeeNum | 从业人员数量 | string | 是 | ➕ 新增 |\n' +
+'| 12 | scale | 企业规模 | string | 是 | ➕ 新增 |\n' +
+'| 13 | isBigSafe | 重大危险源 | string | 是 | ➕ 新增（注意反转） |\n' +
+'| 14 | safeLevel | 安全标准化等级 | string | 是 | ➕ 新增 |\n' +
+'| 15 | isFourOne | 是否四涉一有限 | string | 是 | ➕ 新增 |\n' +
+'| 16 | fourOneType | 四涉一有限类型 | string | 否 | ➕ 新增 |\n' +
+    '\n' +
+    '### 8.2 接口二：风险数据（POST /company/data/riskData）\n' +
+    '\n' +
+    '| # | 接口参数 | 含义 | 映射状态 | 说明 |\n' +
+    '|:--:|----------|------|:--------:|------|\n' +
+    '| 1 | outId | 主键 | ✅ 已有 | riskId |\n' +
+    '| 2 | societyCode | 信用代码 | ✅ 已有 | 后端注入 |\n' +
+    '| 3 | name | 风险项名称 | ✅ 已有 | 固有/作业名称 |\n' +
+    '| 4 | controlTimeStart | 管控开始时间 | ➕ 新增 | 最新轮次 startTime |\n' +
+    '| 5 | controlTimeEnd | 管控结束时间 | ➕ 新增 | 最新轮次 actualEndTime |\n' +
+    '| 6 | riskType | 风险类型 | ⚠️ 需改造 | 1=作业/2=物品/3=场所/4=工艺 |\n' +
+    '| 7 | riskLink | 风险环节 | ⚠️ 需收集 | 下拉选择 |\n' +
+    '| 8 | measure | 管控措施 | 🔄 自动派生 | 汇总拼接，不去重 |\n' +
+    '| 9 | describe | 风险描述 | ⚠️ 需收集 | textarea |\n' +
+    '| 10 | areaCode | 区域编码 | ⚠️ 待对接 | 逆地理编码 |\n' +
+    '| 11 | planAddress | 详细地址 | ⚠️ 待对接 | 逆地理编码 |\n' +
+    '| 12 | dutyUserName | 责任人 | ✅ 已有 | 去部门后缀 |\n' +
+    '| 13 | grade | 风险等级 | ⚠️ 需改造 | 4级编码映射 |\n' +
+    '| 14 | identificationTime | 辨识时间 | ⚠️ 需改造 | max(辨识创建时间) |\n' +
+    '| 15 | fileUrls | 附件URL | 🔒 固定 | 传 [] |\n' +
+    '\n' +
+    '#### 字典映射\n' +
+    '\n' +
+    '**riskType 映射：**\n' +
+    '\n' +
+    '| 系统值 | 接口编码 |\n' +
+    '|--------|:--------:|\n' +
+    '| 作业风险 | 1 |\n' +
+    '| 固有风险→物品 | 2 |\n' +
+    '| 固有风险→场所 | 3 |\n' +
+    '| 固有风险→工艺 | 4 |\n' +
+    '\n' +
+    '**grade 映射（系统4级，与工贸在线完全一致）**\n' +
+    '\n' +
+    '| 系统等级 | 编码 | 说明 |\n' +
+    '|----------|:----:|------|\n' +
+    '| 低风险 | 1 | 系统原生4级，与工贸一致 |\n' +
+    '| 一般风险 | 2 | 系统原生4级，与工贸一致 |\n' +
+    '| 较大风险 | 3 | 系统原生4级，与工贸一致 |\n' +
+    '| 重大风险 | 4 | 系统原生4级，与工贸一致 |\n' +
+    '\n' +
+    '### 8.3 接口三：隐患数据（POST /company/data/troubleData）\n' +
+    '\n' +
+    '> 22 个字段全部完成映射，**不涉及任何页面改造**。\n' +
+    '\n' +
+    '| # | 接口参数 | 含义 | 映射状态 | 系统字段 |\n' +
+    '|:--:|----------|------|:--------:|----------|\n' +
+    '| 1 | outId | 主键 | 🔒 传空 | UUID生成 |\n' +
+    '| 2 | societyCode | 信用代码 | ✅ 已有 | 后端注入 |\n' +
+    '| 3 | checkTime | 上报时间 | 🔗 已映射 | 提交时间 |\n' +
+    '| 4 | troubleLocation | 隐患位置 | 🔗 已映射 | 地点/编号 |\n' +
+    '| 5 | troubleDescribe | 隐患描述 | 🔗 已映射 | 隐患描述 |\n' +
+    '| 6 | source | 隐患来源 | 🔗 已映射 | 隐患来由 | 原值传递，工贸字典不含隐患来源 |\n' +
+    '| 7 | checkUserName | 检查人 | 🔗 已映射 | 汇报人 |\n' +
+    '| 8 | imagesFileUrls | 图片URL | 🔗 已映射 | 隐患图片 |\n' +
+    '| 9 | videosFileUrls | 视频URL | 🔒 传空 | - |\n' +
+    '| 10 | voicesFileUrls | 语音URL | 🔒 传空 | - |\n' +
+    '| 11 | troubleLevel | 隐患等级 | ⚠️ 需转换 | 自定义等级→标准编码 | 环慧慧为自定义值，需映射：1=一般隐患 / 2=重大隐患 |\n' +
+    '| 12 | implementFive | 五落实 | 🔗 已映射 | 5项组合 | [0][2]均取整改措施；[1]计划完成日期；[3]整改责任人；[4]固定"0" |\n' +
+    '| 13 | implementFileUrls | 五落实附件 | 🔒 传空 | - |\n' +
+    '| 14 | reviewUserName | 复查人 | 🔗 已映射 | 验收人 |\n' +
+    '| 15 | reviewTime | 复查时间 | 🔗 已映射 | 验收时间 |\n' +
+    '| 16 | reviewDesc | 复查描述 | 🔗 已映射 | 验收意见 |\n' +
+    '| 17 | reviewFileUrls | 复查附件 | 🔗 已映射 | 验收文件 |\n' +
+    '| 18 | rectifierUserName | 整改人 | 🔗 已映射 | 整改负责人 |\n' +
+    '| 19 | rectifierTime | 整改时间 | 🔗 已映射 | 整改时间 |\n' +
+    '| 20 | rectifierDesc | 整改描述 | 🔗 已映射 | 整改完成情况 |\n' +
+    '| 21 | rectifierFileUrls | 整改附件 | 🔗 已映射 | 整改文件 |\n' +
+    '| 22 | flowDataList | 流程数据 | 🔗 已映射 | 验收审批流 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '### 8.5 隐患五落实（implementFive）五项明细\n' +
+    '\n' +
+    '`implementFive` 为固定长度 5 的字符串数组，按索引对应五落实内容：\n' +
+    '\n' +
+    '| 索引 | 落实项 | 含义 | 对应环慧慧字段 | 数据来源 |\n' +
+    '|:---:|--------|------|----------------|----------|\n' +
+    '| `[0]` | **整改目标** | 与整改措施填写相同内容 | `rectifierDesc`（整改措施详情） | 复用整改措施内容 |\n' +
+    '| `[1]` | **整改时限** | 计划完成整改的截止日期 | `planRectifierTime`（计划完成日期） | 隐患整改阶段填写 |\n' +
+    '| `[2]` | **整改措施** | 具体的整改方案和实施步骤 | `rectifierDesc`（整改措施详情） | 隐患整改进展阶段填写 |\n' +
+    '| `[3]` | **整改责任** | 负责整改的责任人 | `rectifierUserName`（整改责任人） | 隐患整改进展阶段指定 |\n' +
+    '| `[4]` | **整改资金** | 整改所需资金 | — | 固定传 `"0"` |\n' +
+    '\n' +
+    '**数据组装规则：**\n' +
+    '\n' +
+    '- 5 项按索引顺序组装为字符串数组，缺一不可\n' +
+    '- `[0]` 整改目标 与 `[2]` 整改措施 填写相同内容，均取自 `rectifierDesc`\n' +
+    '- `[4]` 整改资金 固定传 `"0"`（环慧慧系统无独立资金字段）\n' +
+    '- 组装时机：隐患闭环完结（复查通过）触发推送时，从隐患记录中提取各阶段数据组装\n' +
+    '\n' +
+    '**组装示例：**\n' +
+    '\n' +
+    '```json\n' +
+    '"implementFive": [\n' +
+    '  "采购合规电缆，由电工班组专业更换",  // [0] 整改目标（复用整改措施内容）\n' +
+    '  "2026-06-20",                       // [1] 整改时限（计划完成日期）\n' +
+    '  "采购合规电缆，由电工班组专业更换",  // [2] 整改措施（同[0]）\n' +
+    '  "张三",                             // [3] 整改责任（整改责任人）\n' +
+    '  "0"                                 // [4] 整改资金（固定传"0"）\n' +
+    ']\n' +
+    '```\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 9. 业务规则与约束汇总\n' +
+    '\n' +
+    '| 序号 | 规则 | 适用接口 |\n' +
+    '|:----:|------|:--------:|\n' +
+    '| 1 | 取消「是否显示」→ 对应字段「是否必填」自动取消 + 置灰 | 风险设置 |\n' +
+    '| 2 | 「固有风险类型」仅当风险点类型为「固有风险」时显示 | 风险数据 |\n' +
+    '| 3 | 风险分析对象默认不展示（show=false, required=false） | 风险设置 |\n' +
+    '| 4 | 操作设置默认值 =「支持」；设为「不支持」时隐藏管控入口 | 风险数据 |\n' +
+    '| 5 | 风险等级 4 级：低风险(1)、一般风险(2)、较大风险(3)、重大风险(4)，系统原生级别，无需映射 | 风险数据 |\n' +
+    '| 6 | 固有风险类型→编码：物品→2, 场所→3, 工艺→4；作业风险→1 | 风险数据 |\n' +
+    '| 7 | 多轮管控时取最新管控轮的起止时间 | 风险数据 |\n' +
+    '| 8 | identificationTime 取所有辨识记录中 max(创建时间) | 风险数据 |\n' +
+    '| 9 | 管控仅在「结束管控」确认后推送至工贸；推送失败不阻塞主流程 | 风险数据 |\n' +
+    '| 10 | dutyUserName 仅传姓名，去除部门后缀 | 风险数据 |\n' +
+    '| 11 | fileUrls 当前版本固定传 `[]` | 风险数据 |\n' +
+    '| 12 | isBigSafe 注意反转：页面「是」→接口传 `0` | 企业信息 |\n' +
+    '| 13 | isFourOne=1 时 fourOneType 必填 | 企业信息 |\n' +
+    '| 14 | 隐患验收通过后仅一般隐患和重大隐患传送工贸，其他等级不传送 | 隐患数据 |\n' +
+    '| 15 | 隐患等级 环慧慧自定义值 → 工贸标准编码 1(一般)/2(重大) | 隐患数据 |\n' +
+    '| 16 | implementFive: [0][2]均取整改措施，[1]计划完成日期，[3]整改责任人，[4]固定"0" | 隐患数据 |\n' +
+    '| 17 | 推送均为 JSON 数组格式 | 三接口通用 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 10. 非功能性需求\n' +
+    '\n' +
+    '### 性能要求\n' +
+    '\n' +
+    '| 指标 | 要求 |\n' +
+    '|------|------|\n' +
+    '| 企业信息配置页加载 | ≤ 2s |\n' +
+    '| 风险列表首屏加载 | ≤ 2s |\n' +
+    '| 新增/编辑抽屉打开 | ≤ 500ms |\n' +
+    '| 管控弹窗打开 | ≤ 300ms |\n' +
+    '| localStorage 读写 | ≤ 50ms |\n' +
+    '| 接口推送 | 异步非阻塞 |\n' +
+    '| 列表分页 | 每页 10 条 |\n' +
+    '\n' +
+    '### 安全性\n' +
+    '\n' +
+    '| 要求 | 说明 |\n' +
+    '|------|------|\n' +
+    '| 签名认证 | 所有推送请求携带 timestamp + nonce + accessKey + sign MD5 |\n' +
+    '| 权限校验 | 前端菜单权限控制入口，后端对 CUD 接口做权限校验 |\n' +
+    '| 数据隔离 | 仅返回/推送本企业数据 |\n' +
+    '| HTTPS | 所有工贸接口调用强制 HTTPS |\n' +
+    '\n' +
+    '### 兼容性\n' +
+    '\n' +
+    '| 端 | 要求 |\n' +
+    '|----|------|\n' +
+    '| PC 浏览器 | Chrome 90+ / Edge 90+ / Firefox 88+ |\n' +
+    '| 最低分辨率 | 1280 × 720 |\n' +
+    '| 推荐分辨率 | 1920 × 1080 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 11. 分期实施建议\n' +
+    '\n' +
+    '| 阶段 | 内容 | 涉及页面 |\n' +
+    '|:----:|------|----------|\n' +
+    '| **一阶段**（当前） | 企业信息接口 + 风险数据接口 | 企业信息配置、风险管理与辨识、风险设置 |\n' +
+    '| **二阶段** | 隐患数据字段映射 | 隐患排查（已有页面纯字段映射） |\n' +
+    '| **三阶段**（后续） | 高风险作业接口 | 特殊作业票 |\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '## 12. 工贸在线字典清单\n' +
+    '\n' +
+    '| 模块 | 字典名称 | 编码 | 描述 |\n' +
+    '|------|----------|------|------|\n' +
+    '| 企业信息 | 行业类型字典 | `INDUSTRY_TYPE` | 冶金/有色/建材/机械/轻工/纺织/烟草/商贸 |\n' +
+    '| 企业信息 | 企业类型字典 | `COMPANY_TYPE` | 国有/私营/事业单位/社会团体/中外合资/外商独资/其它 |\n' +
+    '| 企业信息 | 企业规模字典 | `COMPANY_SIZE_TYPE` | 规模以上/规模以下/小微企业 |\n' +
+    '| 企业信息 | 安全标准化等级 | `SAFE_LEVEL_TYPE` | 一级/二级/三级/其他 |\n' +
+    '| 风险数据 | 风险等级 | `RISK_LEVEL` | 低风险/一般风险/较大风险/重大风险 |\n' +
+    '| 风险数据 | 风险类型 | `RISK_TYLE_LIST` | 作业/物品/场所/工艺 |\n' +
+    '| 隐患数据 | 隐患等级 | `YH_LEVEL` | 一般隐患/重大隐患 |\n' +
+    '';
+</script>
+
+</body>
+</html>

@@ -1,0 +1,3021 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>企业信息 - 环慧慧 Web UI</title>
+  <style>
+    :root {
+      --color-brand: #1570EF;
+      --color-brand-hover: #2E90FA;
+      --color-brand-active: #175CD3;
+      --color-danger: #F64C41;
+      --color-success: #00C5C3;
+      --color-warning: #FF8340;
+      --color-text-primary: #444F66;
+      --color-text-secondary: #758095;
+      --color-text-placeholder: #9EA4AE;
+      --color-text-disabled: #B3B9C4;
+      --color-bg-page: #F7F8FA;
+      --color-bg-surface: #FFFFFF;
+      --color-bg-muted: #F7F8F9;
+      --color-brand-light: #EFF8FF;
+      --color-border: #DEDFE3;
+      --color-divider: #E6E7EB;
+      --radius-component: 4px;
+      --font-family-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      --shadow-topbar: 0 1px 4px rgba(31, 42, 55, .10);
+      --shadow-brand: 0 1px 5px rgba(21,112,239,.05), 0 4px 2.5px rgba(21,112,239,.08), 0 2px 2px rgba(21,112,239,.25);
+      --focus-ring: 0 0 0 2px #D9E1FF;
+      --color-topbar-bg: #00254A; --color-topbar-text: rgba(255,255,255,0.90); --color-topbar-sub: rgba(255,255,255,0.60);
+      --color-sidebar-bg: #00254A; --color-sidebar-item-bg: #042240; --color-sidebar-active: #007AFF;
+      --sidebar-width-new: 256px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      color: var(--color-text-primary);
+      background: var(--color-bg-page);
+      font-family: var(--font-family-ui);
+      font-size: 14px;
+      line-height: 22px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      object-fit: contain;
+    }
+
+    .app {
+      height: 100vh;
+      overflow: hidden;
+      background: var(--color-bg-page);
+    }
+
+    /* ==================== 顶部导航栏 ==================== */
+    .menu-topbar { position: fixed; z-index: 30; top: 0; left: 0; width: 100%; height: 64px; display: flex; background: var(--color-topbar-bg); overflow: hidden; }
+    .menu-logo { width: var(--sidebar-width-new); height: 64px; position: relative; display: flex; align-items: center; background: var(--color-topbar-bg); overflow: hidden; flex: 0 0 var(--sidebar-width-new); }
+    .menu-logo::before { content:""; position:absolute; width:236px; height:236px; left:10px; top:-33px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.40) inset; border-radius:9999px; }
+    .menu-logo::after { content:""; position:absolute; width:188px; height:188px; left:34px; top:-9px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.30) inset; border-radius:9999px; }
+    .menu-logo-inner { position:absolute; width:138px; height:138px; left:59px; top:16px; background:#002449; box-shadow:0px 4px 10px rgba(0,0,0,0.20) inset; border-radius:9999px; z-index:0; }
+    .menu-logo-icon { position:absolute; left:28px; top:8px; width:48px; height:48px; z-index:1; }
+    .menu-logo-icon img { width:48px; height:48px; }
+    .menu-logo-main { position:absolute; left:88px; top:16px; z-index:1; font-size:20px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-text); white-space:nowrap; }
+    .menu-logo-brand { color:rgba(58,184,255,0.90); }
+    .menu-logo-sub { position:absolute; left:87px; top:39px; z-index:1; font-size:12px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-sub); white-space:nowrap; }
+    .menu-logo-sep { position:absolute; left:148px; top:27px; width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.30); }
+    .menu-top-nav { flex:1; min-width:0; height:64px; display:flex; align-items:center; background:var(--color-topbar-bg); }
+    .menu-top-track { height:64px; display:flex; align-items:center; gap:32px; padding:0 16px; }
+    .menu-top-item { height:46px; display:inline-flex; align-items:center; padding:0; border:none; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; }
+    .menu-top-item.is-active { border-bottom-color:var(--color-sidebar-active); }
+    .menu-top-actions { height:64px; display:flex; align-items:center; padding:0 16px 0 12px; color:var(--color-topbar-text); font-size:12px; font-family:var(--font-family-ui); white-space:nowrap; flex-shrink:0; }
+    .menu-actions-icons { display:none; }
+    .menu-icon-btn { display:none; }
+    .menu-user { display:inline-flex; align-items:center; gap:0; color:var(--color-topbar-text); font-size:12px; white-space:nowrap; }
+    .menu-user-avatar { display:none; }
+    .menu-user-meta { height:24px; display:inline-flex; align-items:center; }
+    .menu-user-arrow { display:none; }
+
+    /* ==================== 侧边导航菜单 ==================== */
+    .menu-shell { position:fixed; z-index:20; top:64px; left:0; width:var(--sidebar-width-new); height:calc(100vh - 64px); display:flex; flex-direction:column; justify-content:flex-start; background:var(--color-sidebar-bg); box-shadow:0px 2px 8px rgba(0,0,0,0.25); }
+    .menu-side-list { display:flex; flex-direction:column; margin:0; padding:0; overflow:hidden auto; scrollbar-width:thin; }
+    .menu-side-list::-webkit-scrollbar { width:3px; }
+    .menu-side-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:50px; }
+    .menu-side-item { width:256px; height:52px; display:flex; align-items:center; gap:12px; padding:0 8px 0 24px; border:none; border-radius:0; background:var(--color-sidebar-bg); color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; }
+    .menu-side-item:hover { background:rgba(255,255,255,0.06); }
+    .menu-side-item img { width:20px; height:20px; flex:0 0 auto; }
+    .menu-side-item .menu-side-arrow { width:16px; height:16px; flex:0 0 auto; margin-left:auto; margin-right:12px; }
+    .menu-side-item .menu-side-arrow img { width:16px; height:16px; }
+    .menu-side-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .menu-sublist { display:none; flex-direction:column; margin:0; padding:0; background:var(--color-sidebar-item-bg); }
+    .menu-sublist.is-open { display:flex; }
+    .menu-side-child { width:240px; height:36px; display:flex; align-items:center; margin:8px; padding:0 0 0 36px; border:none; border-radius:4px; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; white-space:nowrap; position:relative; }
+    .menu-side-child::before { content:""; position:absolute; left:16px; top:50%; transform:translateY(-50%); width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.40); }
+    .menu-side-child:hover { background:rgba(255,255,255,0.08); }
+    .menu-side-child.is-active { background:var(--color-sidebar-active); color:white; }
+    .menu-side-child.is-active::before { background:white; }
+    .menu-collapse { display:none; }
+
+    /* ==================== 面包屑栏 ==================== */
+    .menu-breadcrumb { position:fixed; z-index:9; top:64px; left:var(--sidebar-width-new); right:0; height:50px; display:flex; align-items:center; padding:0 24px; background:white; box-shadow:0px 0px 8px 6px rgba(0,0,0,0.02); }
+    .menu-breadcrumb-path { display:inline-flex; align-items:center; height:34px; }
+    .menu-breadcrumb-icon { width:24px; height:34px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+    .menu-breadcrumb-icon img { width:12px; height:12px; }
+    .menu-breadcrumb-tag { display:inline-flex; align-items:center; height:34px; padding:0 0 0 8px; background:#E5F3FF; border-radius:0; }
+    .menu-breadcrumb-tag svg { width:12px; height:12px; flex:0 0 auto; }
+    .menu-breadcrumb-tag span { color:#007AFF; font-size:14px; font-family:var(--font-family-ui); font-weight:400; margin:0 4px; }
+    .menu-breadcrumb-next { width:24px; height:34px; display:inline-flex; align-items:center; justify-content:center; color:#9EA4AE; flex:0 0 auto; }
+    .menu-breadcrumb-next img { width:12px; height:12px; }
+
+    /* ==================== 页面主体 ==================== */
+    .page {
+      min-width: 0;
+      height: 100vh;
+      margin-left: var(--sidebar-width-new);
+      padding: 126px 12px 12px;
+      overflow: hidden;
+    }
+
+    .form-panel {
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0px 0px 8px 6px rgba(0,0,0,0.02);
+    }
+
+    .form-header {
+      width: 100%;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--color-divider);
+      background: #fff;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .icon-svg {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      flex: 0 0 16px;
+    }
+
+    .form-title {
+      margin: 0;
+      color: var(--color-text-primary);
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 400 !important;
+      font-synthesis: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-title::before { display: none; }
+
+    .form-header-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 32px 24px 24px;
+      scrollbar-color: var(--color-divider) transparent;
+      scrollbar-width: thin;
+    }
+
+    .form-body::-webkit-scrollbar {
+      width: 3px;
+      height: 3px;
+    }
+
+    .form-body::-webkit-scrollbar-button {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+    .form-body::-webkit-scrollbar-track { background: transparent; }
+
+    .form-body::-webkit-scrollbar-thumb {
+      border-radius: 50px;
+      background: var(--color-divider);
+    }
+
+    .form-content {
+      width: min(800px, 100%);
+      margin: 0 auto;
+    }
+
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 24px;
+      margin-bottom: 8px;
+      color: var(--color-text-primary);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 400;
+    }
+
+    .form-section-title::before {
+      content: "";
+      width: 3px;
+      height: 14px;
+      background: var(--color-brand);
+    }
+
+    .form-section {
+      margin-bottom: 32px;
+    }
+
+    .form-section:last-child { margin-bottom: 0; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 32px;
+    }
+
+    .form-item {
+      min-width: 0;
+      padding-bottom: 24px;
+    }
+
+    .form-item.no-gap { padding-bottom: 0; }
+
+    .form-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding-bottom: 8px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      line-height: 22px;
+      white-space: nowrap;
+    }
+
+    .required {
+      color: var(--color-danger);
+      font-weight: 600;
+    }
+
+    .form-help {
+      width: 16px;
+      height: 16px;
+      color: var(--color-text-placeholder);
+    }
+
+    .field-control,
+    .field-select,
+    .textarea-control {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-component);
+      background: #fff;
+      color: var(--color-text-primary);
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .field-control,
+    .field-select {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+    }
+
+    .field-control:hover,
+    .field-select:hover,
+    .textarea-control:hover {
+      border-color: var(--color-brand);
+    }
+
+    .field-control:focus-within,
+    .field-select:focus,
+    .field-select:focus-visible,
+    .textarea-control:focus {
+      border-color: var(--color-brand);
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .field-input,
+    .textarea-control {
+      color: var(--color-text-primary);
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .field-input {
+      width: 100%;
+      min-width: 0;
+      height: 22px;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+    }
+
+    .field-input::placeholder,
+    .textarea-control::placeholder,
+    .field-placeholder {
+      color: var(--color-text-placeholder);
+    }
+
+    .field-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      color: var(--color-text-placeholder);
+    }
+
+    .field-select {
+      justify-content: space-between;
+      color: var(--color-text-placeholder);
+    }
+
+    .field-select span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .field-select.has-value span { color: var(--color-text-primary); }
+
+    .helper-text {
+      margin: 2px 0 0;
+      color: var(--color-text-placeholder);
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    /* ==================== 只读字段 ==================== */
+    .field-control.readonly {
+      background: var(--color-bg-muted);
+      border-color: var(--color-border);
+      cursor: not-allowed;
+    }
+
+    .field-control.readonly .field-input {
+      color: var(--color-text-secondary);
+      cursor: not-allowed;
+    }
+
+    .field-control.readonly:hover {
+      border-color: var(--color-border);
+    }
+
+    .readonly-icon {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      color: var(--color-text-disabled);
+    }
+
+    .readonly-tip {
+      font-size: 12px;
+      color: var(--color-text-disabled);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ==================== 只读模式 - 平文本展示 ==================== */
+    .form-panel.is-readonly .field-control,
+    .form-panel.is-readonly .field-select,
+    .form-panel.is-readonly .cascade-select {
+      border-color: transparent !important;
+      background: transparent !important;
+      pointer-events: none !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .form-panel.is-readonly .field-icon { display: none; }
+
+    .form-panel.is-readonly .field-input,
+    .form-panel.is-readonly .field-select span,
+    .form-panel.is-readonly .cascade-select span {
+      color: var(--color-text-primary) !important;
+      -webkit-text-fill-color: var(--color-text-primary) !important;
+      opacity: 1 !important;
+    }
+
+    .form-panel.is-readonly .field-select:not(.has-value) span,
+    .form-panel.is-readonly .cascade-select:not(.has-value) span {
+      color: var(--color-text-disabled) !important;
+      -webkit-text-fill-color: var(--color-text-disabled) !important;
+    }
+
+    .form-panel.is-readonly .choice { display: none; }
+    .form-panel.is-readonly .choice:has(.radio.checked),
+    .form-panel.is-readonly .choice:has(.check.checked) {
+      display: inline-flex;
+      color: var(--color-text-primary) !important;
+      pointer-events: none;
+    }
+    .form-panel.is-readonly .choice .radio,
+    .form-panel.is-readonly .choice .check { display: none; }
+
+    .form-panel.is-readonly .person-select-group .btn-sm { display: none; }
+
+    .form-panel.is-readonly .readonly-icon { display: none; }
+
+    /* ==================== 单选/多选 ==================== */
+    .choice-group {
+      min-height: 22px;
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      padding-top: 0;
+    }
+
+    .choice {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .radio,
+    .check {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 16px;
+      border: 1px solid #D2D6DC;
+      background: #fff;
+      transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+    }
+
+    .radio {
+      border-radius: 50%;
+    }
+
+    .choice:hover .radio:not(.checked),
+    .choice:hover .check:not(.checked):not(.indeterminate) {
+      border-color: var(--color-brand);
+      background: var(--color-bg-muted);
+    }
+
+    .choice:active .radio:not(.checked),
+    .choice:active .check:not(.checked):not(.indeterminate) {
+      border-color: var(--color-brand-active);
+      background: var(--color-bg-muted);
+    }
+
+    .choice:focus-visible {
+      outline: none;
+    }
+
+    .choice:focus-visible .radio,
+    .choice:focus-visible .check {
+      border-color: var(--color-brand);
+      box-shadow: var(--focus-ring);
+    }
+
+    .radio.checked {
+      border-color: var(--color-brand);
+    }
+
+    .radio.checked::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-brand);
+    }
+
+    .check {
+      border-radius: 3px;
+    }
+
+    .check.checked {
+      border-color: var(--color-brand);
+      background: var(--color-brand);
+    }
+
+    .check.checked::after {
+      content: "";
+      width: 7px;
+      height: 4px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg) translate(.5px, -1px);
+    }
+
+    /* 只读模式：地址拼接文本 */
+    .address-readonly-text {
+      display: none;
+      height: 32px;
+      line-height: 32px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+    }
+
+    .form-panel.is-readonly .address-combined .cascade-select-group,
+    .form-panel.is-readonly .address-combined .field-control { display: none !important; }
+
+    .form-panel.is-readonly .address-readonly-text { display: block; }
+
+    /* ==================== 省市区三级联动选择器 ==================== */
+    .cascade-select-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .cascade-select {
+      flex: 1;
+      min-width: 0;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 8px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-component);
+      background: #fff;
+      color: var(--color-text-placeholder);
+      cursor: pointer;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .cascade-select:hover { border-color: var(--color-brand); }
+    .cascade-select:focus,
+    .cascade-select:focus-visible {
+      border-color: var(--color-brand);
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .cascade-select.has-value { color: var(--color-text-primary); }
+    .cascade-select.disabled {
+      background: var(--color-bg-muted);
+      color: var(--color-text-disabled);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .cascade-select span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ==================== 人员选择器按钮 ==================== */
+    .person-select-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .person-select-group .field-control {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .btn {
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-component);
+      background: #fff;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      line-height: 22px;
+      white-space: nowrap;
+      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: var(--color-brand);
+      border-color: var(--color-brand);
+    }
+
+    .btn.primary:hover {
+      background: var(--color-brand-hover);
+      border-color: var(--color-brand-hover);
+    }
+
+    .btn.primary:active {
+      background: var(--color-brand-active);
+      border-color: var(--color-brand-active);
+    }
+
+    .btn.neutral {
+      color: var(--color-text-primary);
+      background: #fff;
+      border-color: var(--color-border);
+    }
+
+    .btn.neutral:hover {
+      background: var(--color-bg-muted);
+    }
+
+    .btn.danger {
+      color: var(--color-danger);
+      background: #fff;
+      border-color: var(--color-danger);
+    }
+
+    .btn.danger:hover {
+      color: #fff;
+      background: var(--color-danger);
+    }
+
+    .btn-sm {
+      height: 32px;
+      padding: 5px 12px;
+      flex: 0 0 auto;
+    }
+
+    /* ==================== 数字输入框 ==================== */
+    .field-input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    .field-input[type="number"]::-webkit-outer-spin-button,
+    .field-input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* ==================== 字段校验错误态 ==================== */
+    .form-item.has-error .field-control,
+    .form-item.has-error .field-select,
+    .form-item.has-error .textarea-control,
+    .form-item.has-error .cascade-select {
+      border-color: var(--color-danger);
+    }
+
+    .form-item.has-error .field-control:focus-within {
+      box-shadow: 0 0 0 2px rgba(246, 76, 65, 0.2);
+    }
+
+    .field-error {
+      margin: 2px 0 0;
+      color: var(--color-danger);
+      font-size: 12px;
+      line-height: 20px;
+      display: none;
+    }
+
+    .form-item.has-error .field-error { display: block; }
+
+    /* ==================== 条件显示区域 ==================== */
+    .conditional-field { display: none; }
+    .conditional-field.visible { display: block; }
+
+    /* ==================== 人员选择弹窗 ==================== */
+    .modal-overlay {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-overlay.is-open { display: flex; }
+
+    .modal {
+      width: min(680px, calc(100vw - 48px));
+      max-height: min(560px, calc(100vh - 120px));
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: var(--radius-component);
+      box-shadow: 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 16px 24px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .modal-header {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 48px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .modal-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+
+    .modal-close {
+      width: 24px;
+      height: 24px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border-radius: var(--radius-component);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+    }
+
+    .modal-close:hover { background: var(--color-bg-muted); }
+
+    .modal-search {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .modal-search .field-control {
+      width: 100%;
+    }
+
+    .modal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 0;
+    }
+
+    .modal-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .modal-table th {
+      height: 40px;
+      padding: 0 16px;
+      background: var(--color-bg-muted);
+      color: var(--color-text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+      border-bottom: 1px solid var(--color-divider);
+      white-space: nowrap;
+    }
+
+    .modal-table td {
+      height: 44px;
+      padding: 0 16px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      border-bottom: 1px solid var(--color-divider);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-table tbody tr {
+      cursor: pointer;
+      transition: background-color 120ms ease;
+    }
+
+    .modal-table tbody tr:hover { background: var(--color-bg-muted); }
+    .modal-table tbody tr.selected { background: var(--color-brand-light); }
+
+    .modal-table .col-radio {
+      width: 44px;
+      text-align: center;
+    }
+
+    .modal-footer {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 0 0 56px;
+      padding: 0 20px;
+      border-top: 1px solid var(--color-divider);
+    }
+
+    .modal-empty {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--color-text-placeholder);
+      font-size: 14px;
+    }
+
+    /* ==================== 下拉选项面板（供自定义下拉使用） ==================== */
+    .dropdown-panel {
+      position: absolute;
+      z-index: 50;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      max-height: 200px;
+      overflow: auto;
+      display: none;
+      flex-direction: column;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-component);
+      box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.06);
+    }
+
+    .dropdown-panel.is-open { display: flex; }
+
+    .dropdown-option {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      flex: 0 0 32px;
+      padding: 0 12px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background-color 120ms ease;
+    }
+
+    .dropdown-option:hover { background: var(--color-bg-muted); }
+    .dropdown-option.selected { color: var(--color-brand); background: var(--color-brand-light); }
+
+    .dropdown-wrapper {
+      position: relative;
+    }
+
+    .dropdown-wrapper.half { width: 50%; }
+
+    .dropdown-panel.drop-up {
+      top: auto;
+      bottom: calc(100% + 4px);
+    }
+
+    /* ==================== 响应式 ==================== */
+    @media (max-width: 1080px) {
+      .menu-actions-icons .menu-icon-btn:nth-last-child(-n+3) {
+        display: none;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- ==================== PRD标注样式 ==================== -->
+  <style>
+    /* 角标样式 (.prd-badge) */
+    .prd-badge {
+      display: inline-block !important;
+      vertical-align: top !important;
+      position: absolute !important;
+      top: -8px !important;
+      right: -4px !important;
+      z-index: 99 !important;
+      min-width: 18px !important;
+      height: 18px !important;
+      padding: 0px 4px !important;
+      background: rgb(250, 173, 20) !important;
+      color: #fff !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      line-height: 18px !important;
+      text-align: center !important;
+      border-radius: 2px !important;
+      border: none !important;
+      cursor: pointer !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+      transition: transform 150ms ease, box-shadow 150ms ease !important;
+    }
+    .prd-badge:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .prd-badge.hidden {
+      display: none !important;
+    }
+
+    /* 角标容器 */
+    .badge-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* 浮窗样式 */
+    .prd-tooltip {
+      position: fixed;
+      z-index: 9959;
+      width: 450px;
+      max-width: calc(100vw - 48px);
+      background: #FFFFFF;
+      border: 2px solid #1890ff;
+      border-radius: 4px;
+      box-shadow: 0 6px 16px rgba(0, 120, 255, 0.15);
+      display: none;
+      flex-direction: column;
+      max-height: 420px;
+    }
+    .prd-tooltip.is-open { display: flex; }
+    .prd-tooltip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e6e7eb;
+      background: #f7f8fa;
+      border-radius: 2px 2px 0 0;
+      cursor: move;
+      user-select: none;
+    }
+    .prd-tooltip-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .prd-tooltip-close {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      font-size: 16px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .prd-tooltip-close:hover { color: #1890ff; }
+    .prd-tooltip-body {
+      padding: 16px;
+      overflow-y: auto;
+      max-height: 320px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #333;
+    }
+    .prd-tooltip-body p { margin: 0 0 12px; }
+    .prd-tooltip-body ul { margin: 0; padding-left: 20px; }
+    .prd-tooltip-body li { margin-bottom: 4px; }
+    .prd-tooltip-body strong { color: #1890ff; }
+    .prd-tooltip-body blockquote {
+      margin: 0 0 12px;
+      padding: 4px 12px;
+      border-left: 3px solid #d0d0d0;
+      background: #fafafa;
+      color: #666;
+    }
+    .prd-tooltip-body .dot-green { display:inline-block; width:6px; height:6px; border-radius:50%; background:#00C5C3; margin-right:4px; }
+    .prd-tooltip-body .dot-red { display:inline-block; width:6px; height:6px; border-radius:50%; background:#F64C41; margin-right:4px; }
+
+    /* 全局PRD抽屉按钮 */
+    .prd-drawer-btn {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 200;
+      height: 36px;
+      padding: 0 16px;
+      background: #1890ff;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(24,144,255,0.3);
+      transition: background-color 150ms ease;
+    }
+    .prd-drawer-btn:hover { background: #2e90fa; }
+
+    /* PRD抽屉 */
+    .prd-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9998;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    .prd-drawer-overlay.is-open { display: block; opacity: 1; }
+    .prd-drawer {
+      position: fixed;
+      top: 0;
+      right: -620px;
+      z-index: 9999;
+      width: 600px;
+      max-width: calc(100vw - 40px);
+      height: 100vh;
+      background: #fff;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      transition: right 300ms ease;
+    }
+    .prd-drawer.is-open { right: 0; }
+    .prd-drawer-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid #e6e7eb;
+      flex-shrink: 0;
+    }
+    .prd-drawer-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .prd-drawer-close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      font-size: 20px;
+      border-radius: 4px;
+    }
+    .prd-drawer-close:hover { background: #f0f0f0; color: #1890ff; }
+    .prd-drawer-tabs {
+      display: flex;
+      border-bottom: 1px solid #e6e7eb;
+      flex-shrink: 0;
+    }
+    .prd-drawer-tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .prd-drawer-tab:hover { color: #1890ff; }
+    .prd-drawer-tab.is-active {
+      color: #1890ff;
+      border-bottom-color: #1890ff;
+      font-weight: 500;
+    }
+    .prd-drawer-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .prd-drawer-content h1 { font-size: 20px; margin: 0 0 16px; color: #1a1a1a; }
+    .prd-drawer-content h2 { font-size: 16px; margin: 24px 0 12px; color: #1a1a1a; }
+    .prd-drawer-content h3 { font-size: 14px; margin: 16px 0 8px; color: #333; }
+    .prd-drawer-content h4 { font-size: 13px; margin: 12px 0 6px; color: #444; }
+    .prd-drawer-content p { font-size: 13px; line-height: 1.8; color: #666; margin: 0 0 8px; }
+    .prd-drawer-content table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0 16px; }
+    .prd-drawer-content th, .prd-drawer-content td { border: 1px solid #e6e7eb; padding: 8px 12px; text-align: left; }
+    .prd-drawer-content th { background: #f7f8fa; font-weight: 500; color: #333; }
+    .prd-drawer-content td { color: #666; }
+    .prd-drawer-content code { background: #f0f0f0; padding: 2px 6px; border-radius: 2px; font-size: 12px; color: #c7254e; }
+    .prd-drawer-content pre { background: #f7f8fa; padding: 16px; border-radius: 4px; overflow-x: auto; font-size: 12px; line-height: 1.6; }
+    .prd-drawer-content ul { margin: 0 0 8px; padding-left: 20px; }
+    .prd-drawer-content li { font-size: 13px; line-height: 1.8; color: #666; }
+    .prd-drawer-content blockquote {
+      margin: 0 0 12px;
+      padding: 4px 12px;
+      border-left: 3px solid #d0d0d0;
+      background: #fafafa;
+      color: #666;
+    }
+    .prd-drawer-content .badge-ref {
+      display: inline-block;
+      vertical-align: middle;
+      min-width: 18px;
+      height: 18px;
+      padding: 0px 4px;
+      background: rgb(250, 173, 20);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 18px;
+      text-align: center;
+      border-radius: 2px;
+      margin-right: 4px;
+    }
+
+    /* 全局标注开关 */
+    .badge-toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10001;
+      width: 44px;
+      height: 44px;
+      background: #307FE2;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(48,127,226,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 150ms ease, transform 150ms ease;
+    }
+    .badge-toggle-btn:hover { background: #2e90fa; transform: scale(1.08); }
+    .badge-toggle-btn.badges-hidden { background: #999; }
+    .badge-toggle-btn svg { width: 22px; height: 22px; fill: #fff; }
+  </style>
+</head>
+<body>
+  <!-- AI TEMPLATE: form page
+       Source: Figma node xL404Oi4tl2krMGrw3A4tY / 4066:15819
+       Contract: ../design.md
+  -->
+  <div class="app">
+    <!-- ==================== 顶部导航栏 ==================== -->
+    <header class="menu-topbar" aria-label="顶部导航">
+      <div class="menu-logo">
+        <div class="menu-logo-inner"></div>
+        <span class="menu-logo-icon"><img src="assets/696_1660/14.svg" alt=""></span>
+        <span class="menu-logo-main">环慧慧<span class="menu-logo-brand">EHS+</span></span>
+        <span class="menu-logo-sub">Enterprise&nbsp;Edition</span>
+        <span class="menu-logo-sep"></span>
+      </div>
+      <nav class="menu-top-nav" aria-label="一级模块导航">
+        <div class="menu-top-track">
+          <button class="menu-top-item" type="button">环境</button>
+          <button class="menu-top-item" type="button">安全</button>
+          <button class="menu-top-item" type="button">EHS教育</button>
+          <button class="menu-top-item is-active" type="button">系统管理</button>
+        </div>
+      </nav>
+      <div class="menu-top-actions">
+        <span class="menu-user"><span class="menu-user-meta"><span>张文和</span></span></span>
+      </div>
+    </header>
+
+    <!-- ==================== 侧边导航菜单 ==================== -->
+    <aside class="menu-shell" aria-label="侧边导航菜单">
+      <div class="menu-side-list">
+        <button class="menu-side-item" type="button">
+          <img src="assets/696_1660/1.svg" alt="">
+          <span class="menu-side-label">权限管理</span>
+          <span class="menu-side-arrow"><img src="assets/696_1660/2.svg" alt=""></span>
+        </button>
+        <div class="menu-sublist is-open">
+          <button class="menu-side-child" type="button">人员档案管理</button>
+          <button class="menu-side-child is-active" type="button">企业信息配置</button>
+          <button class="menu-side-child" type="button">专业配置</button>
+          <button class="menu-side-child" type="button">角色管理</button>
+          <button class="menu-side-child" type="button">组织机构</button>
+          <button class="menu-side-child" type="button">职位配置</button>
+          <button class="menu-side-child" type="button">模版管理</button>
+          <button class="menu-side-child" type="button">职位禁忌</button>
+          <button class="menu-side-child" type="button">工种配置</button>
+          <button class="menu-side-child" type="button">设置</button>
+        </div>
+        <button class="menu-side-item" type="button">
+          <img src="assets/696_1660/13.svg" alt="">
+          <span class="menu-side-label">系统配置</span>
+          <span class="menu-side-arrow"><img src="assets/696_1660/12.svg" alt=""></span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ==================== 面包屑栏 ==================== -->
+    <div class="menu-breadcrumb" aria-label="面包屑导航">
+      <div class="menu-breadcrumb-path">
+        <div class="menu-breadcrumb-icon">
+          <img src="assets/696_1751/1.svg" alt="">
+        </div>
+        <div class="menu-breadcrumb-tag">
+          <img src="assets/696_1751/2.svg" alt="">
+          <span>企业信息配置</span>
+          <img src="assets/696_1751/3.svg" alt="">
+        </div>
+        <div class="menu-breadcrumb-next">
+          <img src="assets/696_1751/4.svg" alt="">
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 页面主体 ==================== -->
+    <main class="page">
+      <section class="form-panel" aria-label="企业信息配置表单">
+        <header class="form-header">
+          <div class="badge-wrapper">
+            <div class="form-title" role="heading" aria-level="1">企业信息配置</div>
+            <span class="prd-badge" data-badge-id="1" data-badge-title="[1] 页面概述">1</span>
+          </div>
+          <div class="form-header-actions">
+            <div class="badge-wrapper">
+              <button class="btn primary" type="button" id="btnSave">保存</button>
+              <span class="prd-badge" data-badge-id="2" data-badge-title="[2] 保存按钮">2</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="form-body">
+          <form class="form-content" id="enterpriseForm" aria-label="企业信息配置表单" novalidate>
+            <div class="form-grid">
+              <!-- 企业名称 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="companyName">企业名称</label>
+                  <span class="prd-badge" data-badge-id="3" data-badge-title="[3] 只读字段（企业名称 & 社会信用代码）">3</span>
+                </div>
+                <div class="field-control readonly">
+                  <input class="field-input" id="companyName" type="text" value="重庆XX机械制造有限公司" readonly>
+                </div>
+              </div>
+
+              <!-- 社会信用代码 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="societyCode">社会信用代码</label>
+                </div>
+                <div class="field-control readonly">
+                  <input class="field-input" id="societyCode" type="text" value="91500106MA12345678" readonly>
+                </div>
+              </div>
+
+              <!-- 企业类型 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="companyType"><span class="required">*</span>企业类型</label>
+                  <span class="prd-badge" data-badge-id="4" data-badge-title="[4] 企业类型 & 所属行业">4</span>
+                </div>
+                <div class="dropdown-wrapper">
+                  <button class="field-select" id="companyType" type="button" data-field="companyType">
+                    <span>请选择</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <div class="dropdown-panel">
+                    <div class="dropdown-option" data-value="1">国有</div>
+                    <div class="dropdown-option" data-value="2">私营</div>
+                    <div class="dropdown-option" data-value="3">事业单位</div>
+                    <div class="dropdown-option" data-value="4">社会团体</div>
+                    <div class="dropdown-option" data-value="5">中外合资</div>
+                    <div class="dropdown-option" data-value="6">外商独资</div>
+                    <div class="dropdown-option" data-value="7">其它</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 所属行业 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="industry"><span class="required">*</span>所属行业</label>
+                </div>
+                <div class="dropdown-wrapper">
+                  <button class="field-select" id="industry" type="button" data-field="industry">
+                    <span>请选择</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <div class="dropdown-panel">
+                    <div class="dropdown-option" data-value="1">冶金</div>
+                    <div class="dropdown-option" data-value="2">有色</div>
+                    <div class="dropdown-option" data-value="3">建材</div>
+                    <div class="dropdown-option" data-value="4">机械</div>
+                    <div class="dropdown-option" data-value="5">轻工</div>
+                    <div class="dropdown-option" data-value="6">纺织</div>
+                    <div class="dropdown-option" data-value="7">烟草</div>
+                    <div class="dropdown-option" data-value="8">商贸</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 注册地址 -->
+              <div class="form-item full">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label"><span class="required">*</span>注册地址</label>
+                  <span class="prd-badge" data-badge-id="5" data-badge-title="[5] 注册地址（省市区+详细）">5</span>
+                </div>
+                <div class="cascade-select-group" id="cascadeSignArea">
+                  <button class="cascade-select has-value" type="button" data-level="province" data-group="signArea">
+                    <span>重庆市</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <button class="cascade-select has-value" type="button" data-level="city" data-group="signArea">
+                    <span>重庆市</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <button class="cascade-select has-value" type="button" data-level="district" data-group="signArea">
+                    <span>沙坪坝区</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                </div>
+                <div class="field-control" style="margin-top:8px;"><input class="field-input" id="signAddress" type="text" value="三峡广场街道88号恒鑫大厦12层"></div>
+              </div>
+
+              <!-- 生产地址 -->
+              <div class="form-item full">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label"><span class="required">*</span>生产地址</label>
+                  <span class="prd-badge" data-badge-id="6" data-badge-title="[6] 生产地址（省市区+详细）">6</span>
+                </div>
+                <div class="cascade-select-group" id="cascadeProArea">
+                  <button class="cascade-select" type="button" data-level="province" data-group="proArea">
+                    <span>请选择省</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <button class="cascade-select disabled" type="button" data-level="city" data-group="proArea">
+                    <span>请选择市</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <button class="cascade-select disabled" type="button" data-level="district" data-group="proArea">
+                    <span>请选择区/县</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                </div>
+                <div class="field-control" style="margin-top:8px;"><input class="field-input" id="proAddress" type="text" placeholder="请填写生产场所的详细地址"></div>
+              </div>
+
+              <!-- 主要负责人 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="managerName"><span class="required">*</span>主要负责人</label>
+                  <span class="prd-badge" data-badge-id="7" data-badge-title="[7] 主要负责人 & 联系方式">7</span>
+                </div>
+                <div class="person-select-group">
+                  <div class="field-control">
+                    <input class="field-input" id="managerName" type="text" placeholder="请输入姓名或点击选择人员">
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M8 44C8 35.1634 15.1634 28 24 28C32.8366 28 40 35.1634 40 44H36C36 37.3726 30.6274 32 24 32C17.3726 32 12 37.3726 12 44H8ZM24 26C17.37 26 12 20.63 12 14C12 7.37 17.37 2 24 2C30.63 2 36 7.37 36 14C36 20.63 30.63 26 24 26ZM24 22C28.42 22 32 18.42 32 14C32 9.58 28.42 6 24 6C19.58 6 16 9.58 16 14C16 18.42 19.58 22 24 22Z" fill="currentColor"/></svg>
+                  </div>
+                  <div class="badge-wrapper">
+                    <button class="btn neutral btn-sm" type="button" id="btnSelectPerson">选择人员</button>
+                    <span class="prd-badge" data-badge-id="8" data-badge-title="[8] 选择人员按钮">8</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 主要负责人联系方式 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="managerPhone"><span class="required">*</span>主要负责人联系方式</label>
+                </div>
+                <div class="field-control">
+                  <input class="field-input" id="managerPhone" type="text" placeholder="请输入手机号" maxlength="11">
+                </div>
+              </div>
+
+              <!-- 从业人员数量 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="employeeNum"><span class="required">*</span>从业人员数量</label>
+                  <span class="prd-badge" data-badge-id="9" data-badge-title="[9] 从业人员数量 & 企业规模">9</span>
+                </div>
+                <div class="field-control">
+                  <input class="field-input" id="employeeNum" type="number" placeholder="请输入从业人员数量" min="0" step="1">
+                </div>
+              </div>
+
+              <!-- 企业规模 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="scale"><span class="required">*</span>企业规模</label>
+                </div>
+                <div class="dropdown-wrapper">
+                  <button class="field-select" id="scale" type="button" data-field="scale">
+                    <span>请选择</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <div class="dropdown-panel">
+                    <div class="dropdown-option" data-value="1">规模以上</div>
+                    <div class="dropdown-option" data-value="2">规模以下</div>
+                    <div class="dropdown-option" data-value="3">小微企业</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 是否属于重大危险源企业 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <span class="form-label"><span class="required">*</span>是否属于重大危险源企业</span>
+                  <span class="prd-badge" data-badge-id="10" data-badge-title="[10] 是否重大危险源企业 & 安全标准化等级">10</span>
+                </div>
+                <div class="choice-group" role="radiogroup" aria-label="是否属于重大危险源企业" data-field="isBigSafe">
+                  <label class="choice" tabindex="0"><span class="radio"></span>是</label>
+                  <label class="choice" tabindex="0"><span class="radio"></span>否</label>
+                </div>
+              </div>
+
+              <!-- 安全标准化等级 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label" for="safeLevel"><span class="required">*</span>安全标准化等级</label>
+                </div>
+                <div class="dropdown-wrapper">
+                  <button class="field-select" id="safeLevel" type="button" data-field="safeLevel">
+                    <span>请选择</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <div class="dropdown-panel">
+                    <div class="dropdown-option" data-value="1">一级</div>
+                    <div class="dropdown-option" data-value="2">二级</div>
+                    <div class="dropdown-option" data-value="3">三级</div>
+                    <div class="dropdown-option" data-value="4">其他</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 是否属于"四涉一有限一使用"企业 -->
+              <div class="form-item">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <span class="form-label"><span class="required">*</span>是否属于"四涉一有限一使用"企业</span>
+                  <span class="prd-badge" data-badge-id="11" data-badge-title="[11] 是否四涉一有限 & 具体类型">11</span>
+                </div>
+                <div class="choice-group" role="radiogroup" aria-label="是否属于四涉一有限一使用企业" data-field="isFourOne">
+                  <label class="choice" tabindex="0"><span class="radio"></span>是</label>
+                  <label class="choice" tabindex="0"><span class="radio"></span>否</label>
+                </div>
+              </div>
+
+              <!-- 四涉一有限具体类型 - 条件显示 -->
+              <div class="form-item conditional-field" id="conditionalFourOneType">
+                <div class="badge-wrapper" style="display:flex;align-items:center;margin-bottom:8px;">
+                  <label class="form-label"><span class="required">*</span>四涉一有限一使用具体类型</label>
+                </div>
+                <div class="dropdown-wrapper">
+                  <button class="field-select" id="fourOneType" type="button" data-field="fourOneType">
+                    <span>请选择</span>
+                    <svg class="icon-svg field-icon" aria-hidden="true" viewBox="0 0 48 48"><path d="M24 30.1212L36.7278 17.3934L39.5564 20.2218L24 35.7782L8.4436 20.2218L11.272 17.3934L24 30.1212Z" fill="currentColor"/></svg>
+                  </button>
+                  <div class="dropdown-panel">
+                    <div class="dropdown-option" data-value="1">粉尘涉爆</div>
+                    <div class="dropdown-option" data-value="2">高温熔融</div>
+                    <div class="dropdown-option" data-value="3">涉氨制冷</div>
+                    <div class="dropdown-option" data-value="4">冶金煤气</div>
+                    <div class="dropdown-option" data-value="5">有限空间作业</div>
+                    <div class="dropdown-option" data-value="6">燃爆毒危化品使用</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
+      </section>
+    </main>
+  </div>
+<script>
+(function() {
+  'use strict';
+
+  /* ============================================================
+   *  企业信息配置 — 完整 JavaScript 逻辑
+   *  ============================================================ */
+
+  // ---------- STATE ----------
+  const state = {
+    selectedPerson: null,
+    formData: {}
+  };
+
+  // ---------- DOM REFS ----------
+  const $ = (sel, ctx) => (ctx || document).querySelector(sel);
+  const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+
+  // ==================== 1. 区域编码映射 ====================
+  const areaCodeMap = {
+    '重庆市': { code: '500000', children: {
+      '重庆市': { code: '500100', children: {
+        '沙坪坝区':'500106','渝中区':'500103','江北区':'500105','南岸区':'500108',
+        '九龙坡区':'500107','大渡口区':'500104','北碚区':'500109','渝北区':'500112',
+        '巴南区':'500113','万州区':'500101','涪陵区':'500102','长寿区':'500115',
+        '江津区':'500116','合川区':'500117','永川区':'500118','南川区':'500119',
+        '綦江区':'500110','大足区':'500111','璧山区':'500120','铜梁区':'500151',
+        '潼南区':'500152','荣昌区':'500153','开州区':'500154','梁平区':'500155',
+        '武隆区':'500156'
+      }}
+    }},
+    '四川省': { code: '510000', children: {
+      '成都市': { code: '510100', children: {
+        '锦江区':'510104','青羊区':'510105','金牛区':'510106','武侯区':'510107',
+        '成华区':'510108','龙泉驿区':'510112','青白江区':'510113','新都区':'510114',
+        '双流区':'510116','温江区':'510115','郫都区':'510117'
+      }},
+      '绵阳市': { code: '510700', children: { '涪城区':'510703','游仙区':'510704','安州区':'510705' }},
+      '德阳市': { code: '510600', children: { '旌阳区':'510603','罗江区':'510604','广汉市':'510681' }}
+    }},
+    '北京市': { code: '110000', children: {
+      '北京市': { code: '110100', children: {
+        '东城区':'110101','西城区':'110102','朝阳区':'110105','丰台区':'110106',
+        '石景山区':'110107','海淀区':'110108','门头沟区':'110109','房山区':'110111',
+        '通州区':'110112','顺义区':'110113','昌平区':'110114','大兴区':'110115',
+        '怀柔区':'110116','平谷区':'110117','密云区':'110118','延庆区':'110119'
+      }}
+    }},
+    '上海市': { code: '310000', children: {
+      '上海市': { code: '310100', children: {
+        '黄浦区':'310101','徐汇区':'310104','长宁区':'310105','静安区':'310106',
+        '普陀区':'310107','虹口区':'310109','杨浦区':'310110','闵行区':'310112',
+        '宝山区':'310113','嘉定区':'310114','浦东新区':'310115','金山区':'310116',
+        '松江区':'310117','青浦区':'310118','奉贤区':'310120','崇明区':'310151'
+      }}
+    }}
+  };
+
+  function getAreaChildren(province, city) {
+    var p = areaCodeMap[province];
+    if (!p) return null;
+    if (!city) return { code: p.code, children: p.children };
+    var c = p.children[city];
+    if (!c) return null;
+    return { code: c.code, children: c.children || {} };
+  }
+
+  function getAreaCode(province, city, district) {
+    var p = areaCodeMap[province];
+    if (!p) return '';
+    if (!city) return p.code;
+    var c = p.children[city];
+    if (!c) return p.code;
+    if (!district) return c.code;
+    return c.children[district] || c.code;
+  }
+
+  // ==================== 2. 自定义下拉选择器 ====================
+  function initDropdowns() {
+    document.addEventListener('click', function(e) {
+      $$('.dropdown-panel.is-open').forEach(function(panel) {
+        var wrapper = panel.closest('.dropdown-wrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+          panel.classList.remove('is-open');
+        }
+      });
+    });
+
+    $$('.field-select').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var wrapper = btn.closest('.dropdown-wrapper');
+        if (!wrapper) return;
+        var panel = wrapper.querySelector('.dropdown-panel');
+        if (!panel) return;
+        var isOpen = panel.classList.contains('is-open');
+        // close all
+        $$('.dropdown-panel.is-open').forEach(function(p) { p.classList.remove('is-open'); });
+        if (!isOpen) {
+          // Check space below
+          var rect = wrapper.getBoundingClientRect();
+          var spaceBelow = window.innerHeight - rect.bottom;
+          if (spaceBelow < 220 && rect.top > 220) {
+            panel.classList.add('drop-up');
+          } else {
+            panel.classList.remove('drop-up');
+          }
+          panel.classList.add('is-open');
+        }
+      });
+    });
+
+    $$('.dropdown-option').forEach(function(opt) {
+      opt.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var wrapper = opt.closest('.dropdown-wrapper');
+        var btn = wrapper.querySelector('.field-select');
+        var panel = wrapper.querySelector('.dropdown-panel');
+        var value = opt.getAttribute('data-value');
+        var text = opt.textContent.trim();
+        // update button
+        var span = btn.querySelector('span');
+        span.textContent = text;
+        btn.classList.add('has-value');
+        btn.setAttribute('data-selected-value', value);
+        // update panel
+        $$('.dropdown-option', panel).forEach(function(o) { o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        panel.classList.remove('is-open');
+      });
+    });
+  }
+
+  // ==================== 3. 省市区三级联动 ====================
+  function initCascadeSelects() {
+    $$('.cascade-select').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (btn.classList.contains('disabled')) return;
+        var group = btn.getAttribute('data-group');
+        var level = btn.getAttribute('data-level');
+        openCascadePanel(btn, group, level);
+      });
+    });
+  }
+
+  function openCascadePanel(btn, group, level) {
+    // Remove any existing cascade panels
+    var existing = document.querySelector('.cascade-dropdown-panel');
+    if (existing) existing.remove();
+
+    var items = [];
+    if (level === 'province') {
+      items = Object.keys(areaCodeMap);
+    } else if (level === 'city') {
+      var provBtn = document.querySelector('.cascade-select[data-group="' + group + '"][data-level="province"]');
+      var provName = provBtn ? provBtn.querySelector('span').textContent.trim() : '';
+      if (provName === '请选择省') return;
+      var data = getAreaChildren(provName);
+      if (data && data.children) items = Object.keys(data.children);
+    } else if (level === 'district') {
+      var provBtn = document.querySelector('.cascade-select[data-group="' + group + '"][data-level="province"]');
+      var cityBtn = document.querySelector('.cascade-select[data-group="' + group + '"][data-level="city"]');
+      var provName = provBtn ? provBtn.querySelector('span').textContent.trim() : '';
+      var cityName = cityBtn ? cityBtn.querySelector('span').textContent.trim() : '';
+      if (provName === '请选择省' || cityName === '请选择市') return;
+      var data = getAreaChildren(provName, cityName);
+      if (data && data.children) items = Object.keys(data.children);
+    }
+
+    if (items.length === 0) return;
+
+    var rect = btn.getBoundingClientRect();
+    var panel = document.createElement('div');
+    panel.className = 'dropdown-panel is-open cascade-dropdown-panel';
+    panel.style.cssText = 'position:fixed; z-index:60; left:' + rect.left + 'px; top:' + (rect.bottom + 4) + 'px; width:' + rect.width + 'px; max-height:200px; overflow:auto;';
+    // Check if fits below
+    if (rect.bottom + 204 > window.innerHeight && rect.top > 200) {
+      panel.style.top = (rect.top - 204) + 'px';
+    }
+
+    items.forEach(function(name) {
+      var opt = document.createElement('div');
+      opt.className = 'dropdown-option';
+      opt.textContent = name;
+      opt.addEventListener('click', function(ev) {
+        ev.stopPropagation();
+        var span = btn.querySelector('span');
+        span.textContent = name;
+        btn.classList.add('has-value');
+        btn.setAttribute('data-selected-value', name);
+
+        // cascade clear downstream
+        if (level === 'province') {
+          clearCascadeDown(group, 'city');
+          clearCascadeDown(group, 'district');
+          enableCascade(group, 'city');
+        } else if (level === 'city') {
+          clearCascadeDown(group, 'district');
+          enableCascade(group, 'district');
+        }
+        panel.remove();
+      });
+      panel.appendChild(opt);
+    });
+
+    document.body.appendChild(panel);
+
+    // close on outside click
+    var closeHandler = function(ev) {
+      if (!panel.contains(ev.target) && ev.target !== btn) {
+        panel.remove();
+        document.removeEventListener('click', closeHandler);
+      }
+    };
+    setTimeout(function() { document.addEventListener('click', closeHandler); }, 0);
+  }
+
+  function clearCascadeDown(group, level) {
+    var btn = document.querySelector('.cascade-select[data-group="' + group + '"][data-level="' + level + '"]');
+    if (btn) {
+      btn.querySelector('span').textContent = (level === 'city' ? '请选择市' : '请选择区/县');
+      btn.classList.remove('has-value');
+      btn.classList.add('disabled');
+      btn.removeAttribute('data-selected-value');
+    }
+  }
+
+  function enableCascade(group, level) {
+    var btn = document.querySelector('.cascade-select[data-group="' + group + '"][data-level="' + level + '"]');
+    if (btn) btn.classList.remove('disabled');
+  }
+
+  // ==================== 4. 单选按钮组 ====================
+  function initChoiceGroups() {
+    $$('.choice-group').forEach(function(group) {
+      var field = group.getAttribute('data-field');
+      var choices = $$('.choice', group);
+      choices.forEach(function(choice) {
+        choice.addEventListener('click', function() {
+          choices.forEach(function(c) {
+            c.querySelector('.radio').classList.remove('checked');
+          });
+          choice.querySelector('.radio').classList.add('checked');
+          // Fire change event
+          if (field === 'isFourOne') {
+            handleIsFourOneChange(choice.textContent.trim());
+          }
+        });
+      });
+    });
+  }
+
+  function handleIsFourOneChange(value) {
+    var container = document.getElementById('conditionalFourOneType');
+    if (value === '是') {
+      container.classList.add('visible');
+    } else {
+      container.classList.remove('visible');
+      // Clear the type
+      var btn = document.getElementById('fourOneType');
+      if (btn) {
+        btn.querySelector('span').textContent = '请选择';
+        btn.classList.remove('has-value');
+        btn.removeAttribute('data-selected-value');
+        var panel = btn.closest('.dropdown-wrapper').querySelector('.dropdown-panel');
+        if (panel) $$('.dropdown-option', panel).forEach(function(o) { o.classList.remove('selected'); });
+      }
+    }
+  }
+
+  // ==================== 5. 人员选择弹窗 ====================
+  var personModal = null;
+  var mockPersons = [
+    { name: '张建国', id: 'EMP001', dept: '安全管理部', phone: '13800138001' },
+    { name: '李安全', id: 'EMP002', dept: '生产部', phone: '13900139002' },
+    { name: '王生产', id: 'EMP003', dept: '技术部', phone: '13700137003' },
+    { name: '赵质检', id: 'EMP004', dept: '质量管理部', phone: '13600136004' },
+    { name: '陈环保', id: 'EMP005', dept: 'EHS部', phone: '13500135005' }
+  ];
+
+  function createPersonModal() {
+    if (personModal) return;
+    var overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'personModalOverlay';
+    overlay.innerHTML = '<div class="modal">' +
+      '<div class="modal-header">' +
+        '<span class="modal-title">选择人员</span>' +
+        '<button class="modal-close" type="button">&times;</button>' +
+      '</div>' +
+      '<div class="modal-search">' +
+        '<div class="field-control"><input class="field-input" id="personSearch" type="text" placeholder="搜索姓名或工号"></div>' +
+      '</div>' +
+      '<div class="modal-body" id="personModalBody"></div>' +
+      '<div class="modal-footer">' +
+        '<button class="btn neutral" type="button" id="btnPersonCancel">取消</button>' +
+        '<button class="btn primary" type="button" id="btnPersonConfirm">确定</button>' +
+      '</div>' +
+    '</div>';
+    document.body.appendChild(overlay);
+    personModal = overlay;
+
+    // events
+    overlay.querySelector('.modal-close').addEventListener('click', closePersonModal);
+    overlay.querySelector('#btnPersonCancel').addEventListener('click', closePersonModal);
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closePersonModal();
+    });
+    overlay.querySelector('#btnPersonConfirm').addEventListener('click', confirmPersonSelection);
+    overlay.querySelector('#personSearch').addEventListener('input', renderPersonTable);
+
+    document.getElementById('btnSelectPerson').addEventListener('click', openPersonModal);
+  }
+
+  function openPersonModal() {
+    if (!personModal) createPersonModal();
+    personModal.classList.add('is-open');
+    state.selectedPerson = null;
+    document.getElementById('personSearch').value = '';
+    renderPersonTable();
+  }
+
+  function closePersonModal() {
+    if (personModal) personModal.classList.remove('is-open');
+  }
+
+  function renderPersonTable() {
+    var search = (document.getElementById('personSearch').value || '').trim().toLowerCase();
+    var filtered = mockPersons.filter(function(p) {
+      return !search || p.name.toLowerCase().includes(search) || p.id.toLowerCase().includes(search);
+    });
+    var body = document.getElementById('personModalBody');
+    if (filtered.length === 0) {
+      body.innerHTML = '<div class="modal-empty">暂无匹配人员</div>';
+      return;
+    }
+    var html = '<table class="modal-table"><thead><tr>' +
+      '<th class="col-radio"></th>' +
+      '<th>姓名</th><th>工号</th><th>部门</th><th>手机号</th>' +
+    '</tr></thead><tbody>';
+    filtered.forEach(function(p, idx) {
+      var sel = state.selectedPerson && state.selectedPerson.id === p.id;
+      html += '<tr class="' + (sel ? 'selected' : '') + '" data-idx="' + idx + '">' +
+        '<td class="col-radio"><span class="radio' + (sel ? ' checked' : '') + '"></span></td>' +
+        '<td>' + p.name + '</td><td>' + p.id + '</td><td>' + p.dept + '</td><td>' + p.phone + '</td>' +
+      '</tr>';
+    });
+    html += '</tbody></table>';
+    body.innerHTML = html;
+
+    // bind row click
+    $$('tr[data-idx]', body).forEach(function(row) {
+      row.addEventListener('click', function() {
+        var idx = parseInt(row.getAttribute('data-idx'));
+        state.selectedPerson = filtered[idx];
+        // update visual
+        $$('tr[data-idx]', body).forEach(function(r) { r.classList.remove('selected'); });
+        row.classList.add('selected');
+        $$('.radio', body).forEach(function(r) { r.classList.remove('checked'); });
+        row.querySelector('.radio').classList.add('checked');
+      });
+    });
+  }
+
+  function confirmPersonSelection() {
+    if (!state.selectedPerson) {
+      alert('请先选择一位人员');
+      return;
+    }
+    document.getElementById('managerName').value = state.selectedPerson.name;
+    document.getElementById('managerPhone').value = state.selectedPerson.phone;
+    closePersonModal();
+  }
+
+  // ==================== 6. 表单校验 ====================
+  function clearErrors() {
+    $$('.form-item.has-error').forEach(function(item) {
+      item.classList.remove('has-error');
+    });
+  }
+
+  function setFieldError(fieldId, msg) {
+    var el = document.getElementById(fieldId);
+    if (!el) return;
+    var item = el.closest('.form-item');
+    if (!item) return;
+    item.classList.add('has-error');
+    var errEl = item.querySelector('.field-error');
+    if (!errEl) {
+      errEl = document.createElement('div');
+      errEl.className = 'field-error';
+      item.appendChild(errEl);
+    }
+    errEl.textContent = msg;
+  }
+
+  function validateForm() {
+    clearErrors();
+    var valid = true;
+    var firstError = null;
+
+    function check(fieldId, label, cond, msg) {
+      if (!cond) {
+        setFieldError(fieldId, msg || label + '不能为空');
+        if (!firstError) firstError = document.getElementById(fieldId);
+        valid = false;
+      }
+    }
+
+    // companyType
+    var companyTypeBtn = document.getElementById('companyType');
+    var companyTypeVal = companyTypeBtn ? companyTypeBtn.getAttribute('data-selected-value') : null;
+    if (!companyTypeVal) {
+      setFieldError('companyType', '请选择企业类型');
+      if (!firstError) firstError = companyTypeBtn;
+      valid = false;
+    }
+
+    // industry
+    var industryBtn = document.getElementById('industry');
+    var industryVal = industryBtn ? industryBtn.getAttribute('data-selected-value') : null;
+    if (!industryVal) {
+      setFieldError('industry', '请选择所属行业');
+      if (!firstError) firstError = industryBtn;
+      valid = false;
+    }
+
+    // sign area
+    var signProv = getCascadeValue('signArea', 'province');
+    var signCity = getCascadeValue('signArea', 'city');
+    var signDist = getCascadeValue('signArea', 'district');
+    var signAddr = document.getElementById('signAddress').value.trim();
+    if (!signProv || signProv === '请选择省') { setFieldError('signAddress', '请选择注册地址省市区'); if (!firstError) firstError = document.getElementById('signAddress'); valid = false; }
+    else if (!signCity || signCity === '请选择市') { setFieldError('signAddress', '请选择注册地址市'); if (!firstError) firstError = document.getElementById('signAddress'); valid = false; }
+    else if (!signDist || signDist === '请选择区/县') { setFieldError('signAddress', '请选择注册地址区/县'); if (!firstError) firstError = document.getElementById('signAddress'); valid = false; }
+    else if (!signAddr) { setFieldError('signAddress', '请填写注册地址详细信息'); if (!firstError) firstError = document.getElementById('signAddress'); valid = false; }
+
+    // pro area
+    var proProv = getCascadeValue('proArea', 'province');
+    var proCity = getCascadeValue('proArea', 'city');
+    var proDist = getCascadeValue('proArea', 'district');
+    var proAddr = document.getElementById('proAddress').value.trim();
+    if (!proProv || proProv === '请选择省') { setFieldError('proAddress', '请选择生产地址省市区'); if (!firstError) firstError = document.getElementById('proAddress'); valid = false; }
+    else if (!proCity || proCity === '请选择市') { setFieldError('proAddress', '请选择生产地址市'); if (!firstError) firstError = document.getElementById('proAddress'); valid = false; }
+    else if (!proDist || proDist === '请选择区/县') { setFieldError('proAddress', '请选择生产地址区/县'); if (!firstError) firstError = document.getElementById('proAddress'); valid = false; }
+    else if (!proAddr) { setFieldError('proAddress', '请填写生产地址详细信息'); if (!firstError) firstError = document.getElementById('proAddress'); valid = false; }
+
+    // managerName
+    var mgrName = document.getElementById('managerName').value.trim();
+    check('managerName', '主要负责人', !!mgrName, '主要负责人不能为空');
+
+    // managerPhone
+    var mgrPhone = document.getElementById('managerPhone').value.trim();
+    if (!mgrPhone) {
+      setFieldError('managerPhone', '主要负责人联系方式不能为空');
+      if (!firstError) firstError = document.getElementById('managerPhone');
+      valid = false;
+    } else if (!/^1[3-9]\d{9}$/.test(mgrPhone)) {
+      setFieldError('managerPhone', '请输入正确的11位手机号');
+      if (!firstError) firstError = document.getElementById('managerPhone');
+      valid = false;
+    }
+
+    // employeeNum
+    var empNum = document.getElementById('employeeNum').value.trim();
+    if (!empNum) {
+      setFieldError('employeeNum', '从业人员数量不能为空');
+      if (!firstError) firstError = document.getElementById('employeeNum');
+      valid = false;
+    } else if (!/^\d+$/.test(empNum) || parseInt(empNum) <= 0) {
+      setFieldError('employeeNum', '从业人员数量须为正整数');
+      if (!firstError) firstError = document.getElementById('employeeNum');
+      valid = false;
+    }
+
+    // scale
+    var scaleBtn = document.getElementById('scale');
+    var scaleVal = scaleBtn ? scaleBtn.getAttribute('data-selected-value') : null;
+    if (!scaleVal) {
+      setFieldError('scale', '请选择企业规模');
+      if (!firstError) firstError = scaleBtn;
+      valid = false;
+    }
+
+    // isBigSafe
+    var isBigSafeVal = getChoiceValue('isBigSafe');
+    if (!isBigSafeVal) {
+      var bigSafeGroup = document.querySelector('.choice-group[data-field="isBigSafe"]');
+      if (bigSafeGroup) {
+        var item = bigSafeGroup.closest('.form-item');
+        if (item) {
+          item.classList.add('has-error');
+          var errEl = item.querySelector('.field-error');
+          if (!errEl) { errEl = document.createElement('div'); errEl.className = 'field-error'; item.appendChild(errEl); }
+          errEl.textContent = '请选择是否属于重大危险源企业';
+        }
+      }
+      valid = false;
+    }
+
+    // safeLevel
+    var safeBtn = document.getElementById('safeLevel');
+    var safeVal = safeBtn ? safeBtn.getAttribute('data-selected-value') : null;
+    if (!safeVal) {
+      setFieldError('safeLevel', '请选择安全标准化等级');
+      if (!firstError) firstError = safeBtn;
+      valid = false;
+    }
+
+    // isFourOne
+    var isFourOneVal = getChoiceValue('isFourOne');
+    if (!isFourOneVal) {
+      var fourOneGroup = document.querySelector('.choice-group[data-field="isFourOne"]');
+      if (fourOneGroup) {
+        var item = fourOneGroup.closest('.form-item');
+        if (item) {
+          item.classList.add('has-error');
+          var errEl = item.querySelector('.field-error');
+          if (!errEl) { errEl = document.createElement('div'); errEl.className = 'field-error'; item.appendChild(errEl); }
+          errEl.textContent = '请选择是否属于"四涉一有限一使用"企业';
+        }
+      }
+      valid = false;
+    }
+
+    // fourOneType - conditional
+    if (isFourOneVal === '是') {
+      var fotBtn = document.getElementById('fourOneType');
+      var fotVal = fotBtn ? fotBtn.getAttribute('data-selected-value') : null;
+      if (!fotVal) {
+        setFieldError('fourOneType', '请选择四涉一有限一使用具体类型');
+        if (!firstError) firstError = fotBtn;
+        valid = false;
+      }
+    }
+
+    if (firstError && !valid) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstError.focus({ preventScroll: true });
+    }
+    return valid;
+  }
+
+  function getCascadeValue(group, level) {
+    var btn = document.querySelector('.cascade-select[data-group="' + group + '"][data-level="' + level + '"]');
+    return btn ? btn.getAttribute('data-selected-value') || btn.querySelector('span').textContent.trim() : '';
+  }
+
+  function getChoiceValue(field) {
+    var group = document.querySelector('.choice-group[data-field="' + field + '"]');
+    if (!group) return null;
+    var checked = group.querySelector('.radio.checked');
+    if (!checked) return null;
+    return checked.closest('.choice').textContent.trim();
+  }
+
+  // ==================== 7. 保存 & 签名 & POST ====================
+  function buildPayload() {
+    var companyType = document.getElementById('companyType').getAttribute('data-selected-value') || '';
+    var industry = document.getElementById('industry').getAttribute('data-selected-value') || '';
+    var signProv = getCascadeValue('signArea', 'province');
+    var signCity = getCascadeValue('signArea', 'city');
+    var signDist = getCascadeValue('signArea', 'district');
+    var signAreaCode = getAreaCode(signProv, signCity, signDist);
+    var signAddress = document.getElementById('signAddress').value.trim();
+    var proProv = getCascadeValue('proArea', 'province');
+    var proCity = getCascadeValue('proArea', 'city');
+    var proDist = getCascadeValue('proArea', 'district');
+    var proAreaCode = getAreaCode(proProv, proCity, proDist);
+    var proAddress = document.getElementById('proAddress').value.trim();
+    var managerName = document.getElementById('managerName').value.trim();
+    var managerPhone = document.getElementById('managerPhone').value.trim();
+    var employeeNum = document.getElementById('employeeNum').value.trim();
+    var scale = document.getElementById('scale').getAttribute('data-selected-value') || '';
+    var isBigSafeRaw = getChoiceValue('isBigSafe');
+    // REVERSAL: page "是" → 0, "否" → 1
+    var isBigSafe = (isBigSafeRaw === '是') ? '0' : (isBigSafeRaw === '否' ? '1' : '');
+    var safeLevel = document.getElementById('safeLevel').getAttribute('data-selected-value') || '';
+    var isFourOneRaw = getChoiceValue('isFourOne');
+    var isFourOne = (isFourOneRaw === '是') ? '1' : (isFourOneRaw === '否' ? '0' : '');
+    var fourOneType = '';
+    if (isFourOne === '1') {
+      fourOneType = document.getElementById('fourOneType').getAttribute('data-selected-value') || '';
+    }
+
+    var payload = {
+      companyName: document.getElementById('companyName').value,
+      societyCode: document.getElementById('societyCode').value,
+      companyType: companyType,
+      industry: industry,
+      signAreaCode: signAreaCode,
+      signAddress: signAddress,
+      proAreaCode: proAreaCode,
+      proAddress: proAddress,
+      managerName: managerName,
+      managerPhone: managerPhone,
+      employeeNum: employeeNum,
+      scale: scale,
+      isBigSafe: isBigSafe,
+      safeLevel: safeLevel,
+      isFourOne: isFourOne
+    };
+    if (isFourOne === '1') {
+      payload.fourOneType = fourOneType;
+    }
+    return payload;
+  }
+
+  function md5(str) {
+    // Simple MD5 implementation (for signature simulation)
+    function rshift(num, bits) { return Math.floor(num / Math.pow(2, bits)); }
+    function safeAdd(x, y) {
+      var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+      var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+      return (msw << 16) | (lsw & 0xFFFF);
+    }
+    function bitwiseRotate(num, cnt) {
+      return (num << cnt) | rshift(num, 32 - cnt);
+    }
+    function md5cmn(q, a, b, x, s, t) {
+      return safeAdd(bitwiseRotate(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
+    }
+    function md5ff(a, b, c, d, x, s, t) { return md5cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+    function md5gg(a, b, c, d, x, s, t) { return md5cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+    function md5hh(a, b, c, d, x, s, t) { return md5cmn(b ^ c ^ d, a, b, x, s, t); }
+    function md5ii(a, b, c, d, x, s, t) { return md5cmn(c ^ (b | (~d)), a, b, x, s, t); }
+
+    function convertToWordArray(str) {
+      var len = str.length;
+      var words = [];
+      for (var i = 0; i < len; i++) {
+        words[i >> 2] |= (str.charCodeAt(i) & 0xFF) << ((i % 4) << 3);
+      }
+      words[len >> 2] |= 0x80 << ((len % 4) << 3);
+      var paddingLen = (((len + 8) >> 6) + 1) << 4;
+      for (var j = (len >> 2) + 1; j < paddingLen; j++) words[j] = 0;
+      words[paddingLen - 2] = len << 3;
+      words[paddingLen - 1] = len >>> 29;
+      return words;
+    }
+
+    function wordToHex(val) {
+      var hex = '';
+      for (var i = 0; i <= 3; i++) {
+        var b = (val >>> (i * 8)) & 0xFF;
+        hex += ('0' + b.toString(16)).slice(-2);
+      }
+      return hex;
+    }
+
+    var x = convertToWordArray(unescape(encodeURIComponent(str)));
+    var a = 0x67452301, b = 0xEFCDAB89, c = 0x98BADCFE, d = 0x10325476;
+
+    for (var k = 0; k < x.length; k += 16) {
+      var AA = a, BB = b, CC = c, DD = d;
+      a = md5ff(a, b, c, d, x[k+0], 7, 0xD76AA478);
+      d = md5ff(d, a, b, c, x[k+1], 12, 0xE8C7B756);
+      c = md5ff(c, d, a, b, x[k+2], 17, 0x242070DB);
+      b = md5ff(b, c, d, a, x[k+3], 22, 0xC1BDCEEE);
+      a = md5ff(a, b, c, d, x[k+4], 7, 0xF57C0FAF);
+      d = md5ff(d, a, b, c, x[k+5], 12, 0x4787C62A);
+      c = md5ff(c, d, a, b, x[k+6], 17, 0xA8304613);
+      b = md5ff(b, c, d, a, x[k+7], 22, 0xFD469501);
+      a = md5ff(a, b, c, d, x[k+8], 7, 0x698098D8);
+      d = md5ff(d, a, b, c, x[k+9], 12, 0x8B44F7AF);
+      c = md5ff(c, d, a, b, x[k+10], 17, 0xFFFF5BB1);
+      b = md5ff(b, c, d, a, x[k+11], 22, 0x895CD7BE);
+      a = md5ff(a, b, c, d, x[k+12], 7, 0x6B901122);
+      d = md5ff(d, a, b, c, x[k+13], 12, 0xFD987193);
+      c = md5ff(c, d, a, b, x[k+14], 17, 0xA679438E);
+      b = md5ff(b, c, d, a, x[k+15], 22, 0x49B40821);
+      a = md5gg(a, b, c, d, x[k+1], 5, 0xF61E2562);
+      d = md5gg(d, a, b, c, x[k+6], 9, 0xC040B340);
+      c = md5gg(c, d, a, b, x[k+11], 14, 0x265E5A51);
+      b = md5gg(b, c, d, a, x[k+0], 20, 0xE9B6C7AA);
+      a = md5gg(a, b, c, d, x[k+5], 5, 0xD62F105D);
+      d = md5gg(d, a, b, c, x[k+10], 9, 0x2441453);
+      c = md5gg(c, d, a, b, x[k+15], 14, 0xD8A1E681);
+      b = md5gg(b, c, d, a, x[k+4], 20, 0xE7D3FBC8);
+      a = md5gg(a, b, c, d, x[k+9], 5, 0x21E1CDE6);
+      d = md5gg(d, a, b, c, x[k+14], 9, 0xC33707D6);
+      c = md5gg(c, d, a, b, x[k+3], 14, 0xF4D50D87);
+      b = md5gg(b, c, d, a, x[k+8], 20, 0x455A14ED);
+      a = md5gg(a, b, c, d, x[k+13], 5, 0xA9E3E905);
+      d = md5gg(d, a, b, c, x[k+2], 9, 0xFCEFA3F8);
+      c = md5gg(c, d, a, b, x[k+7], 14, 0x676F02D9);
+      b = md5gg(b, c, d, a, x[k+12], 20, 0x8D2A4C8A);
+      a = md5hh(a, b, c, d, x[k+5], 4, 0xFFFA3942);
+      d = md5hh(d, a, b, c, x[k+8], 11, 0x8771F681);
+      c = md5hh(c, d, a, b, x[k+11], 16, 0x6D9D6122);
+      b = md5hh(b, c, d, a, x[k+14], 23, 0xFDE5380C);
+      a = md5hh(a, b, c, d, x[k+1], 4, 0xA4BEEA44);
+      d = md5hh(d, a, b, c, x[k+4], 11, 0x4BDECFA9);
+      c = md5hh(c, d, a, b, x[k+7], 16, 0xF6BB4B60);
+      b = md5hh(b, c, d, a, x[k+10], 23, 0xBEBFBC70);
+      a = md5hh(a, b, c, d, x[k+13], 4, 0x289B7EC6);
+      d = md5hh(d, a, b, c, x[k+0], 11, 0xEAA127FA);
+      c = md5hh(c, d, a, b, x[k+3], 16, 0xD4EF3085);
+      b = md5hh(b, c, d, a, x[k+6], 23, 0x4881D05);
+      a = md5hh(a, b, c, d, x[k+9], 4, 0xD9D4D039);
+      d = md5hh(d, a, b, c, x[k+12], 11, 0xE6DB99E5);
+      c = md5hh(c, d, a, b, x[k+15], 16, 0x1FA27CF8);
+      b = md5hh(b, c, d, a, x[k+2], 23, 0xC4AC5665);
+      a = md5ii(a, b, c, d, x[k+0], 6, 0xF4292244);
+      d = md5ii(d, a, b, c, x[k+7], 10, 0x432AFF97);
+      c = md5ii(c, d, a, b, x[k+14], 15, 0xAB9423A7);
+      b = md5ii(b, c, d, a, x[k+5], 21, 0xFC93A039);
+      a = md5ii(a, b, c, d, x[k+12], 6, 0x655B59C3);
+      d = md5ii(d, a, b, c, x[k+3], 10, 0x8F0CCC92);
+      c = md5ii(c, d, a, b, x[k+10], 15, 0xFFEFF47D);
+      b = md5ii(b, c, d, a, x[k+1], 21, 0x85845DD1);
+      a = md5ii(a, b, c, d, x[k+8], 6, 0x6FA87E4F);
+      d = md5ii(d, a, b, c, x[k+15], 10, 0xFE2CE6E0);
+      c = md5ii(c, d, a, b, x[k+6], 15, 0xA3014314);
+      b = md5ii(b, c, d, a, x[k+13], 21, 0x4E0811A1);
+      a = md5ii(a, b, c, d, x[k+4], 6, 0xF7537E82);
+      d = md5ii(d, a, b, c, x[k+11], 10, 0xBD3AF235);
+      c = md5ii(c, d, a, b, x[k+2], 15, 0x2AD7D2BB);
+      b = md5ii(b, c, d, a, x[k+9], 21, 0xEB86D391);
+      a = safeAdd(a, AA);
+      b = safeAdd(b, BB);
+      c = safeAdd(c, CC);
+      d = safeAdd(d, DD);
+    }
+    return (wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d)).toLowerCase();
+  }
+
+  function generateSign(timestamp, nonce) {
+    var secretKey = 'eito_secret_key_2024'; // 模拟密钥
+    var raw = 'eito' + timestamp + nonce + secretKey;
+    return md5(raw);
+  }
+
+  function doSave() {
+    if (!validateForm()) return;
+    var payload = buildPayload();
+    var timestamp = Date.now();
+    var nonce = '';
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < 10; i++) nonce += chars.charAt(Math.floor(Math.random() * chars.length));
+    var sign = generateSign(timestamp, nonce);
+
+    // Build request
+    var headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'timestamp': '' + timestamp,
+      'nonce': nonce,
+      'accessKey': 'hwh_ehs_2024',
+      'sign': sign
+    };
+
+    console.log('[企业信息配置] POST /company/data/register');
+    console.log('Headers:', JSON.stringify(headers, null, 2));
+    console.log('Payload:', JSON.stringify(payload, null, 2));
+
+    // Simulate POST (in production use fetch/XHR)
+    try {
+      // 模拟成功响应
+      alert('保存成功！');
+      // Save to localStorage
+      try {
+        localStorage.setItem('enterprise_form_data', JSON.stringify(payload));
+        localStorage.setItem('enterprise_form_headers', JSON.stringify(headers));
+      } catch(e) {}
+    } catch(e) {
+      alert('提交失败：' + (e.message || '网络异常'));
+    }
+  }
+
+  // ==================== 8. localStorage 恢复 ====================
+  function loadSavedFormData() {
+    try {
+      var saved = localStorage.getItem('enterprise_form_data');
+      if (saved) {
+        var data = JSON.parse(saved);
+        restoreFormData(data);
+      }
+    } catch(e) {}
+  }
+
+  function restoreFormData(data) {
+    if (!data) return;
+    // companyType
+    if (data.companyType) selectDropdownOption('companyType', data.companyType);
+    // industry
+    if (data.industry) selectDropdownOption('industry', data.industry);
+    // scale
+    if (data.scale) selectDropdownOption('scale', data.scale);
+    // safeLevel
+    if (data.safeLevel) selectDropdownOption('safeLevel', data.safeLevel);
+    // signAddress
+    if (data.signAddress) document.getElementById('signAddress').value = data.signAddress;
+    // proAddress
+    if (data.proAddress) document.getElementById('proAddress').value = data.proAddress;
+    // managerName
+    if (data.managerName) document.getElementById('managerName').value = data.managerName;
+    // managerPhone
+    if (data.managerPhone) document.getElementById('managerPhone').value = data.managerPhone;
+    // employeeNum
+    if (data.employeeNum) document.getElementById('employeeNum').value = data.employeeNum;
+    // isBigSafe - REVERSAL: stored value 0→是, 1→否
+    if (data.isBigSafe !== undefined && data.isBigSafe !== '') {
+      setChoiceValue('isBigSafe', data.isBigSafe === '0' ? '是' : '否');
+    }
+    // isFourOne
+    if (data.isFourOne !== undefined && data.isFourOne !== '') {
+      setChoiceValue('isFourOne', data.isFourOne === '1' ? '是' : '否');
+      if (data.isFourOne === '1' && data.fourOneType) {
+        selectDropdownOption('fourOneType', data.fourOneType);
+      }
+    }
+    // fourOneType
+    if (data.fourOneType) selectDropdownOption('fourOneType', data.fourOneType);
+  }
+
+  function selectDropdownOption(fieldId, value) {
+    var btn = document.getElementById(fieldId);
+    if (!btn) return;
+    var wrapper = btn.closest('.dropdown-wrapper');
+    if (!wrapper) return;
+    var panel = wrapper.querySelector('.dropdown-panel');
+    var opts = panel ? $$('.dropdown-option', panel) : [];
+    var found = null;
+    opts.forEach(function(o) {
+      if (o.getAttribute('data-value') === value) found = o;
+    });
+    if (found) {
+      btn.querySelector('span').textContent = found.textContent.trim();
+      btn.classList.add('has-value');
+      btn.setAttribute('data-selected-value', value);
+      opts.forEach(function(o) { o.classList.remove('selected'); });
+      found.classList.add('selected');
+    }
+  }
+
+  function setChoiceValue(field, value) {
+    var group = document.querySelector('.choice-group[data-field="' + field + '"]');
+    if (!group) return;
+    var choices = $$('.choice', group);
+    choices.forEach(function(c) {
+      var radio = c.querySelector('.radio');
+      if (c.textContent.trim() === value) {
+        radio.classList.add('checked');
+      } else {
+        radio.classList.remove('checked');
+      }
+    });
+    if (field === 'isFourOne') {
+      handleIsFourOneChange(value);
+    }
+  }
+
+  // ==================== 9. PRD 标注系统 ====================
+
+  // 浮窗内容数据
+  var tooltipContents = {};
+
+  tooltipContents[1] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[1] 需求描述 — 页面概述</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>页面名称：</strong>企业信息配置</p>' +
+    '<p><strong>菜单路径：</strong>系统管理 / 权限管理 / 企业信息配置</p>' +
+    '<p><strong>使用角色：</strong>系统管理员 — 拥有企业信息配置的查看和编辑权限，可对企业全部信息进行新增和修改。</p>' +
+    '<p><strong>前置条件：</strong></p>' +
+    '<ul><li>用户已登录环慧慧EHS+系统</li><li>用户具有「系统管理 / 权限管理 / 企业信息配置」菜单权限</li><li>页面以编辑模式打开（企业首次配置时为新增模式，后续为编辑模式）</li></ul>' +
+    '<p><strong>系统关系：</strong></p>' +
+    '<blockquote>环慧慧EHS+ 为企业侧 EHS 管理平台，工贸在线为行业监管侧数据平台。环慧慧EHS+ 作为数据生产方，通过接口向工贸在线推送/同步企业基础数据。</blockquote>' +
+    '<p><strong>功能清单：</strong>查看/编辑企业信息（四大分组：基本信息、地址信息、主要负责人及企业规模、安全管理属性）、字段校验、字段联动显隐、自定义下拉选择、省市区三级联动、人员选择弹窗、保存推送至工贸在线。</p>' +
+    '<p><strong>权限规划：</strong></p>' +
+    '<ul><li>查看：查看企业信息配置页面，本企业数据</li><li>编辑：编辑、保存企业信息，本企业数据</li></ul>' +
+    '<p><strong>字段映射状态总览：</strong></p>' +
+    '<ul><li><span class="dot-green"></span><strong>✅ 已有字段：</strong>companyName（企业名称）、societyCode（社会信用代码）— 运营端同步，企业端只读</li>' +
+    '<li><span class="dot-red"></span><strong>➕ 新增字段：</strong>其余 14 个字段均为新增（企业类型、所属行业、注册地址、生产地址、主要负责人、联系方式、从业人员数量、企业规模、重大危险源、安全标准化等级、四涉一有限、四涉一有限具体类型）</li></ul>' +
+    '</div>';
+
+  tooltipContents[2] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[2] 需求描述 — 保存按钮</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>触发动作：</strong>表单校验 → 校验通过 → 调用注册接口提交</p>' +
+    '<p><strong>校验规则：</strong></p>' +
+    '<ul><li><strong>必填字段校验：</strong>企业类型、所属行业、注册地址（省市区+详细）、生产地址（省市区+详细）、主要负责人、主要负责人联系方式、从业人员数量、企业规模、是否重大危险源企业、安全标准化等级、是否四涉一有限一使用</li>' +
+    '<li><strong>条件必填校验：</strong>选择"四涉一有限"为「是」时，四涉一有限具体类型必填</li>' +
+    '<li><strong>格式校验：</strong>手机号格式 <code>/^1[3-9]\\d{9}$/</code>，从业人数为正整数</li></ul>' +
+    '<p><strong>校验失败处理：</strong>在异常字段下方显示红色错误提示并添加红色边框（<code>.has-error</code>），阻止保存</p>' +
+    '<p><strong>推送接口：</strong></p>' +
+    '<blockquote><strong>POST</strong> https://eitohq.cn:9443/eito/crunii-eito-out/out/company/data/register</blockquote>' +
+    '<p><strong>请求头（Header）：</strong></p>' +
+    '<ul><li><code>timestamp</code> — 毫秒时间戳（long）</li>' +
+    '<li><code>nonce</code> — 10位随机字符串</li>' +
+    '<li><code>accessKey</code> — 系统分配的访问密钥</li>' +
+    '<li><code>sign</code> — MD5("eito" + timestamp + nonce + secretKey)</li></ul>' +
+    '<p><strong>推送参数（17项）：</strong>companyName, societyCode, companyType, industry, signAreaCode, signAddress, proAreaCode, proAddress, managerName, managerPhone, employeeNum, scale, isBigSafe, safeLevel, isFourOne, fourOneType（条件）</p>' +
+    '<p><span class="dot-red"></span><strong>⚠ isBigSafe 反转逻辑：</strong>页面「是」→ 接口传 <code>0</code>，页面「否」→ 接口传 <code>1</code></p>' +
+    '<p><strong>操作反馈：</strong></p>' +
+    '<ul><li>保存成功：alert(\'保存成功！\')，保持当前页面，不清空已填内容</li>' +
+    '<li>保存失败：展示具体错误原因</li></ul>' +
+    '</div>';
+
+  tooltipContents[3] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[3] 需求描述 — 只读字段（企业名称 & 社会信用代码）</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-green"></span> ✅ 已有字段 — 来源于运营端配置同步</p>' +
+    '<p><strong>企业名称 (companyName)：</strong></p>' +
+    '<ul><li>控件类型：文本输入（只读）</li><li>数据来源：<strong>来源于企业信息</strong>，新增机构时由运营端添加公司名称，已添加的机构直接获取该字段值</li><li>企业端只读，灰色背景禁用态展示</li><li>提交时作为标识参数随请求发送</li></ul>' +
+    '<p><strong>社会信用代码 (societyCode)：</strong></p>' +
+    '<ul><li>控件类型：文本输入（只读）</li><li>数据来源：<strong>来源于企业信息</strong>，新增机构时由运营端添加社会信用代码，已添加的机构直接获取该字段值</li><li>企业端只读，灰色背景禁用态展示</li><li>18位统一社会信用代码</li><li>提交时作为标识参数随请求发送</li></ul>' +
+    '<p><strong>数据权限：</strong>系统管理员可查看但不可修改这两个字段。由运营中心「组织机构」模块统一配置后下发至企业端。</p>' +
+    '<blockquote>这是页面 16 个字段中仅有的 2 个 ✅已有字段，其余 14 个均为 ➕新增字段。</blockquote>' +
+    '</div>';
+
+  tooltipContents[4] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[4] 需求描述 — 企业类型 & 所属行业</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-red"></span> ➕ 新增字段</p>' +
+    '<p><strong>企业类型 (companyType)：</strong></p>' +
+    '<ul><li>控件类型：下拉选择</li><li>必填：是</li><li>默认值：「请选择」</li><li><strong>选项值与编码映射：</strong></li></ul>' +
+    '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px;">' +
+    '<tr><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">选项</th><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">编码</th></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">国有</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">1</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">私营</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">2</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">事业单位</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">3</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">社会团体</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">4</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">中外合资</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">5</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">外商独资</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">6</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">其它</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">7</td></tr>' +
+    '</table>' +
+    '<p><strong>所属行业 (industry)：</strong></p>' +
+    '<ul><li>控件类型：下拉选择</li><li>必填：是</li><li>默认值：「请选择」</li><li><strong>选项值与编码映射：</strong></li></ul>' +
+    '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px;">' +
+    '<tr><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">选项</th><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">编码</th></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">冶金</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">1</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">有色</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">2</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">建材</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">3</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">机械</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">4</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">轻工</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">5</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">纺织</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">6</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">烟草</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">7</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">商贸</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">8</td></tr>' +
+    '</table>' +
+    '</div>';
+
+  tooltipContents[5] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[5] 需求描述 — 注册地址（省市区+详细）</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-red"></span> ➕ 新增字段</p>' +
+    '<p><strong>注册地址-省 (signAreaProvince)：</strong></p>' +
+    '<ul><li>控件类型：省市区级联</li><li>必填：是</li><li>数据来源：<strong>来源于企业信息</strong>，注册地址为一串字符，由地址服务自动解析出省市区信息，解析后可修改</li><li>省市区数据由系统预设（重庆市、四川省、北京市、上海市等）</li></ul>' +
+    '<p><strong>注册地址-市 (signAreaCity)：</strong></p>' +
+    '<ul><li>控件类型：省市区级联</li><li>必填：是</li><li>选择省后启用市选择器</li><li>由注册地址字符串自动解析得出，解析后可修改</li></ul>' +
+    '<p><strong>注册地址-区/县 (signAreaDistrict)：</strong></p>' +
+    '<ul><li>控件类型：省市区级联</li><li>必填：是</li><li>选择市后启用区/县选择器</li><li>三级联动选完后拼接为 <code>signAreaCode</code> 编码（6位行政区划编码，如 <code>500106</code>）</li></ul>' +
+    '<p><strong>注册地址-详细 (signAddress)：</strong></p>' +
+    '<ul><li>控件类型：文本输入</li><li>必填：是</li><li>最大长度 255 字符</li><li>由注册地址字符串自动解析出街道、门牌号、楼层等详细信息，解析后可修改</li></ul>' +
+    '<p><strong>三级联动规则：</strong></p>' +
+    '<ul><li>初始状态：市和区/县选择器默认禁用（<code>.disabled</code>）</li><li>选择省后：启用市选择器，动态生成对应省份的城市列表</li><li>选择市后：启用区/县选择器，动态生成对应城市的区县列表</li><li>修改上一级时自动清空下级已选值</li></ul>' +
+    '</div>';
+
+  tooltipContents[6] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[6] 需求描述 — 生产地址（省市区+详细）</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-red"></span> ➕ 新增字段</p>' +
+    '<p><strong>生产地址-省 (proAreaProvince)：</strong></p>' +
+    '<ul><li>控件类型：省市区级联</li><li>必填：是</li><li>默认值：「请选择省」</li><li>同注册地址联动规则</li></ul>' +
+    '<p><strong>生产地址-市 (proAreaCity)：</strong></p>' +
+    '<ul><li>控件类型：省市区级联</li><li>必填：是</li><li>默认值：「请选择市」</li></ul>' +
+    '<p><strong>生产地址-区/县 (proAreaDistrict)：</strong></p>' +
+    '<ul><li>控件类型：省市区级联</li><li>必填：是</li><li>默认值：「请选择区/县」</li><li>三级联动选完后拼接为 <code>proAreaCode</code> 编码（6位行政区划编码）</li></ul>' +
+    '<p><strong>生产地址-详细 (proAddress)：</strong></p>' +
+    '<ul><li>控件类型：文本输入</li><li>必填：是</li><li>最大长度 255 字符</li><li>生产场所的详细地址</li></ul>' +
+    '<p><strong>三级联动规则：</strong>与注册地址一致 — 选择省→启用市→启用区/县，修改上级自动清空下级</p>' +
+    '</div>';
+
+  tooltipContents[7] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[7] 需求描述 — 主要负责人 & 联系方式</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-red"></span> ➕ 新增字段</p>' +
+    '<p><strong>主要负责人 (managerName)：</strong></p>' +
+    '<ul><li>控件类型：文本输入 + 人员选择器</li><li>必填：是</li><li>支持直接手动输入姓名</li><li>也支持通过「选择人员」按钮打开弹窗，弹窗支持搜索姓名/工号，单选人员后确定回填姓名和联系方式</li></ul>' +
+    '<p><strong>主要负责人联系方式 (managerPhone)：</strong></p>' +
+    '<ul><li>控件类型：文本输入</li><li>必填：是</li><li>校验规则：11位手机号格式 <code>/^1[3-9]\\d{9}$/</code></li><li>选择主要负责人后自动填充，可手动修改</li></ul>' +
+    '</div>';
+
+  tooltipContents[8] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[8] 需求描述 — 选择人员按钮</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>触发：</strong>「选择人员」按钮（<code>#btnSelectPerson</code>）</p>' +
+    '<p><strong>弹窗内容：</strong>搜索框 + 人员表格（姓名/工号/部门/手机号）+ 单选 radio</p>' +
+    '<p><strong>交互说明：</strong></p>' +
+    '<ul><li>搜索：实时过滤，匹配姓名和工号</li>' +
+    '<li>选择：点击行选中，radio 高亮，行添加 <code>.selected</code> 样式</li>' +
+    '<li>确认：确定按钮将选中人员信息写入 <code>state.selectedPerson</code>，并回填 <code>managerName</code> 和 <code>managerPhone</code></li>' +
+    '<li>关闭：取消按钮、关闭图标、点击遮罩均可关闭</li></ul>' +
+    '<p><strong>补充说明：</strong><code>managerName</code> 输入框同时支持手动输入，无需强制通过弹窗选择</p>' +
+    '</div>';
+
+  tooltipContents[9] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[9] 需求描述 — 从业人员数量 & 企业规模</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-red"></span> ➕ 新增字段</p>' +
+    '<p><strong>从业人员数量 (employeeNum)：</strong></p>' +
+    '<ul><li>控件类型：数字输入</li><li>必填：是</li><li>校验规则：正整数</li><li>使用 <code>number</code> 类型输入框，步长=1</li></ul>' +
+    '<p><strong>企业规模 (scale)：</strong></p>' +
+    '<ul><li>控件类型：下拉选择</li><li>必填：是</li><li>默认值：「请选择」</li><li><strong>选项值与编码映射：</strong></li></ul>' +
+    '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px;">' +
+    '<tr><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">选项</th><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">编码</th></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">规模以上</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">1</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">规模以下</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">2</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">小微企业</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">3</td></tr>' +
+    '</table>' +
+    '</div>';
+
+  tooltipContents[10] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[10] 需求描述 — 是否重大危险源企业 & 安全标准化等级</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-red"></span> ➕ 新增字段</p>' +
+    '<p><strong>是否属于重大危险源企业 (isBigSafe)：</strong></p>' +
+    '<ul><li>控件类型：单选按钮组</li><li>必填：是</li><li>选项：「是」「否」，单选互斥</li><li><span class="dot-red"></span><strong>⚠ 值反转逻辑：</strong>页面「是」→ 接口传 <code>0</code>（存在重大危险源），页面「否」→ 接口传 <code>1</code>（不存在重大危险源）</li><li><code>0</code>-存在重大危险源，<code>1</code>-不存在重大危险源</li></ul>' +
+    '<p><strong>安全标准化等级 (safeLevel)：</strong></p>' +
+    '<ul><li>控件类型：下拉选择</li><li>必填：是</li><li>默认值：「请选择」</li><li><strong>选项值与编码映射：</strong></li></ul>' +
+    '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px;">' +
+    '<tr><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">选项</th><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">编码</th></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">一级</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">1</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">二级</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">2</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">三级</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">3</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">其他</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">4</td></tr>' +
+    '</table>' +
+    '</div>';
+
+  tooltipContents[11] = '<div class="prd-tooltip-header"><span class="prd-tooltip-title">[11] 需求描述 — 是否四涉一有限 & 具体类型</span><button class="prd-tooltip-close">&times;</button></div>' +
+    '<div class="prd-tooltip-body">' +
+    '<p><strong>字段状态：</strong><span class="dot-red"></span> ➕ 新增字段</p>' +
+    '<p><strong>是否属于"四涉一有限一使用"企业 (isFourOne)：</strong></p>' +
+    '<ul><li>控件类型：单选按钮组</li><li>必填：是</li><li>选项：「是(1)」「否(0)」，单选互斥</li><li><code>1</code>-属于，<code>0</code>-不属于</li></ul>' +
+    '<p><strong>四涉一有限一使用具体类型 (fourOneType)：</strong></p>' +
+    '<ul><li>控件类型：下拉选择</li><li>条件必填：仅当 <code>isFourOne=是</code> 时必填</li><li>仅在 <code>isFourOne=是</code> 时可见（<code>#conditionalFourOneType</code> 容器显示）</li><li>选择「否」时隐藏容器，并清除已选择的具体类型</li><li><strong>选项值与编码映射：</strong></li></ul>' +
+    '<table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px;">' +
+    '<tr><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">选项</th><th style="border:1px solid #e6e7eb;padding:4px 8px;background:#f7f8fa;">编码</th></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">粉尘涉爆</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">1</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">高温熔融</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">2</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">涉氨制冷</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">3</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">冶金煤气</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">4</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">有限空间作业</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">5</td></tr>' +
+    '<tr><td style="border:1px solid #e6e7eb;padding:4px 8px;">燃爆毒危化品使用</td><td style="border:1px solid #e6e7eb;padding:4px 8px;">6</td></tr>' +
+    '</table>' +
+    '</div>';
+
+  // 浮窗创建与管理
+  var openTooltips = {};
+
+  function createTooltip(badgeId) {
+    if (openTooltips[badgeId]) return openTooltips[badgeId];
+    var content = tooltipContents[badgeId];
+    if (!content) return null;
+
+    var tip = document.createElement('div');
+    tip.className = 'prd-tooltip';
+    tip.setAttribute('data-badge-id', badgeId);
+    tip.innerHTML = content;
+    document.body.appendChild(tip);
+
+    // Close button
+    var closeBtn = tip.querySelector('.prd-tooltip-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeTooltip(badgeId);
+      });
+    }
+
+    // Prevent events on tooltip
+    tip.addEventListener('click', function(e) { e.stopPropagation(); });
+
+    // Drag
+    var header = tip.querySelector('.prd-tooltip-header');
+    if (header) {
+      var isDragging = false, startX, startY, origLeft, origTop;
+      header.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        var rect = tip.getBoundingClientRect();
+        origLeft = rect.left;
+        origTop = rect.top;
+        tip.style.transition = 'none';
+        e.preventDefault();
+      });
+      document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        tip.style.left = (origLeft + dx) + 'px';
+        tip.style.top = (origTop + dy) + 'px';
+      });
+      document.addEventListener('mouseup', function() {
+        if (isDragging) {
+          isDragging = false;
+          tip.style.transition = '';
+        }
+      });
+    }
+
+    openTooltips[badgeId] = tip;
+    return tip;
+  }
+
+  function closeTooltip(badgeId) {
+    var tip = openTooltips[badgeId];
+    if (tip) {
+      tip.classList.remove('is-open');
+      tip.remove();
+      delete openTooltips[badgeId];
+    }
+  }
+
+  function positionTooltip(tip, badge) {
+    var badgeRect = badge.getBoundingClientRect();
+    var tipW = 450;
+    var left = badgeRect.right + 4;
+    var top = badgeRect.top - 4;
+
+    // Check right overflow
+    if (left + tipW > window.innerWidth - 16) {
+      left = badgeRect.left - tipW - 4;
+    }
+    if (left < 8) left = 8;
+
+    // Check bottom overflow
+    var maxH = 420;
+    if (top + maxH > window.innerHeight - 16) {
+      top = window.innerHeight - maxH - 16;
+    }
+    if (top < 8) top = 8;
+
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function showTooltip(badgeId, badge) {
+    var tip = createTooltip(badgeId);
+    if (!tip) return;
+    positionTooltip(tip, badge);
+    tip.classList.add('is-open');
+  }
+
+  function hideTooltip(badgeId) {
+    closeTooltip(badgeId);
+  }
+
+  // 绑定角标事件
+  function bindBadgeEvents() {
+    $$('.prd-badge').forEach(function(badge) {
+      if (badge.hasAttribute('data-bound')) return;
+      badge.setAttribute('data-bound', '1');
+      var badgeId = parseInt(badge.getAttribute('data-badge-id'));
+      if (!badgeId) return;
+
+      badge.addEventListener('mouseenter', function(e) {
+        e.stopPropagation();
+        showTooltip(badgeId, badge);
+      });
+
+      badge.addEventListener('mouseleave', function(e) {
+        // Don't close immediately - allow moving to tooltip
+        setTimeout(function() {
+          var tip = openTooltips[badgeId];
+          if (tip && !tip.matches(':hover')) {
+            // Check if mouse is over the tooltip
+          }
+        }, 100);
+      });
+    });
+  }
+
+  // 全局点击关闭浮窗（但点击角标本身不关闭）
+  document.addEventListener('click', function(e) {
+    var clickedOnBadge = e.target.closest('.prd-badge');
+    var clickedOnTooltip = e.target.closest('.prd-tooltip');
+    if (!clickedOnBadge && !clickedOnTooltip) {
+      Object.keys(openTooltips).forEach(function(id) {
+        closeTooltip(parseInt(id));
+      });
+    }
+  });
+
+  // ==================== 10. PRD 抽屉 ====================
+  function createPrdDrawer() {
+    // Overlay
+    var overlay = document.createElement('div');
+    overlay.className = 'prd-drawer-overlay';
+    overlay.id = 'prdDrawerOverlay';
+    document.body.appendChild(overlay);
+
+    // Drawer
+    var drawer = document.createElement('div');
+    drawer.className = 'prd-drawer';
+    drawer.id = 'prdDrawer';
+    drawer.innerHTML = '<div class="prd-drawer-header">' +
+      '<span class="prd-drawer-title">PRD 说明</span>' +
+      '<button class="prd-drawer-close">&times;</button>' +
+    '</div>' +
+    '<div class="prd-drawer-tabs">' +
+      '<div class="prd-drawer-tab is-active" data-tab="page">页面 PRD</div>' +
+      '<div class="prd-drawer-tab" data-tab="global">整体 PRD</div>' +
+    '</div>' +
+    '<div class="prd-drawer-content" id="prdDrawerContent"></div>';
+    document.body.appendChild(drawer);
+
+    // Events
+    overlay.addEventListener('click', closePrdDrawer);
+    drawer.querySelector('.prd-drawer-close').addEventListener('click', closePrdDrawer);
+
+    var tabs = $$('.prd-drawer-tab', drawer);
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        tabs.forEach(function(t) { t.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+        var tabName = tab.getAttribute('data-tab');
+        if (tabName === 'page') loadPagePrdContent();
+        else loadGlobalPrdContent();
+      });
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closePrdDrawer();
+    });
+
+    // Button
+    var btn = document.createElement('button');
+    btn.className = 'prd-drawer-btn';
+    btn.id = 'prdDrawerBtn';
+    btn.textContent = '📋 PRD 说明';
+    btn.addEventListener('click', openPrdDrawer);
+    document.body.appendChild(btn);
+  }
+
+  function openPrdDrawer() {
+    document.getElementById('prdDrawerOverlay').classList.add('is-open');
+    document.getElementById('prdDrawer').classList.add('is-open');
+    var activeTab = document.querySelector('.prd-drawer-tab.is-active');
+    if (activeTab && activeTab.getAttribute('data-tab') === 'page') {
+      loadPagePrdContent();
+    } else {
+      loadGlobalPrdContent();
+    }
+  }
+
+  function closePrdDrawer() {
+    document.getElementById('prdDrawerOverlay').classList.remove('is-open');
+    document.getElementById('prdDrawer').classList.remove('is-open');
+  }
+
+  function loadPagePrdContent() {
+    var content = document.getElementById('prdDrawerContent');
+    if (!content) return;
+    content.innerHTML = PAGE_PRD_HTML;
+  }
+
+  function loadGlobalPrdContent() {
+    var content = document.getElementById('prdDrawerContent');
+    if (!content) return;
+    content.innerHTML = GLOBAL_PRD_HTML;
+  }
+
+  // ==================== 11. 全局标注开关 ====================
+  function createBadgeToggle() {
+    var btn = document.createElement('button');
+    btn.className = 'badge-toggle-btn';
+    btn.id = 'badgeToggleBtn';
+    btn.title = '显示/隐藏需求标注';
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+    btn.addEventListener('click', toggleAllBadges);
+    document.body.appendChild(btn);
+  }
+
+  function toggleAllBadges() {
+    var badges = $$('.prd-badge');
+    var anyVisible = badges.some(function(b) { return b.style.display !== 'none' && !b.classList.contains('hidden'); });
+    badges.forEach(function(b) {
+      if (anyVisible) {
+        b.classList.add('hidden');
+      } else {
+        b.classList.remove('hidden');
+      }
+    });
+    var btn = document.getElementById('badgeToggleBtn');
+    if (btn) {
+      if (anyVisible) {
+        btn.classList.add('badges-hidden');
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+      } else {
+        btn.classList.remove('badges-hidden');
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+      }
+    }
+  }
+
+  // ==================== 12. PRD 内容变量 ====================
+
+  var PAGE_PRD_HTML = '<h1>企业信息配置 PRD（产品需求文档）</h1>' +
+'<h2>1. 引言</h2>' +
+'<h3>1.1 背景</h3>' +
+'<p>企业信息配置页面是<strong>环慧慧EHS+系统</strong>中「系统管理」模块下的基础配置页面。该页面通过调用<strong>工贸在线系统</strong>的数据接口，将企业在环慧慧EHS+中维护的基本信息、地址信息、主要负责人信息及安全管理属性同步至工贸在线系统，为工贸在线侧的提供基础企业档案数据支撑。</p>' +
+'<blockquote><strong>系统关系说明</strong>：环慧慧EHS+ 为企业侧 EHS 管理平台，工贸在线为行业监管侧数据平台。环慧慧EHS+ 作为数据生产方，通过接口向工贸在线推送/同步企业基础数据。</blockquote>' +
+'<h3>1.2 使用角色</h3>' +
+'<ul><li><strong>系统管理员</strong>：拥有企业信息配置的查看和编辑权限，可对企业全部信息进行新增和修改。</li></ul>' +
+'<h3>1.3 前置条件</h3>' +
+'<ul><li>用户已登录环慧慧EHS+系统</li><li>用户具有「系统管理 / 权限管理 / 企业信息配置」菜单权限</li><li>页面以编辑模式打开（企业首次配置时为新增模式，后续为编辑模式）</li></ul>' +
+'<h3>1.4 功能清单</h3>' +
+'<table><tr><th>模块</th><th>功能</th><th>功能描述</th></tr>' +
+'<tr><td>表单区</td><td>查看/编辑企业信息</td><td>提供四大分组（基本信息、地址信息、主要负责人及企业规模、安全管理属性）的字段录入与展示</td></tr>' +
+'<tr><td>表单区</td><td>字段校验</td><td>必填字段校验、手机号格式校验、数字范围校验</td></tr>' +
+'<tr><td>表单区</td><td>字段联动显隐</td><td>选择"四涉一有限一使用企业=是"时，显示具体类型下拉框</td></tr>' +
+'<tr><td>表单区</td><td>自定义下拉选择</td><td>企业类型、所属行业、企业规模、安全标准化等级、四涉一有限具体类型等字段使用下拉选择器</td></tr>' +
+'<tr><td>表单区</td><td>省市区三级联动</td><td>注册地址和生产地址的省市区三级联动选择，依赖区划数据</td></tr>' +
+'<tr><td>表单区</td><td>人员选择弹窗</td><td>主要负责人支持手动输入姓名，也支持通过弹窗选择人员，支持搜索过滤，选中后自动回填姓名和联系方式</td></tr>' +
+'<tr><td>按钮区</td><td>保存</td><td>表单校验通过后提交数据至接口</td></tr>' +
+'</table>' +
+'<h2>2. 页面菜单与权限规划</h2>' +
+'<h3>2.1 页面菜单</h3>' +
+'<p><strong>菜单路径</strong>：系统管理 / 权限管理 / 企业信息配置</p>' +
+'<h3>2.2 权限规划</h3>' +
+'<table><tr><th>权限点名称</th><th>操作范围</th><th>数据范围</th></tr>' +
+'<tr><td>查看</td><td>查看企业信息配置页面</td><td>本企业数据</td></tr>' +
+'<tr><td>编辑</td><td>编辑、保存企业信息</td><td>本企业数据</td></tr>' +
+'</table>' +
+'<blockquote><strong>模式说明</strong>：新增模式：企业首次配置，调用接口提交。编辑模式：页面初始化时加载已保存数据回显，修改后调用同一接口更新。</blockquote>' +
+'<h2>3. 表单需求说明</h2>' +
+'<table><tr><th>字段标签</th><th>字段名</th><th>控件类型</th><th>必填</th><th>默认值</th><th>校验规则</th><th>联动规则</th></tr>' +
+'<tr><td>企业名称</td><td><code>companyName</code></td><td>文本输入（只读）</td><td>—</td><td>企业信息</td><td>—</td><td>无</td></tr>' +
+'<tr><td>社会信用代码</td><td><code>societyCode</code></td><td>文本输入（只读）</td><td>—</td><td>企业信息</td><td>—</td><td>无</td></tr>' +
+'<tr><td>企业类型</td><td><code>companyType</code></td><td>下拉选择</td><td>是</td><td>「请选择」</td><td>—</td><td>无</td></tr>' +
+'<tr><td>所属行业</td><td><code>industry</code></td><td>下拉选择</td><td>是</td><td>「请选择」</td><td>—</td><td>无</td></tr>' +
+'<tr><td>注册地址</td><td><code>signArea*</code></td><td>省市区级联</td><td>是</td><td>地址解析</td><td>—</td><td>选择省后启用市</td></tr>' +
+'<tr><td>生产地址</td><td><code>proArea*</code></td><td>省市区级联</td><td>是</td><td>「请选择省」</td><td>—</td><td>同注册地址</td></tr>' +
+'<tr><td>主要负责人</td><td><code>managerName</code></td><td>文本输入+人员选择器</td><td>是</td><td>空</td><td>—</td><td>选择后回填联系方式</td></tr>' +
+'<tr><td>主要负责人联系方式</td><td><code>managerPhone</code></td><td>文本输入</td><td>是</td><td>空</td><td>11位手机号</td><td>选择主要负责人后自动填充</td></tr>' +
+'<tr><td>从业人员数量</td><td><code>employeeNum</code></td><td>数字输入</td><td>是</td><td>空</td><td>正整数</td><td>无</td></tr>' +
+'<tr><td>企业规模</td><td><code>scale</code></td><td>下拉选择</td><td>是</td><td>「请选择」</td><td>—</td><td>无</td></tr>' +
+'<tr><td>是否属于重大危险源企业</td><td><code>isBigSafe</code></td><td>单选按钮组</td><td>是</td><td>未选中</td><td>—</td><td>无</td></tr>' +
+'<tr><td>安全标准化等级</td><td><code>safeLevel</code></td><td>下拉选择</td><td>是</td><td>「请选择」</td><td>—</td><td>无</td></tr>' +
+'<tr><td>是否属于"四涉一有限一使用"企业</td><td><code>isFourOne</code></td><td>单选按钮组</td><td>是</td><td>未选中</td><td>—</td><td>选「是」时显示具体类型字段</td></tr>' +
+'<tr><td>四涉一有限一使用具体类型</td><td><code>fourOneType</code></td><td>下拉选择</td><td>条件必填</td><td>「请选择」</td><td>仅当isFourOne=是时必填</td><td>仅在isFourOne=是时可见</td></tr>' +
+'</table>' +
+'<h3>3.2 操作按钮</h3>' +
+'<table><tr><th>按钮</th><th>触发动作</th><th>说明</th></tr>' +
+'<tr><td>保存</td><td>表单校验 → 校验通过 → 调用注册接口提交</td><td>全量表单校验：必填字段、条件必填、格式校验。校验通过后构建JSON参数调用接口；校验失败时显示红色错误提示</td></tr>' +
+'<tr><td>选择人员</td><td>打开人员选择弹窗</td><td>行单选模式，支持搜索过滤，确定后回填姓名和联系方式</td></tr>' +
+'</table>' +
+'<h2>4. 交互设计</h2>' +
+'<h3>4.1 页面加载交互</h3>' +
+'<ul><li><strong>编辑模式（默认）</strong>：页面加载时加载已有数据回显到表单各字段；所有控件默认可编辑状态。</li>' +
+'<li><strong>只读模式</strong>：当 form-panel 具有 is-readonly 类时，所有表单控件转为只读平文本展示。</li></ul>' +
+'<h3>4.2 字段联动与动态显隐</h3>' +
+'<ul><li><strong>四涉一有限联动</strong>：isFourOne 选「是」→ 显示具体类型下拉框；选「否」→ 隐藏并清除已选值。</li>' +
+'<li><strong>主要负责人联动</strong>：人员选择弹窗确定后自动回填姓名和联系方式。</li></ul>' +
+'<h3>4.3 实时校验</h3>' +
+'<ul><li>保存按钮触发全量校验（validateForm）</li><li>必填字段：企业类型、所属行业、注册地址、生产地址、主要负责人、联系方式、从业人员数量、企业规模、是否重大危险源企业、安全标准化等级、是否四涉一有限一使用</li>' +
+'<li>条件必填：isFourOne=是时，四涉一有限具体类型必填</li><li>格式校验：手机号 /^1[3-9]\\d{9}$/，从业人数为正整数</li></ul>' +
+'<h3>4.4 自定义下拉选择</h3>' +
+'<ul><li>点击展开面板、hover高亮、选中标记、点击外部关闭、自适应方向</li></ul>' +
+'<h3>4.5 省市区三级联动</h3>' +
+'<ul><li>初始市/区禁用、逐级启用、修改上级清空下级</li></ul>' +
+'<h3>4.6 人员选择弹窗</h3>' +
+'<ul><li>搜索框+人员表格+单选radio、实时过滤、行选中、确定回填</li></ul>' +
+'<h2>5. 接口定义</h2>' +
+'<h3>5.1 企业信息注册接口</h3>' +
+'<p><strong>请求方式</strong>：POST</p>' +
+'<p><strong>请求路径</strong>：<code>https://eitohq.cn:9443/eito/crunii-eito-out/out/company/data/register</code></p>' +
+'<h4>请求头（Header）</h4>' +
+'<table><tr><th>参数名</th><th>含义</th><th>类型</th><th>必填</th></tr>' +
+'<tr><td>timestamp</td><td>时间戳</td><td>long</td><td>是</td></tr>' +
+'<tr><td>nonce</td><td>随机数</td><td>String</td><td>是</td></tr>' +
+'<tr><td>accessKey</td><td>访问密钥</td><td>String</td><td>是</td></tr>' +
+'<tr><td>sign</td><td>签名</td><td>String</td><td>是</td></tr>' +
+'</table>' +
+'<p>签名算法：<code>MD5("eito" + timestamp + nonce + secretKey)</code></p>' +
+'<h4>请求体参数</h4>' +
+'<table><tr><th>#</th><th>参数名称</th><th>含义</th><th>类型</th><th>必填</th><th>备注</th></tr>' +
+'<tr><td>1</td><td>companyName</td><td>企业名称</td><td>String</td><td>是</td><td>—</td></tr>' +
+'<tr><td>2</td><td>societyCode</td><td>社会信用代码</td><td>String</td><td>是</td><td>18位</td></tr>' +
+'<tr><td>3</td><td>companyType</td><td>企业类型</td><td>String</td><td>是</td><td>1-7</td></tr>' +
+'<tr><td>4</td><td>industry</td><td>所属行业</td><td>String</td><td>是</td><td>1-8</td></tr>' +
+'<tr><td>5</td><td>signAreaCode</td><td>注册地址编码</td><td>String</td><td>是</td><td>6位</td></tr>' +
+'<tr><td>6</td><td>signAddress</td><td>注册地址详细</td><td>String</td><td>是</td><td>—</td></tr>' +
+'<tr><td>7</td><td>proAreaCode</td><td>生产地址编码</td><td>String</td><td>是</td><td>6位</td></tr>' +
+'<tr><td>8</td><td>proAddress</td><td>生产地址详细</td><td>String</td><td>是</td><td>—</td></tr>' +
+'<tr><td>9</td><td>isFourOne</td><td>是否四涉一有限</td><td>String</td><td>是</td><td>0/1</td></tr>' +
+'<tr><td>10</td><td>fourOneType</td><td>具体类型</td><td>String</td><td>否</td><td>1-6</td></tr>' +
+'<tr><td>11</td><td>isBigSafe</td><td>重大危险源</td><td>String</td><td>是</td><td>0/1 反转</td></tr>' +
+'<tr><td>12</td><td>employeeNum</td><td>从业人数</td><td>String</td><td>是</td><td>正整数</td></tr>' +
+'<tr><td>14</td><td>managerPhone</td><td>联系方式</td><td>String</td><td>是</td><td>手机号</td></tr>' +
+'<tr><td>15</td><td>managerName</td><td>主要负责人</td><td>String</td><td>是</td><td>—</td></tr>' +
+'<tr><td>16</td><td>scale</td><td>企业规模</td><td>String</td><td>是</td><td>1-3</td></tr>' +
+'<tr><td>17</td><td>safeLevel</td><td>安全标准化等级</td><td>String</td><td>是</td><td>1-4</td></tr>' +
+'</table>' +
+'<h2>6. 数据权限</h2>' +
+'<ul><li><strong>系统管理员</strong>：可查看和编辑除企业名称、社会信用代码外的全部企业信息字段。</li>' +
+'<li><strong>企业名称和社会信用代码</strong>：来源于运营中心「组织机构」模块，由运营端统一配置后下发至企业端，企业端仅可查看、不可修改。</li></ul>' +
+'<h2>7. 异常处理</h2>' +
+'<table><tr><th>异常场景</th><th>处理方式</th></tr>' +
+'<tr><td>页面数据加载失败</td><td>提示"数据加载失败，请稍后重试"并提供重试按钮</td></tr>' +
+'<tr><td>提交接口超时或失败</td><td>提示"提交失败：[具体错误信息]"，保持表单内容不变</td></tr>' +
+'<tr><td>网络断开</td><td>提示"网络连接异常，请检查网络后重试"，禁用保存按钮</td></tr>' +
+'<tr><td>字段校验不通过</td><td>对应字段下方显示红色错误文案，字段容器添加红色边框</td></tr>' +
+'<tr><td>签名校验失败</td><td>提示"请求签名校验失败，请重新操作"</td></tr>' +
+'</table>' +
+'<h2>8. 版本变更记录</h2>' +
+'<table><tr><th>版本</th><th>日期</th><th>变更内容</th><th>作者</th></tr>' +
+'<tr><td>V1.0</td><td>2026-06-18</td><td>初版创建，基于企业信息配置页面实现及工贸在线数据接口规范</td><td>庞柳</td></tr>' +
+'</table>';
+
+  var GLOBAL_PRD_HTML = '<h1>工贸在线接口对接 · 整体功能 PRD</h1>' +
+'<h2>1. 引言</h2>' +
+'<h3>1.1 背景与目标</h3>' +
+'<p><strong>核心背景：环慧慧EHS+系统向工贸在线平台的数据上报需求。</strong></p>' +
+'<p>工贸在线平台（eitohq.cn）要求企业通过标准 REST 接口上报三类安全监管数据，共涉及 <strong>3 个接口、54 个字段</strong>：</p>' +
+'<table><tr><th>接口</th><th>路径</th><th>字段数</th><th>推送时机</th></tr>' +
+'<tr><td>企业基础信息接口</td><td><code>POST /company/data/register</code></td><td>17 项</td><td>企业信息配置页保存时</td></tr>' +
+'<tr><td>风险数据接口</td><td><code>POST /company/data/riskData</code></td><td>15 项</td><td>管控结束确认后</td></tr>' +
+'<tr><td>隐患数据接口</td><td><code>POST /company/data/troubleData</code></td><td>22 项</td><td>隐患状态已验收后</td></tr>' +
+'</table>' +
+'<h3>1.3 功能范围</h3>' +
+'<table><tr><th>模块</th><th>接口</th><th>涉及页面</th></tr>' +
+'<tr><td>企业信息</td><td><code>POST /company/data/register</code></td><td>企业信息配置 — 企业信息表单录入与保存推送</td></tr>' +
+'<tr><td>风险数据</td><td><code>POST /company/data/riskData</code></td><td>风险管理与辨识 + 风险设置</td></tr>' +
+'<tr><td>隐患数据</td><td><code>POST /company/data/troubleData</code></td><td>隐患排查相关页面 — 纯字段映射，无页面改造</td></tr>' +
+'</table>' +
+'<h2>2. 角色与权限</h2>' +
+'<table><tr><th>角色</th><th>菜单权限</th><th>操作权限</th><th>数据范围</th></tr>' +
+'<tr><td>系统管理员</td><td>企业信息配置、风险管理与辨识、风险设置、隐患汇报</td><td>企业信息编辑保存 + 风险点CRUD + 风险辨识 + 管控全流程 + 设置配置 + 隐患全流程</td><td>本企业全部</td></tr>' +
+'</table>' +
+'<h2>4. 接口全景架构</h2>' +
+'<h3>4.2 认证机制（三接口通用）</h3>' +
+'<table><tr><th>请求头参数</th><th>类型</th><th>说明</th></tr>' +
+'<tr><td>timestamp</td><td>long</td><td>请求发起时的系统毫秒时间戳</td></tr>' +
+'<tr><td>nonce</td><td>string</td><td>10 位随机字符串，每次请求不同</td></tr>' +
+'<tr><td>accessKey</td><td>string</td><td>系统分配的访问密钥</td></tr>' +
+'<tr><td>sign</td><td>string</td><td>MD5("eito" + timestamp + nonce + secretKey)</td></tr>' +
+'</table>' +
+'<h3>4.3 通用响应格式</h3>' +
+'<table><tr><th>参数名</th><th>类型</th><th>说明</th></tr>' +
+'<tr><td>success</td><td>boolean</td><td>true 成功 / false 失败</td></tr>' +
+'<tr><td>errorCode</td><td>string</td><td>"00000" = 成功</td></tr>' +
+'<tr><td>errorMessage</td><td>string</td><td>错误描述</td></tr>' +
+'<tr><td>errorDetail</td><td>object/null</td><td>错误详情</td></tr>' +
+'<tr><td>data</td><td>object</td><td>业务返回数据</td></tr>' +
+'</table>' +
+'<h2>9. 接口字段映射总表</h2>' +
+'<h3>9.1 接口一：企业基础信息（POST /company/data/register）</h3>' +
+'<table><tr><th>#</th><th>接口参数</th><th>含义</th><th>类型</th><th>必填</th><th>系统来源</th><th>映射状态</th></tr>' +
+'<tr><td>1</td><td>companyName</td><td>企业名称</td><td>string</td><td>是</td><td>运营端配置同步</td><td>✅ 已有</td></tr>' +
+'<tr><td>2</td><td>societyCode</td><td>社会信用代码</td><td>string</td><td>是</td><td>运营端配置同步</td><td>✅ 已有</td></tr>' +
+'<tr><td>3</td><td>companyType</td><td>企业类型</td><td>string</td><td>是</td><td>下拉选择</td><td>➕ 新增</td></tr>' +
+'<tr><td>4</td><td>industry</td><td>所属行业</td><td>string</td><td>是</td><td>下拉选择</td><td>➕ 新增</td></tr>' +
+'<tr><td>5</td><td>signAreaCode</td><td>注册地址-区域编码</td><td>string</td><td>是</td><td>省市区三级联动</td><td>➕ 新增</td></tr>' +
+'<tr><td>6</td><td>signAddress</td><td>注册地址-详细</td><td>string</td><td>是</td><td>文本框输入</td><td>➕ 新增</td></tr>' +
+'<tr><td>7</td><td>proAreaCode</td><td>生产地址-区域编码</td><td>string</td><td>是</td><td>省市区三级联动</td><td>➕ 新增</td></tr>' +
+'<tr><td>8</td><td>proAddress</td><td>生产地址-详细</td><td>string</td><td>是</td><td>文本框输入</td><td>➕ 新增</td></tr>' +
+'<tr><td>9</td><td>managerName</td><td>主要负责人</td><td>string</td><td>是</td><td>人员选择器</td><td>➕ 新增</td></tr>' +
+'<tr><td>10</td><td>managerPhone</td><td>联系方式</td><td>string</td><td>是</td><td>自动带出+可修改</td><td>➕ 新增</td></tr>' +
+'<tr><td>11</td><td>employeeNum</td><td>从业人员数量</td><td>string</td><td>是</td><td>数字输入框</td><td>➕ 新增</td></tr>' +
+'<tr><td>12</td><td>scale</td><td>企业规模</td><td>string</td><td>是</td><td>下拉选择</td><td>➕ 新增</td></tr>' +
+'<tr><td>13</td><td>isBigSafe</td><td>是否存在重大危险源</td><td>string</td><td>是</td><td>单选按钮</td><td>➕ 新增 ⚠反转</td></tr>' +
+'<tr><td>14</td><td>safeLevel</td><td>安全标准化等级</td><td>string</td><td>是</td><td>下拉选择</td><td>➕ 新增</td></tr>' +
+'<tr><td>15</td><td>isFourOne</td><td>是否四涉一有限</td><td>string</td><td>是</td><td>单选按钮</td><td>➕ 新增</td></tr>' +
+'<tr><td>16</td><td>fourOneType</td><td>四涉一有限具体类型</td><td>string</td><td>否</td><td>下拉选择(条件显示)</td><td>➕ 新增</td></tr>' +
+'</table>' +
+'<blockquote><strong>企业信息接口小结</strong>：16 个字段中仅 companyName 和 societyCode 为已有字段，其余 14 个字段均为新增字段。isBigSafe 字段注意页面与接口的值反转逻辑。</blockquote>' +
+'<h2>10. 业务规则与约束汇总</h2>' +
+'<table><tr><th>#</th><th>规则</th><th>适用接口</th></tr>' +
+'<tr><td>12</td><td>enterpriseInfo 中 isBigSafe 注意反转：页面「是」→接口传 0</td><td>企业信息</td></tr>' +
+'<tr><td>13</td><td>isFourOne=1 时 fourOneType 必填，=0 时该字段不传</td><td>企业信息</td></tr>' +
+'<tr><td>17</td><td>推送均为 JSON 数组格式，单次可推多条记录</td><td>三接口通用</td></tr>' +
+'</table>' +
+'<h2>11. 非功能性需求</h2>' +
+'<h3>11.2 安全性</h3>' +
+'<table><tr><th>要求</th><th>说明</th></tr>' +
+'<tr><td>签名认证</td><td>所有推送请求携带 timestamp + nonce + accessKey + sign MD5</td></tr>' +
+'<tr><td>权限校验</td><td>前端通过菜单权限控制入口显隐；后端对所有 CUD 接口做权限校验</td></tr>' +
+'<tr><td>数据隔离</td><td>仅返回/推送本企业（societyCode）数据</td></tr>' +
+'<tr><td>HTTPS</td><td>所有工贸接口调用强制 HTTPS</td></tr>' +
+'</table>' +
+'<h2>12. 附录</h2>' +
+'<h3>12.2 工贸在线字典清单</h3>' +
+'<table><tr><th>模块</th><th>字典名称</th><th>编码</th></tr>' +
+'<tr><td>企业信息</td><td>行业类型字典</td><td>INDUSTRY_TYPE</td></tr>' +
+'<tr><td>企业信息</td><td>企业类型字典</td><td>COMPANY_TYPE</td></tr>' +
+'<tr><td>企业信息</td><td>企业规模字典</td><td>COMPANY_SIZE_TYPE</td></tr>' +
+'<tr><td>企业信息</td><td>安全标准化等级</td><td>SAFE_LEVEL_TYPE</td></tr>' +
+'<tr><td>企业信息</td><td>四涉一有限一使用</td><td>FOUR_ONE_TYPE</td></tr>' +
+'</table>' +
+'<h3>12.4 变更记录</h3>' +
+'<table><tr><th>版本</th><th>日期</th><th>变更内容</th></tr>' +
+'<tr><td>V1.0</td><td>2026-06-23</td><td>初版创建</td></tr>' +
+'<tr><td>V1.3</td><td>2026-06-24</td><td>企业基础信息字段除companyName和societyCode外均为新增；isBigSafe反转</td></tr>' +
+'</table>';
+
+  // ==================== 12. 初始化 ====================
+  function init() {
+    initDropdowns();
+    initCascadeSelects();
+    initChoiceGroups();
+    createPersonModal();
+    createPrdDrawer();
+    createBadgeToggle();
+    bindBadgeEvents();
+    loadSavedFormData();
+
+    // Save button
+    document.getElementById('btnSave').addEventListener('click', doSave);
+
+    // Auto-load page PRD as default
+    loadPagePrdContent();
+
+    console.log('[企业信息配置] 初始化完成 — 11 个角标已就绪，PRD 抽屉已就绪，标注开关已就绪');
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+</body>
+</html>

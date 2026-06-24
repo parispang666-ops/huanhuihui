@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设置 - 环慧慧EHS+</title>
+  <style>
+    :root {
+      --color-brand: #1570EF; --color-brand-hover: #2E90FA; --color-brand-active: #175CD3;
+      --color-danger: #F64C41; --color-success: #00C5C3;
+      --color-text-primary: #444F66; --color-text-secondary: #758095;
+      --color-text-placeholder: #9EA4AE; --color-text-disabled: #B3B9C4;
+      --color-bg-page: #F7F8FA; --color-bg-surface: #FFFFFF; --color-bg-muted: #F7F8F9;
+      --color-brand-light: #EFF8FF; --color-border: #DEDFE3; --color-divider: #E6E7EB;
+      --radius-component: 4px;
+      --font-family-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      --shadow-topbar: 0 1px 4px rgba(31, 42, 55, .10);
+      --focus-ring: 0 0 0 2px #D9E1FF;
+      --color-topbar-bg: #00254A; --color-topbar-text: rgba(255,255,255,0.90); --color-topbar-sub: rgba(255,255,255,0.60);
+      --color-sidebar-bg: #00254A; --color-sidebar-item-bg: #042240; --color-sidebar-active: #007AFF;
+      --sidebar-width-new: 256px;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; min-width: 0; overflow: hidden; }
+    body { margin: 0; color: var(--color-text-primary); background: var(--color-bg-page); font-family: var(--font-family-ui); font-size: 14px; line-height: 22px; letter-spacing: 0; }
+    button, input, select { font: inherit; letter-spacing: 0; }
+    button { border: 0; cursor: pointer; }
+    img { display: block; object-fit: contain; }
+
+    /* ==================== 顶部导航栏 ==================== */
+    .menu-topbar { position: fixed; z-index: 30; top: 0; left: 0; width: 100%; height: 64px; display: flex; background: var(--color-topbar-bg); overflow: hidden; }
+    .menu-logo { width: var(--sidebar-width-new); height: 64px; position: relative; display: flex; align-items: center; background: var(--color-topbar-bg); overflow: hidden; flex: 0 0 var(--sidebar-width-new); }
+    .menu-logo::before { content:""; position:absolute; width:236px; height:236px; left:10px; top:-33px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.40) inset; border-radius:9999px; }
+    .menu-logo::after { content:""; position:absolute; width:188px; height:188px; left:34px; top:-9px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.30) inset; border-radius:9999px; }
+    .menu-logo-inner { position:absolute; width:138px; height:138px; left:59px; top:16px; background:#002449; box-shadow:0px 4px 10px rgba(0,0,0,0.20) inset; border-radius:9999px; z-index:0; }
+    .menu-logo-icon { position:absolute; left:28px; top:8px; width:48px; height:48px; z-index:1; }
+    .menu-logo-icon img { width:48px; height:48px; }
+    .menu-logo-main { position:absolute; left:88px; top:16px; z-index:1; font-size:20px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-text); white-space:nowrap; }
+    .menu-logo-brand { color:rgba(58,184,255,0.90); }
+    .menu-logo-sub { position:absolute; left:87px; top:39px; z-index:1; font-size:12px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-sub); white-space:nowrap; }
+    .menu-logo-sep { position:absolute; left:148px; top:27px; width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.30); }
+    .menu-top-nav { flex:1; min-width:0; height:64px; display:flex; align-items:center; background:var(--color-topbar-bg); }
+    .menu-top-track { height:64px; display:flex; align-items:center; gap:32px; padding:0 16px; }
+    .menu-top-item { height:46px; display:inline-flex; align-items:center; padding:0; border:none; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; }
+    .menu-top-item.is-active { border-bottom-color:var(--color-sidebar-active); }
+    .menu-top-actions { height:64px; display:flex; align-items:center; padding:0 16px 0 12px; color:var(--color-topbar-text); font-size:12px; font-family:var(--font-family-ui); white-space:nowrap; flex-shrink:0; }
+    .menu-user { display:inline-flex; align-items:center; gap:0; color:var(--color-topbar-text); font-size:12px; white-space:nowrap; }
+    .menu-user-meta { height:24px; display:inline-flex; align-items:center; }
+
+    /* ==================== 侧边导航菜单 ==================== */
+    .menu-shell { position:fixed; z-index:20; top:64px; left:0; width:var(--sidebar-width-new); height:calc(100vh - 64px); display:flex; flex-direction:column; justify-content:flex-start; background:var(--color-sidebar-bg); box-shadow:0px 2px 8px rgba(0,0,0,0.25); }
+    .menu-side-list { display:flex; flex-direction:column; margin:0; padding:0; overflow:hidden auto; scrollbar-width:thin; }
+    .menu-side-list::-webkit-scrollbar { width:3px; }
+    .menu-side-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:50px; }
+    .menu-side-item { width:256px; height:52px; display:flex; align-items:center; gap:12px; padding:0 8px 0 24px; border:none; border-radius:0; background:var(--color-sidebar-bg); color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; }
+    .menu-side-item:hover { background:rgba(255,255,255,0.06); }
+    .menu-side-item img { width:20px; height:20px; flex:0 0 auto; }
+    .menu-side-item .menu-side-arrow { width:16px; height:16px; flex:0 0 auto; margin-left:auto; margin-right:12px; }
+    .menu-side-item .menu-side-arrow img { width:16px; height:16px; }
+    .menu-side-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .menu-sublist { display:none; flex-direction:column; margin:0; padding:0; background:var(--color-sidebar-item-bg); }
+    .menu-sublist.is-open { display:flex; }
+    .menu-side-child { width:240px; height:36px; display:flex; align-items:center; margin:8px; padding:0 0 0 36px; border:none; border-radius:4px; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; white-space:nowrap; position:relative; }
+    .menu-side-child::before { content:""; position:absolute; left:16px; top:50%; transform:translateY(-50%); width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.40); }
+    .menu-side-child:hover { background:rgba(255,255,255,0.08); }
+    .menu-side-child.is-active { background:var(--color-sidebar-active); color:white; }
+    .menu-side-child.is-active::before { background:white; }
+
+    /* ==================== 面包屑栏 ==================== */
+    .menu-breadcrumb { position:fixed; z-index:9; top:64px; left:var(--sidebar-width-new); right:0; height:50px; display:flex; align-items:center; padding:0 24px; background:white; box-shadow:0px 0px 8px 6px rgba(0,0,0,0.02); }
+    .menu-breadcrumb-path { display:inline-flex; align-items:center; height:34px; }
+    .menu-breadcrumb-icon { width:24px; height:34px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+    .menu-breadcrumb-icon svg { width:12px; height:12px; }
+    .menu-breadcrumb-tag { display:inline-flex; align-items:center; height:34px; padding:0 0 0 8px; background:#E5F3FF; border-radius:0; }
+    .menu-breadcrumb-tag span { color:#007AFF; font-size:14px; font-family:var(--font-family-ui); font-weight:400; margin:0 4px; }
+    .menu-breadcrumb-next { width:24px; height:34px; display:inline-flex; align-items:center; justify-content:center; color:#9EA4AE; flex:0 0 auto; }
+
+    /* ==================== CONTENT ==================== */
+    .page-content { margin-left: var(--sidebar-width-new); padding: 126px 24px 24px; height: 100vh; overflow-y: auto; }
+    .page-content::-webkit-scrollbar { width: 3px; }
+    .page-content::-webkit-scrollbar-track { background: transparent; }
+    .page-content::-webkit-scrollbar-thumb { border-radius: 50px; background: var(--color-divider); }
+
+    /* ==================== 设置页面布局 ==================== */
+    .settings-layout { display: flex; gap: 0; height: calc(100vh - 150px); }
+
+    /* 左侧一级菜单 */
+    .settings-nav { width: 180px; flex-shrink: 0; border-right: 1px solid var(--color-divider); padding-right: 20px; }
+    .settings-nav-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); padding-bottom: 12px; margin-bottom: 8px; }
+    .settings-nav-list { display: flex; flex-direction: column; gap: 2px; }
+    .settings-nav-item { height: 40px; display: flex; align-items: center; padding: 0 12px; color: var(--color-text-secondary); font-size: 14px; cursor: pointer; border-radius: var(--radius-component); transition: all 150ms ease; user-select: none; }
+    .settings-nav-item:hover { color: var(--color-brand); background: var(--color-brand-light); }
+    .settings-nav-item.is-active { color: var(--color-brand); background: var(--color-brand-light); font-weight: 500; }
+
+    /* 右侧面板 */
+    .settings-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; padding-left: 24px; }
+
+    /* 面板标题 */
+    .section-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 1px solid var(--color-divider); }
+
+    /* 风险类型切换标签 */
+    .risk-type-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid var(--color-divider); }
+    .risk-type-tab { height: 36px; padding: 0 20px; border: none; background: transparent; color: var(--color-text-secondary); font-size: 14px; font-weight: 400; cursor: pointer; transition: all 150ms ease; position: relative; }
+    .risk-type-tab:hover { color: var(--color-brand); }
+    .risk-type-tab.is-active { color: var(--color-brand); font-weight: 600; }
+    .risk-type-tab.is-active::after { content: ""; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--color-brand); border-radius: 1px; }
+
+    /* 字段配置表格 */
+    .field-config-section { width: 100%; }
+    .field-config-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .field-config-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); }
+
+    .config-table { width: 100%; max-width: 580px; border-collapse: collapse; background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: 6px; }
+    .config-table thead th { height: 44px; padding: 0 16px; background: var(--color-bg-muted); color: var(--color-text-secondary); font-size: 13px; font-weight: 500; text-align: left; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+    .config-table thead th:first-child { padding-left: 20px; width: auto; }
+    .config-table thead th.col-check { width: 90px; text-align: center; }
+    .config-table thead th.col-check:last-child { width: 90px; }
+    .config-table tbody td { height: 48px; padding: 0 16px; font-size: 14px; color: var(--color-text-primary); border-bottom: 1px solid var(--color-divider); }
+    .config-table tbody td:first-child { padding-left: 20px; font-weight: 500; }
+    .config-table tbody td.col-check { text-align: center; }
+    .config-table tbody tr:last-child td { border-bottom: none; }
+    .config-table tbody tr:hover { background: var(--color-brand-light); }
+
+    /* 复选框 */
+    .custom-checkbox { position: relative; width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; display: inline-flex; }
+    .custom-checkbox input { opacity: 0; width: 0; height: 0; position: absolute; pointer-events: none; }
+    .custom-checkbox-icon { position: absolute; inset: 0; border: 1.5px solid #D0D5DD; border-radius: 4px; background: white; transition: all 150ms ease; display: grid; place-items: center; }
+    .custom-checkbox-icon svg { width: 12px; height: 12px; opacity: 0; transition: opacity 150ms ease; }
+    .custom-checkbox input:checked + .custom-checkbox-icon { background: var(--color-brand); border-color: var(--color-brand); }
+    .custom-checkbox input:checked + .custom-checkbox-icon svg { opacity: 1; }
+    .custom-checkbox.is-disabled { cursor: not-allowed; opacity: 0.5; }
+    .custom-checkbox.is-disabled .custom-checkbox-icon { background: #EDEEF0; border-color: #D0D5DD; }
+    .custom-checkbox.is-disabled input { pointer-events: none; }
+
+    /* 底部按钮 */
+    .settings-footer { margin-top: 24px; display: flex; gap: 12px; justify-content: center; padding-top: 20px; border-top: 1px solid var(--color-divider); }
+
+    /* 单选框 */
+    .radio-group { display: flex; flex-direction: row; gap: 24px; }
+    .radio-item { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--color-text-primary); user-select: none; }
+    .radio-item input[type="radio"] { display: none; }
+    .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #D0D5DD; background: white; display: flex; align-items: center; justify-content: center; transition: all 150ms ease; flex-shrink: 0; }
+    .radio-item input:checked + .radio-dot { border-color: var(--color-brand); }
+    .radio-item input:checked + .radio-dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-brand); }
+    .radio-item:hover .radio-dot { border-color: var(--color-brand); }
+
+    /* 操作设置区域 */
+    .operation-section { width: 100%; }
+    .operation-section label.operation-label { display: block; font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 16px; }
+    .btn { height: 36px; padding: 0 24px; border-radius: var(--radius-component); font-size: 14px; cursor: pointer; transition: all 150ms ease; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-primary { background: var(--color-brand); color: white; border: none; }
+    .btn-primary:hover { background: var(--color-brand-hover); }
+    .btn-default { background: white; color: var(--color-text-primary); border: 1px solid var(--color-border); }
+    .btn-default:hover { border-color: var(--color-brand); color: var(--color-brand); }
+
+    /* Toast */
+    .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px); background: #333; color: white; padding: 10px 24px; border-radius: 6px; font-size: 14px; z-index: 200; opacity: 0; transition: all 300ms ease; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ==================== PRD 角标标注 ==================== */
+    .prd-badge {
+      display: inline-block !important; vertical-align: top !important;
+      background: rgb(250, 173, 20) !important; color: #fff !important;
+      font-size: 10px !important; font-weight: 700 !important; line-height: 14px !important;
+      padding: 0px 4px !important; border-radius: 2px !important;
+      border: none !important; cursor: pointer !important;
+      position: absolute !important; top: -8px; right: -4px;
+      z-index: 9950 !important; white-space: nowrap !important;
+      font-family: var(--font-family-ui) !important; letter-spacing: 0 !important;
+      pointer-events: auto !important;
+    }
+    .prd-badge-hidden { display: none !important; }
+
+    .prd-badge-inline {
+      position: static !important; top: auto !important; right: auto !important;
+      vertical-align: super !important; margin-left: 2px !important;
+    }
+
+    /* 浮窗 */
+    .prd-tooltip {
+      position: fixed !important; z-index: 9959 !important;
+      width: 450px !important; max-width: 90vw !important;
+      background: #FFFFFF !important; color: var(--color-text-primary) !important;
+      border: 2px solid #1890ff !important; border-radius: 4px !important;
+      box-shadow: 0 6px 16px rgba(0, 120, 255, 0.15) !important;
+      font-size: 13px !important; line-height: 1.6 !important;
+      padding: 0 !important; display: none;
+      font-family: var(--font-family-ui) !important; text-align: left !important;
+      pointer-events: auto !important;
+    }
+    .prd-tooltip-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-bottom: 1px solid #E6E7EB;
+      font-size: 14px; font-weight: 600; color: var(--color-text-primary);
+    }
+    .prd-tooltip-close {
+      width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none; background: transparent; color: #9EA4AE;
+      font-size: 16px; border-radius: 2px; transition: all 150ms;
+    }
+    .prd-tooltip-close:hover { background: #F0F0F0; color: #333; }
+    .prd-tooltip-body {
+      padding: 12px 14px; max-height: 360px; overflow-y: auto;
+      color: var(--color-text-primary); line-height: 1.6;
+    }
+    .prd-tooltip-body p { margin: 0 0 8px; }
+    .prd-tooltip-body ul, .prd-tooltip-body ol { margin: 4px 0 8px; padding-left: 18px; }
+    .prd-tooltip-body li { margin-bottom: 4px; }
+    .prd-tooltip-body strong { color: var(--color-text-primary); }
+    .prd-tooltip-body blockquote {
+      margin: 8px 0; padding: 6px 12px; border-left: 3px solid #D0D5DD;
+      background: #F7F8FA; color: var(--color-text-secondary); font-size: 12px;
+    }
+
+    /* PRD 抽屉 */
+    .prd-drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); z-index: 9980; display: none; }
+    .prd-drawer-overlay.show { display: block; }
+    .prd-drawer {
+      position: fixed; top: 0; right: -600px; width: 600px; height: 100vh;
+      background: #FFFFFF; z-index: 9981; box-shadow: -4px 0 20px rgba(0,0,0,0.12);
+      transition: right 300ms ease; display: flex; flex-direction: column;
+    }
+    .prd-drawer.open { right: 0; }
+    .prd-drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px; border-bottom: 1px solid var(--color-divider); flex-shrink: 0;
+    }
+    .prd-drawer-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); }
+    .prd-drawer-close {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer; border-radius: 4px;
+      font-size: 20px; color: var(--color-text-secondary); transition: all 150ms;
+    }
+    .prd-drawer-close:hover { background: #F0F0F0; color: #333; }
+    .prd-drawer-body {
+      flex: 1; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .prd-drawer-body h1 { font-size: 22px; margin: 0 0 16px; }
+    .prd-drawer-body h2 { font-size: 18px; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--color-divider); }
+    .prd-drawer-body h3 { font-size: 15px; margin: 18px 0 8px; }
+    .prd-drawer-body p { margin: 0 0 10px; }
+    .prd-drawer-body ul, .prd-drawer-body ol { margin: 6px 0 10px; padding-left: 20px; }
+    .prd-drawer-body li { margin-bottom: 4px; }
+    .prd-drawer-body table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+    .prd-drawer-body table th, .prd-drawer-body table td { border: 1px solid var(--color-border); padding: 6px 10px; text-align: left; }
+    .prd-drawer-body table th { background: var(--color-bg-muted); font-weight: 500; }
+    .prd-drawer-body code { background: #F7F8FA; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
+    .prd-drawer-body pre { background: #F7F8FA; padding: 12px 16px; border-radius: 4px; overflow-x: auto; font-size: 12px; line-height: 1.5; }
+    .prd-drawer-body blockquote { border-left: 3px solid #D0D5DD; padding: 6px 12px; margin: 10px 0; background: #F7F8FA; color: var(--color-text-secondary); }
+    .prd-drawer-body hr { border: none; border-top: 1px solid var(--color-divider); margin: 20px 0; }
+    .prd-drawer-body .badge-ref { display: inline-block; background: rgb(250,173,20); color: #fff; font-size: 10px; font-weight: 700; padding: 0 3px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+
+    /* 页签栏 */
+    .prd-drawer-tabs { display: flex; border-bottom: 1px solid var(--color-divider); background: #F7F8FA; padding: 0 20px; height: 42px; min-height: 42px; align-items: flex-end; gap: 0; }
+    .prd-drawer-tab { height: 38px; padding: 0 20px; border: none; background: transparent; color: #758095; font-size: 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 150ms; white-space: nowrap; }
+    .prd-drawer-tab:hover { color: #444F66; }
+    .prd-drawer-tab.active { color: #1570EF; border-bottom-color: #1570EF; font-weight: 500; }
+    .prd-drawer-panel { display: none; flex: 1; overflow-y: auto; padding: 24px; font-size: 14px; line-height: 1.6; color: var(--color-text-primary); }
+    .prd-drawer-panel.active { display: block; }
+    .prd-drawer-panel::-webkit-scrollbar { width: 4px; }
+    .prd-drawer-panel::-webkit-scrollbar-thumb { background: #DEDFE3; border-radius: 50px; }
+
+    /* PRD 说明按钮 */
+    .prd-doc-btn {
+      position: fixed; top: 16px; right: 180px; z-index: 10000;
+      height: 32px; padding: 0 16px; border-radius: 4px; border: 1px solid #1890ff;
+      background: #EFF8FF; color: #1890ff; font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: all 150ms;
+    }
+    .prd-doc-btn:hover { background: #D6EEFF; }
+
+    /* 全局标注开关 */
+    .badge-toggle-btn {
+      position: fixed; bottom: 24px; right: 24px; z-index: 10001;
+      width: 44px; height: 44px; border-radius: 50%; border: none;
+      background: #307FE2; color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(48,127,226,0.35); transition: all 200ms;
+    }
+    .badge-toggle-btn:hover { background: #1E6DD6; transform: scale(1.05); }
+    .badge-toggle-btn svg { width: 20px; height: 20px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: false, theme: 'base', securityLevel: 'loose' });</script>
+</head>
+<body>
+
+<!-- ==================== 顶部导航栏 ==================== -->
+<header class="menu-topbar" aria-label="顶部导航">
+  <div class="menu-logo">
+    <div class="menu-logo-inner"></div>
+    <span class="menu-logo-icon"><img src="assets/696_1660/14.svg" alt=""></span>
+    <span class="menu-logo-main">环慧慧<span class="menu-logo-brand">EHS+</span></span>
+    <span class="menu-logo-sub">Enterprise&nbsp;Edition</span>
+    <span class="menu-logo-sep"></span>
+  </div>
+  <nav class="menu-top-nav" aria-label="一级模块导航">
+    <div class="menu-top-track">
+      <button class="menu-top-item" type="button">环境</button>
+      <button class="menu-top-item is-active" type="button">安全</button>
+      <button class="menu-top-item" type="button">EHS教育</button>
+      <button class="menu-top-item" type="button">系统管理</button>
+    </div>
+  </nav>
+  <div class="menu-top-actions">
+    <span class="menu-user"><span class="menu-user-meta"><span>张文和</span></span></span>
+  </div>
+</header>
+
+<!-- ==================== 侧边导航菜单 ==================== -->
+<aside class="menu-shell" aria-label="侧边导航菜单">
+  <div class="menu-side-list">
+    <button class="menu-side-item" type="button">
+      <img src="assets/696_1660/1.svg" alt="">
+      <span class="menu-side-label">风险评估</span>
+      <span class="menu-side-arrow"><img src="assets/696_1660/2.svg" alt=""></span>
+    </button>
+    <div class="menu-sublist is-open">
+      <a href="风险管理与辨识.html" style="text-decoration:none;"><button class="menu-side-child" type="button">风险管理</button></a>
+      <a href="风险管理与辨识.html" style="text-decoration:none;"><button class="menu-side-child" type="button">风险管理与辨识</button></a>
+      <button class="menu-side-child is-active" type="button">设置</button>
+    </div>
+    <button class="menu-side-item" type="button">
+      <img src="assets/696_1660/13.svg" alt="">
+      <span class="menu-side-label">系统配置</span>
+      <span class="menu-side-arrow"><img src="assets/696_1660/12.svg" alt=""></span>
+    </button>
+  </div>
+</aside>
+
+<!-- ==================== 面包屑栏 ==================== -->
+<div class="menu-breadcrumb" aria-label="面包屑导航">
+  <div class="menu-breadcrumb-path">
+    <div class="menu-breadcrumb-icon">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </div>
+    <div class="menu-breadcrumb-tag">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2" style="margin-right:4px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v11l4 5z"/></svg>
+      <span>设置</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 内容区域 ==================== -->
+<div class="page-content">
+  <div class="settings-layout">
+
+    <!-- 左侧一级菜单 -->
+    <div class="settings-nav">
+      <div class="settings-nav-title" style="position:relative; display:inline-block;">设置 <span class="prd-badge prd-badge-inline" data-badge-id="1">1</span></div>
+      <div class="settings-nav-list">
+        <div class="settings-nav-item is-active" data-menu="display" onclick="switchMenu('display')">显示设置</div>
+        <div class="settings-nav-item" data-menu="operation" onclick="switchMenu('operation')">操作设置</div>
+      </div>
+    </div>
+
+    <!-- 右侧配置面板 -->
+    <div class="settings-panel" id="settingsPanel">
+
+      <!-- 显示设置面板 -->
+      <div id="displayPanel">
+        <!-- 面板标题 -->
+        <h3 class="section-title">显示设置</h3>
+        <!-- 风险类型切换标签 -->
+        <div class="risk-type-tabs" id="riskTypeTabs" style="position:relative;">
+          <!-- 动态渲染，含角标 -->
+        </div>
+
+        <!-- 字段配置 -->
+        <div class="field-config-section">
+
+          <table class="config-table">
+            <thead>
+              <tr>
+                <th>字段</th>
+                <th class="col-check">是否显示</th>
+                <th class="col-check" style="position:relative;">是否必填 <span class="prd-badge" data-badge-id="3" style="top:0;right:-12px;">3</span></th>
+              </tr>
+            </thead>
+            <tbody id="fieldConfigBody">
+              <!-- 动态渲染 -->
+            </tbody>
+          </table>
+
+          <!-- 底部操作 -->
+          <div class="settings-footer">
+            <button class="btn btn-primary" onclick="saveSettings()" style="position:relative;">保 存 <span class="prd-badge prd-badge-inline" data-badge-id="4">4</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 操作设置面板 -->
+      <div id="operationPanel" style="display:none;">
+        <!-- 面板标题 -->
+        <h3 class="section-title">操作设置</h3>
+        <div class="operation-section" style="position:relative;">
+          <span class="prd-badge" data-badge-id="5" style="top:-4px;right:0;">5</span>
+          <label class="operation-label">是否支持管控风险</label>
+          <div class="radio-group" id="controlRadioGroup">
+            <label class="radio-item">
+              <input type="radio" name="controlSupport" value="yes" onchange="onControlSupportChange('yes')">
+              <span class="radio-dot"></span>
+              <span>支持</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="controlSupport" value="no" onchange="onControlSupportChange('no')">
+              <span class="radio-dot"></span>
+              <span>不支持</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-footer">
+          <button class="btn btn-primary" onclick="saveOperationSettings()">保 存</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="saveToast">保存成功！</div>
+
+<!-- ==================== PRD 说明按钮 ==================== -->
+<button class="prd-doc-btn" onclick="openPrdDrawer()" title="查看PRD文档（页面PRD / 风险管理整体PRD / 工贸接口整体PRD）">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+  PRD说明
+</button>
+
+<!-- ==================== PRD 抽屉 ==================== -->
+<div class="prd-drawer-overlay" id="prdDrawerOverlay"></div>
+<div class="prd-drawer" id="prdDrawer">
+  <div class="prd-drawer-header">
+    <span class="prd-drawer-title">风险设置 · PRD说明</span>
+    <button class="prd-drawer-close" id="prdDrawerClose" title="关闭">×</button>
+  </div>
+  <div class="prd-drawer-tabs" id="prdDrawerTabs">
+    <button class="prd-drawer-tab active" data-tab="page">页面PRD</button>
+    <button class="prd-drawer-tab" data-tab="overall-risk">风险管理整体PRD</button>
+    <button class="prd-drawer-tab" data-tab="overall-api">工贸接口整体PRD</button>
+  </div>
+  <div class="prd-drawer-body" id="prdDrawerBody">
+    <div class="prd-drawer-panel active" id="prdPanelPage">
+      <div id="prdPanelPageContent"></div>
+    </div>
+    <div class="prd-drawer-panel" id="prdPanelOverallRisk">
+      <div id="prdPanelOverallRiskContent"></div>
+    </div>
+    <div class="prd-drawer-panel" id="prdPanelOverallApi">
+      <div id="prdPanelOverallApiContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 全局标注开关 ==================== -->
+<button class="badge-toggle-btn" id="badgeToggleBtn" onclick="toggleAllBadges()" title="显示/隐藏标注角标">
+  <svg id="badgeToggleIconEyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+  </svg>
+  <svg id="badgeToggleIconEyeClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+    <line x1="1" y1="1" x2="23" y2="23"></line>
+  </svg>
+</button>
+
+<!-- ==================== 浮窗容器 ==================== -->
+<div class="prd-tooltip" id="prdTooltip">
+  <div class="prd-tooltip-header">
+    <span id="prdTooltipTitle">需求描述</span>
+    <button class="prd-tooltip-close" onclick="closeTooltip()">×</button>
+  </div>
+  <div class="prd-tooltip-body" id="prdTooltipBody"></div>
+</div>
+
+<script>
+// ==================== 数据模型 ====================
+const STORAGE_KEY = 'risk_control_industry_settings';
+const OPERATION_STORAGE_KEY = 'risk_control_operation_settings';
+
+// 风险类型
+const RISK_TYPES = [
+  { key: 'inherent', label: '固有风险' },
+  { key: 'risk',     label: '作业风险' }
+];
+
+// 各风险类型下的字段顺序（用于渲染和遍历）
+const ORDERED_FIELDS_BY_RISK_TYPE = {
+  inherent: [
+    { key: 'inherent_risk_type',   label: '固有风险类型' },
+    { key: 'risk_location',        label: '风险点地点' },
+    { key: 'risk_link',            label: '风险环节' },
+    { key: 'risk_analysis_target', label: '风险分析对象' },
+    { key: 'risk_describe',        label: '风险描述' }
+  ],
+  risk: [
+    { key: 'risk_location',        label: '风险点地点' },
+    { key: 'risk_link',            label: '风险环节' },
+    { key: 'risk_analysis_target', label: '风险分析对象' },
+    { key: 'risk_describe',        label: '风险描述' }
+  ]
+};
+
+// 获取当前风险类型下的有序字段列表
+function getFieldsForRiskType(riskTypeKey) {
+  return ORDERED_FIELDS_BY_RISK_TYPE[riskTypeKey] || ORDERED_FIELDS_BY_RISK_TYPE.inherent;
+}
+
+// 默认配置：按风险类型存储，不区分公司
+function makeDefaultConfig() {
+  return {
+    固有风险: {
+      inherent_risk_type:   { show: true,  required: true  },
+      risk_location:        { show: true,  required: true  },
+      risk_link:            { show: true,  required: true  },
+      risk_analysis_target: { show: false, required: false },
+      risk_describe:        { show: true,  required: true  }
+    },
+    作业风险: {
+      risk_location:        { show: true,  required: true  },
+      risk_link:            { show: true,  required: true  },
+      risk_analysis_target: { show: false, required: false },
+      risk_describe:        { show: true,  required: true  }
+    }
+  };
+}
+
+// 加载持久化配置
+function loadConfig() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const merged = makeDefaultConfig();
+      for (const rtLabel of RISK_TYPES.map(r => r.label)) {
+        if (parsed[rtLabel]) {
+          const allFields = getFieldsForRiskType(
+            RISK_TYPES.find(r => r.label === rtLabel)?.key || 'inherent'
+          );
+          for (const f of allFields) {
+            if (parsed[rtLabel][f.key]) {
+              merged[rtLabel][f.key] = {
+                show:     !!parsed[rtLabel][f.key].show,
+                required: !!parsed[rtLabel][f.key].required
+              };
+            }
+          }
+        }
+      }
+      return merged;
+    }
+  } catch (e) { /* ignore */ }
+  return makeDefaultConfig();
+}
+
+let config = loadConfig();
+let currentRiskTypeKey = 'inherent'; // 当前选中的风险类型 key
+let currentMenu = 'display'; // 当前菜单：display | operation
+let controlSupport = 'yes'; // 是否支持管控风险：yes | no
+
+// ==================== DOM 引用 ====================
+const riskTypeTabs    = document.getElementById('riskTypeTabs');
+const fieldConfigBody = document.getElementById('fieldConfigBody');
+const displayPanel    = document.getElementById('displayPanel');
+const operationPanel  = document.getElementById('operationPanel');
+
+// ==================== 初始化 ====================
+function init() {
+  loadOperationSettings();
+  renderRiskTypeTabs();
+  renderFieldTable();
+  renderOperationPanel();
+}
+
+// ==================== 菜单切换 ====================
+function switchMenu(menu) {
+  currentMenu = menu;
+
+  // 更新左侧 nav 高亮
+  document.querySelectorAll('.settings-nav-item').forEach(item => {
+    item.classList.toggle('is-active', item.dataset.menu === menu);
+  });
+
+  // 切换右侧面板
+  if (menu === 'display') {
+    displayPanel.style.display = '';
+    operationPanel.style.display = 'none';
+  } else if (menu === 'operation') {
+    displayPanel.style.display = 'none';
+    operationPanel.style.display = '';
+    renderOperationPanel();
+  }
+}
+
+// ==================== 渲染风险类型切换标签 ====================
+function renderRiskTypeTabs() {
+  let html = '';
+  RISK_TYPES.forEach(rt => {
+    const activeClass = rt.key === currentRiskTypeKey ? ' is-active' : '';
+    html += `<button class="risk-type-tab${activeClass}" data-risk-type="${rt.key}" onclick="switchRiskType('${rt.key}')">${rt.label}</button>`;
+  });
+  html += '<span class="prd-badge" data-badge-id="2" style="top:4px;right:8px;">2</span>';
+  riskTypeTabs.innerHTML = html;
+  bindBadgeEvents();
+}
+
+// ==================== 切换风险类型 ====================
+function switchRiskType(riskTypeKey) {
+  currentRiskTypeKey = riskTypeKey;
+  renderRiskTypeTabs();
+  renderFieldTable();
+}
+
+// ==================== 获取当前配置（快捷访问） ====================
+function getCurrentTypeConfig() {
+  const rtLabel = RISK_TYPES.find(r => r.key === currentRiskTypeKey).label;
+  return config[rtLabel];
+}
+
+// ==================== 渲染字段配置表格 ====================
+function renderFieldTable() {
+  const typeCfg = getCurrentTypeConfig();
+  const fields = getFieldsForRiskType(currentRiskTypeKey);
+
+  let html = '';
+
+  fields.forEach(f => {
+    const field = typeCfg[f.key];
+    if (!field) return;
+    const showChecked    = field.show     ? 'checked' : '';
+    const requiredChecked = field.required ? 'checked' : '';
+    const requiredDisabled = !field.show ? 'is-disabled' : '';
+
+    html += `
+      <tr data-field-key="${f.key}">
+        <td>${f.label}</td>
+        <td class="col-check">
+          <label class="custom-checkbox chk-show">
+            <input type="checkbox" ${showChecked} onchange="onShowChange('${f.key}', this.checked)">
+            <span class="custom-checkbox-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="6 12 10 16 18 8"/></svg>
+            </span>
+          </label>
+        </td>
+        <td class="col-check">
+          <label class="custom-checkbox chk-required ${requiredDisabled}">
+            <input type="checkbox" ${requiredChecked} onchange="onRequiredChange('${f.key}', this.checked)" ${!field.show ? 'disabled' : ''}>
+            <span class="custom-checkbox-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="6 12 10 16 18 8"/></svg>
+            </span>
+          </label>
+        </td>
+      </tr>`;
+  });
+
+  fieldConfigBody.innerHTML = html;
+}
+
+// ==================== 复选框联动逻辑 ====================
+function onShowChange(fieldKey, checked) {
+  const typeCfg = getCurrentTypeConfig();
+  typeCfg[fieldKey].show = checked;
+
+  if (!checked) {
+    // 取消显示 → 同时取消必填
+    typeCfg[fieldKey].required = false;
+  }
+
+  renderFieldTable();
+}
+
+function onRequiredChange(fieldKey, checked) {
+  const typeCfg = getCurrentTypeConfig();
+  if (!typeCfg[fieldKey].show) {
+    return;
+  }
+  typeCfg[fieldKey].required = checked;
+  renderFieldTable();
+}
+
+// ==================== 保存 ====================
+function saveSettings() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  showToast();
+}
+
+// ==================== 操作设置 ====================
+function loadOperationSettings() {
+  try {
+    const raw = localStorage.getItem(OPERATION_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.controlSupport === 'yes' || parsed.controlSupport === 'no') {
+        controlSupport = parsed.controlSupport;
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
+
+function renderOperationPanel() {
+  const yesRadio = document.querySelector('#operationPanel input[value="yes"]');
+  const noRadio  = document.querySelector('#operationPanel input[value="no"]');
+  if (yesRadio) yesRadio.checked = (controlSupport === 'yes');
+  if (noRadio)  noRadio.checked  = (controlSupport === 'no');
+}
+
+function onControlSupportChange(value) {
+  controlSupport = value;
+}
+
+function saveOperationSettings() {
+  localStorage.setItem(OPERATION_STORAGE_KEY, JSON.stringify({ controlSupport }));
+  showToast();
+}
+
+// ==================== Toast ====================
+function showToast(msg) {
+  const toast = document.getElementById('saveToast');
+  toast.textContent = msg || '保存成功！';
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+// ==================== 启动 ====================
+// init() 在文件末尾调用，确保所有变量已声明
+
+// ==================== PRD 标注角标交互逻辑 ====================
+
+// 角标内容数据（综合 风险设置_PRD.md + 风险管理与辨识_整体功能_PRD.md + 工贸在线接口对接_整体功能_PRD.md）
+const BADGE_DATA = {
+  1: {
+    title: '[1] 左侧设置菜单 · 面板互斥切换',
+    html: `<p><strong>菜单结构</strong>（页面PRD §2.1）：左侧设置导航包含两个互斥菜单项——「显示设置」（默认选中）和「操作设置」。</p><p><strong>菜单路径</strong>：安全 / 风险评估 / 设置</p><hr><p><strong>交互规则</strong>（页面PRD §4.2 / 整体PRD §9 规则6）：</p><ul><li>点击「显示设置」→ 展示显示设置面板（含风险类型 Tab + 字段配置表），隐藏操作设置面板</li><li>点击「操作设置」→ 展示操作设置面板（含管控开关单选项），隐藏显示设置面板</li><li>两个面板<strong>互斥切换</strong>，同一时间仅展示一个</li><li>当前选中菜单项高亮（蓝色背景 + 蓝色文字）</li></ul><hr><p><strong>角色权限</strong>（页面PRD §1.2 & §6 / 整体PRD §2）：</p><ul><li>仅<strong>系统管理员</strong>可操作，具有「风险设置」菜单权限</li><li>数据范围仅本企业（<code>societyCode</code>），不做跨企业配置同步</li><li>配置数据存储于浏览器端 <code>localStorage</code>，无后端权限校验</li></ul><hr><p><strong>页面加载流程</strong>（页面PRD §4.1）：</p><ol><li>页面加载时初始化两个面板数据和菜单状态</li><li>从 <code>localStorage</code> 读取已保存配置（<code>risk_control_industry_settings</code> 和 <code>risk_control_operation_settings</code>）</li><li>若无已保存数据，使用内置默认配置（<code>makeDefaultConfig()</code>）</li><li>默认展示「显示设置」面板 + 「固有风险」Tab</li></ol><hr><p><strong>整体PRD 业务规则</strong>（§9）：规则6-面板互斥切换；规则7-保存按钮居中，无恢复默认按钮</p>`
+  },
+  2: {
+    title: '[2] 风险类型 Tab 切换',
+    html: `<p><strong>核心设计</strong>（页面PRD §3.1）：配置以<strong>风险类型</strong>为维度，分为「固有风险」和「作业风险」两类，各自独立维护字段配置。</p><hr><p><strong>Tab 字段差异</strong>（页面PRD §3.1 分组1 / 整体PRD §9 规则3-5）：</p><ul><li><strong>固有风险 Tab</strong>：含 5 个字段——固有风险类型、风险点地点、风险环节、风险分析对象、风险描述</li><li><strong>作业风险 Tab</strong>：含 4 个字段——风险点地点、风险环节、风险分析对象、风险描述（无「固有风险类型」）</li><li><strong>固有风险类型</strong>字段仅当风险点类型为「固有风险」时显示（整体PRD 规则3）</li><li><strong>风险分析对象</strong>默认不展示且非必填（<code>show=false, required=false</code>），两个 Tab 均如此（整体PRD 规则5）</li></ul><hr><p><strong>交互规范</strong>（页面PRD §4.3）：</p><ul><li>点击 Tab 切换即刻生效，即时渲染 <code>≤100ms</code>（纯前端内存读取）</li><li>切换后字段配置表按该风险类型的字段顺序重新渲染</li></ul><hr><p><strong>存储结构</strong>（页面PRD §3.1 / 整体PRD §5.3.1）：</p><ul><li><strong>Key</strong>：<code>localStorage: risk_control_industry_settings</code></li><li>层级：风险类型名（<code>"固有风险"</code> / <code>"作业风险"</code>）→ 字段 key → <code>{ show, required }</code></li></ul><blockquote>整体PRD 存储模型含「工贸」行业级外层，当前页面按风险类型维度直接存储（功能等效）。</blockquote>`
+  },
+  3: {
+    title: '[3] 字段配置表格 · 显隐/必填联动',
+    html: `<p><strong>字段分组</strong>（页面PRD §3.1 分组1）：显示设置面板每行包含「是否显示」「是否必填」两个复选框。5个可配置字段的默认值见下方表格。</p><hr><p><strong>字段清单与默认值</strong>（页面PRD §3.1）：</p><table style="width:100%;font-size:12px;border-collapse:collapse;margin:6px 0;"><tr style="background:#F7F8F9;"><th style="border:1px solid #DEDFE3;padding:4px 8px;text-align:left;">字段标签</th><th style="border:1px solid #DEDFE3;padding:4px 8px;text-align:left;">字段名</th><th style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">默认显示</th><th style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">默认必填</th><th style="border:1px solid #DEDFE3;padding:4px 8px;text-align:left;">适用Tab</th></tr><tr><td style="border:1px solid #DEDFE3;padding:4px 8px;">固有风险类型</td><td style="border:1px solid #DEDFE3;padding:4px 8px;"><code>inherent_risk_type</code></td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;">仅固有风险</td></tr><tr><td style="border:1px solid #DEDFE3;padding:4px 8px;">风险点地点</td><td style="border:1px solid #DEDFE3;padding:4px 8px;"><code>risk_location</code></td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;">两者</td></tr><tr><td style="border:1px solid #DEDFE3;padding:4px 8px;">风险环节</td><td style="border:1px solid #DEDFE3;padding:4px 8px;"><code>risk_link</code></td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;">两者</td></tr><tr><td style="border:1px solid #DEDFE3;padding:4px 8px;">风险分析对象</td><td style="border:1px solid #DEDFE3;padding:4px 8px;"><code>risk_analysis_target</code></td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;"><span style="color:#F64C41;">❌ 否</span></td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;"><span style="color:#F64C41;">❌ 否</span></td><td style="border:1px solid #DEDFE3;padding:4px 8px;">两者</td></tr><tr><td style="border:1px solid #DEDFE3;padding:4px 8px;">风险描述</td><td style="border:1px solid #DEDFE3;padding:4px 8px;"><code>risk_describe</code></td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">✅ 是</td><td style="border:1px solid #DEDFE3;padding:4px 8px;">两者</td></tr></table><hr><p><strong>核心联动规则</strong>（页面PRD §4.4 / 整体PRD §9 规则1-2）：</p><ul><li><strong>取消「是否显示」</strong>：该行「是否必填」自动取消 + 复选框置灰不可点击（添加 <code>.is-disabled</code>，<code>opacity: 0.5</code>）</li><li><strong>勾选「是否显示」</strong>：「是否必填」恢复可编辑状态，去除置灰样式</li><li><strong>「是否显示 = OFF」时点击「是否必填」</strong>：无反应（<code>disabled</code> 属性阻止）</li><li>「是否必填」仅在「是否显示 = ON」时可勾选；若必填 = ON，新增/编辑时需前端校验非空（整体PRD 规则2）</li></ul><p>联动在前端 <code>onShowChange()</code> 和 <code>onRequiredChange()</code> 中实时处理，无需保存即可预览效果。</p><hr><p><strong>工贸接口关联规则</strong>（工贸接口整体PRD §9.2）：5 个可配置字段在工贸推送时<strong>视同始终显示且必填</strong>。配置仅控制 UI 显隐——<code>riskLink</code> 和 <code>describe</code> 即使隐藏，数据仍需收集并推送。</p>`
+  },
+  4: {
+    title: '[4] 保存按钮（显示设置）· 持久化配置',
+    html: `<p><strong>功能说明</strong>（页面PRD §3.2）：将当前 <code>config</code> 对象全量写入 <code>localStorage: risk_control_industry_settings</code>。</p><hr><p><strong>业务规则</strong>：</p><ul><li>保存成功弹出 Toast「保存成功！」，2s 后自动消失</li><li>保存按钮<strong>居中展示</strong>，位于面板底部</li><li><strong>无「恢复默认」按钮</strong>——如需恢复默认配置，手动清除 <code>localStorage</code> 对应 key 即可（整体PRD 规则7）</li></ul><hr><p><strong>配置生效机制</strong>（页面PRD §4.5 / 整体PRD §7.4）：风险管理与辨识页面<strong>下次加载时</strong>读取 <code>localStorage</code> 配置，无需手动刷新。配置热生效（下次加载自动同步），无需重启。</p><hr><p><strong>存储结构</strong>（页面PRD §3.1）：</p><pre style="background:#F7F8FA;padding:8px;border-radius:4px;font-size:11px;overflow-x:auto;">{
+  "固有风险": {
+    "inherent_risk_type":   { "show": true,  "required": true  },
+    "risk_location":        { "show": true,  "required": true  },
+    "risk_link":            { "show": true,  "required": true  },
+    "risk_analysis_target": { "show": false, "required": false },
+    "risk_describe":        { "show": true,  "required": true  }
+  },
+  "作业风险": {
+    "risk_location":        { "show": true,  "required": true  },
+    "risk_link":            { "show": true,  "required": true  },
+    "risk_analysis_target": { "show": false, "required": false },
+    "risk_describe":        { "show": true,  "required": true  }
+  }
+}</pre><hr><p><strong>异常处理</strong>（页面PRD §5）：</p><ul><li><code>localStorage</code> 不可用 → 使用默认配置，功能正常运行但不持久化</li><li>数据格式异常（JSON 解析失败）→ 静默回退到默认配置</li><li>写入失败（配额已满）→ Toast 提示「保存失败，请重试」</li></ul><hr><p><strong>工贸接口关联</strong>（工贸接口整体PRD §9.2）：保存的字段配置直接影响风险管理与辨识页面的抽屉字段显隐和必填校验，但不影响工贸推送数据——5 个可配置字段在推送时始终视为显示且必填。</p>`
+  },
+  5: {
+    title: '[5] 操作设置 · 管控功能全局开关',
+    html: `<p><strong>字段定义</strong>（页面PRD §3.1 分组2 / 整体PRD §9 规则8）：</p><ul><li>字段名：<code>controlSupport</code></li><li>控件类型：单选项（支持/不支持），横向排列，二选一</li><li>默认值：<code>"yes"</code>（支持）</li></ul><hr><p><strong>值说明</strong>（页面PRD §3.1 分组2 / 整体PRD §9 规则8）：</p><table style="width:100%;font-size:12px;border-collapse:collapse;margin:6px 0;"><tr style="background:#F7F8F9;"><th style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;">值</th><th style="border:1px solid #DEDFE3;padding:4px 8px;text-align:left;">效果</th></tr><tr><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;"><span style="color:#00C5C3;">●</span> <code>"yes"</code>（支持）</td><td style="border:1px solid #DEDFE3;padding:4px 8px;">风险管理与辨识页面<strong>正常展示</strong>管控操作按钮（开始管控/结束管控/重新管控）和管控状态列</td></tr><tr><td style="border:1px solid #DEDFE3;padding:4px 8px;text-align:center;"><span style="color:#F64C41;">●</span> <code>"no"</code>（不支持）</td><td style="border:1px solid #DEDFE3;padding:4px 8px;">风险管理与辨识页面<strong>隐藏</strong>管控操作按钮和管控状态列</td></tr></table><hr><p><strong>存储结构</strong>（页面PRD §3.1 分组2）：</p><ul><li><strong>Key</strong>：<code>localStorage: risk_control_operation_settings</code></li><li>格式：<code>{ "controlSupport": "yes" }</code> 或 <code>{ "controlSupport": "no" }</code></li></ul><hr><p><strong>保存</strong>（页面PRD §3.2）：点击保存按钮，将 <code>{ controlSupport }</code> 写入 <code>localStorage</code>，弹出 Toast「保存成功！」。</p><hr><p><strong>配置生效</strong>（页面PRD §4.5 / 整体PRD §7.4）：风险管理与辨识页面<strong>下次加载时</strong>读取该配置，无需手动刷新。</p><hr><p><strong>工贸接口关联</strong>（工贸接口整体PRD §4.2 & §5.2）：管控功能关闭（<code>"no"</code>）时，风险管理与辨识页面无法发起管控操作，因此也无法触发管控结束 → 无法触发工贸数据推送（<code>POST /company/data/riskData</code>）。已存在的管控记录不受影响，仅隐藏操作入口。</p><hr><p><strong>整体PRD 业务规则</strong>（§9 规则8）：操作设置默认值 =「支持」；设为「不支持」后，风险管理与辨识页面隐藏所有管控操作入口和管控状态列。</p>`
+  }
+};
+
+// ==================== 浮窗交互 ====================
+const tooltip = document.getElementById('prdTooltip');
+const tooltipTitle = document.getElementById('prdTooltipTitle');
+const tooltipBody = document.getElementById('prdTooltipBody');
+let activeBadgeId = null;
+let tooltipTimer = null;
+
+function showTooltip(badgeId, badgeEl) {
+  if (activeBadgeId === badgeId) return;
+  activeBadgeId = badgeId;
+  clearTimeout(tooltipTimer);
+
+  const data = BADGE_DATA[badgeId];
+  if (!data) return;
+  tooltipTitle.textContent = data.title;
+  tooltipBody.innerHTML = data.html;
+  tooltip.style.display = 'block';
+
+  // 定位浮窗
+  positionTooltip(badgeEl);
+}
+
+function positionTooltip(badgeEl) {
+  const rect = badgeEl.getBoundingClientRect();
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const tw = 450;
+
+  let left = rect.right + 8;
+  let top = rect.top - 4;
+
+  // 右侧空间不足 → 翻到左侧
+  if (left + tw > vw - 20) {
+    left = rect.left - tw - 8;
+  }
+  // 底部溢出 → 上移
+  if (top + 400 > vh) {
+    top = Math.max(10, vh - 410);
+  }
+  // 顶部溢出
+  if (top < 10) top = 10;
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+}
+
+function closeTooltip() {
+  tooltip.style.display = 'none';
+  activeBadgeId = null;
+}
+
+// 绑定角标 hover 事件
+function bindBadgeEvents() {
+  document.querySelectorAll('.prd-badge').forEach(badge => {
+    const badgeId = badge.getAttribute('data-badge-id');
+    if (!badgeId) return;
+
+    badge.addEventListener('mouseenter', () => {
+      clearTimeout(tooltipTimer);
+      showTooltip(badgeId, badge);
+    });
+
+    badge.addEventListener('mouseleave', () => {
+      tooltipTimer = setTimeout(() => {
+        // 检查鼠标是否已移到浮窗上
+        if (!tooltip.matches(':hover')) {
+          closeTooltip();
+        }
+      }, 200);
+    });
+  });
+
+  // 浮窗自身：鼠标移入保持，移出关闭
+  tooltip.addEventListener('mouseenter', () => {
+    clearTimeout(tooltipTimer);
+  });
+  tooltip.addEventListener('mouseleave', () => {
+    closeTooltip();
+  });
+
+  // 全局点击关闭
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.prd-badge') && !e.target.closest('.prd-tooltip')) {
+      closeTooltip();
+    }
+  });
+}
+
+// ==================== PRD 抽屉（含页签切换） ====================
+var prdDrawerOverlay = document.getElementById('prdDrawerOverlay');
+var prdDrawerEl = document.getElementById('prdDrawer');
+var prdDrawerClose = document.getElementById('prdDrawerClose');
+var prdTabs = document.getElementById('prdDrawerTabs');
+var prdPanelPage = document.getElementById('prdPanelPage');
+var prdPanelOverallRisk = document.getElementById('prdPanelOverallRisk');
+var prdPanelOverallApi = document.getElementById('prdPanelOverallApi');
+var prdContentsLoaded = { page: false, 'overall-risk': false, 'overall-api': false };
+
+function openPrdDrawer() {
+  prdDrawerOverlay.classList.add('show');
+  prdDrawerEl.classList.add('open');
+  // 加载当前活跃页签内容
+  var activeTab = prdTabs.querySelector('.prd-drawer-tab.active');
+  if (activeTab) {
+    loadPrdTabContent(activeTab.dataset.tab);
+  }
+}
+
+function closePrdDrawer() {
+  prdDrawerOverlay.classList.remove('show');
+  prdDrawerEl.classList.remove('open');
+}
+
+function switchPrdTab(tabName) {
+  prdTabs.querySelectorAll('.prd-drawer-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tab === tabName);
+  });
+  prdPanelPage.classList.toggle('active', tabName === 'page');
+  prdPanelOverallRisk.classList.toggle('active', tabName === 'overall-risk');
+  prdPanelOverallApi.classList.toggle('active', tabName === 'overall-api');
+  loadPrdTabContent(tabName);
+}
+
+function loadPrdTabContent(tabName) {
+  if (prdContentsLoaded[tabName]) return;
+  prdContentsLoaded[tabName] = true;
+
+  if (tabName === 'page') {
+    loadPagePrdContent();
+  } else if (tabName === 'overall-risk') {
+    loadOverallRiskPrdContent();
+  } else if (tabName === 'overall-api') {
+    loadOverallApiPrdContent();
+  }
+}
+
+// ESC 关闭
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && prdDrawerEl.classList.contains('open')) {
+    closeTooltip();
+    closePrdDrawer();
+  }
+});
+
+prdDrawerClose.addEventListener('click', closePrdDrawer);
+prdDrawerOverlay.addEventListener('click', function(e) {
+  if (e.target === prdDrawerOverlay) closePrdDrawer();
+});
+
+prdTabs.addEventListener('click', function(e) {
+  var tab = e.target.closest('.prd-drawer-tab');
+  if (!tab) return;
+  switchPrdTab(tab.dataset.tab);
+});
+
+// ==================== 页面 PRD 内容（含角标编号反向注入） ====================
+function loadPagePrdContent() {
+  const body = document.getElementById('prdPanelPageContent');
+
+  const md = `# 风险设置 PRD（产品需求文档）
+
+## <span class="badge-ref">[1]</span> 1. 引言
+
+### 1.1 背景
+
+为满足不同行业对风险字段的差异化配置需求，提供集中化的**风险设置**功能，支持按风险类型维度配置字段显隐与必填，以及管控功能的全局开关。配置通过 \`localStorage\` 持久化，供风险管理与辨识页面加载时读取。
+
+> **关联整体 PRD**：\`风险管理与辨识_整体功能_PRD.md\`（以下简称「整体 PRD」），本页面 PRD 仅覆盖风险设置页面自身的功能范围。
+
+### 1.2 使用角色
+
+- **系统管理员**：具有「风险设置」菜单权限，可对显示设置和操作设置进行配置与保存。数据范围仅本企业。
+
+### 1.3 前置条件
+
+- 用户已登录系统
+- 用户具有「风险评估 > 设置」菜单权限
+- 页面首次加载无特殊参数依赖
+
+### 1.4 功能清单
+
+| 模块 | 功能 | 功能描述 |
+|------|------|----------|
+| 显示设置 | 风险类型切换 | 在「固有风险」和「作业风险」Tab 间切换，各自独立维护字段配置 |
+| 显示设置 | 字段配置表 | 按字段行展示「是否显示」「是否必填」复选框，支持联动置灰 |
+| 显示设置 | 保存 | 将当前风险类型下的字段配置写入 \`localStorage\` |
+| 操作设置 | 管控开关 | 单选项：支持/不支持管控风险，全局控制风险管理与辨识页面的管控入口显隐 |
+| 操作设置 | 保存 | 将管控开关配置写入 \`localStorage\` |
+
+## <span class="badge-ref">[1]</span> 2. 页面菜单与权限规划
+
+### 2.1 页面菜单
+
+**菜单路径**：安全 / 风险评估 / 设置
+
+左侧设置导航包含两个互斥菜单项：
+- **显示设置**（默认选中）
+- **操作设置**
+
+### 2.2 权限规划
+
+| 权限点名称 | 操作范围 | 数据范围 |
+|------------|----------|----------|
+| 设置配置 | 查看、修改显示设置和操作设置 | 本企业全部 |
+
+## <span class="badge-ref">[2]</span><span class="badge-ref">[3]</span> 3. 表单需求说明
+
+### 3.1 字段分组
+
+#### 分组1：显示设置（displayPanel）
+
+| 字段标签 | 字段名 | 控件类型 | 必填 | 默认值 | 联动规则 | 交互说明 |
+|----------|--------|----------|------|--------|----------|----------|
+| 固有风险类型 | \`inherent_risk_type\` | 复选框×2（显示/必填） | 可选 | show=true, required=true | 仅「固有风险」Tab 展示该行；取消显示→必填自动取消+置灰 | 作业风险 Tab 不展示此行 |
+| 风险点地点 | \`risk_location\` | 复选框×2（显示/必填） | 可选 | show=true, required=true | 取消显示→必填自动取消+置灰 | 两个 Tab 均展示 |
+| 风险环节 | \`risk_link\` | 复选框×2（显示/必填） | 可选 | show=true, required=true | 取消显示→必填自动取消+置灰 | 两个 Tab 均展示 |
+| 风险分析对象 | \`risk_analysis_target\` | 复选框×2（显示/必填） | 可选 | show=false, required=false | 取消显示→必填自动取消+置灰 | 两个 Tab 默认不展示 |
+| 风险描述 | \`risk_describe\` | 复选框×2（显示/必填） | 可选 | show=true, required=true | 取消显示→必填自动取消+置灰 | 两个 Tab 均展示 |
+
+> **Tab 差异**：固有风险 Tab 含 5 个字段，作业风险 Tab 含 4 个字段（无「固有风险类型」）。
+
+**存储结构**（\`localStorage: risk_control_industry_settings\`）：
+
+\`\`\`json
+{
+  "固有风险": {
+    "inherent_risk_type":   { "show": true,  "required": true  },
+    "risk_location":        { "show": true,  "required": true  },
+    "risk_link":            { "show": true,  "required": true  },
+    "risk_analysis_target": { "show": false, "required": false },
+    "risk_describe":        { "show": true,  "required": true  }
+  },
+  "作业风险": {
+    "risk_location":        { "show": true,  "required": true  },
+    "risk_link":            { "show": true,  "required": true  },
+    "risk_analysis_target": { "show": false, "required": false },
+    "risk_describe":        { "show": true,  "required": true  }
+  }
+}
+\`\`\`
+
+#### <span class="badge-ref">[5]</span> 分组2：操作设置（operationPanel）
+
+| 字段标签 | 字段名 | 控件类型 | 必填 | 默认值 | 联动规则 | 交互说明 |
+|----------|--------|----------|------|--------|----------|----------|
+| 是否支持管控风险 | \`controlSupport\` | 单选组（支持/不支持） | 是 | \`"yes"\` | 选择后实时更新状态，保存时持久化 | 横向排列，支持/不支持二选一 |
+
+**存储结构**（\`localStorage: risk_control_operation_settings\`）：
+
+\`\`\`json
+{
+  "controlSupport": "yes"
+}
+\`\`\`
+
+| 值 | 说明 |
+|:--:|------|
+| \`"yes"\` | 支持管控：风险管理与辨识页面正常展示管控操作按钮和管控状态列 |
+| \`"no"\` | 不支持：风险管理与辨识页面隐藏管控操作按钮（开始管控/结束管控/重新管控）和管控状态列 |
+
+### <span class="badge-ref">[4]</span><span class="badge-ref">[5]</span> 3.2 操作按钮
+
+| 按钮 | 触发动作 | 说明 |
+|------|----------|------|
+| 保存（显示设置） | 将当前 \`config\` 对象全量写入 \`localStorage: risk_control_industry_settings\` | 保存成功弹出 Toast「保存成功！」，2s 后自动消失 |
+| 保存（操作设置） | 将 \`{ controlSupport }\` 写入 \`localStorage: risk_control_operation_settings\` | 同上，弹出 Toast 提示 |
+
+> **按钮位置**：显示设置和操作设置的保存按钮均居中展示，位于面板底部。无「恢复默认」按钮——如需恢复默认配置，手动清除对应 \`localStorage\` key 即可。
+
+## <span class="badge-ref">[1]</span><span class="badge-ref">[2]</span><span class="badge-ref">[3]</span> 4. 交互设计
+
+### 4.1 页面加载交互
+
+1. 页面加载时初始化两个面板数据和菜单状态
+2. 从 \`localStorage\` 读取已保存配置（\`risk_control_industry_settings\` 和 \`risk_control_operation_settings\`）
+3. 若 \`localStorage\` 无数据，使用内置默认配置（\`makeDefaultConfig()\`）
+4. 默认展示「显示设置」面板 + 「固有风险」Tab
+
+### 4.2 左侧菜单切换
+
+- 点击「显示设置」→ 展示显示设置面板（含风险类型 Tab + 字段配置表），隐藏操作设置面板
+- 点击「操作设置」→ 展示操作设置面板（含管控开关单选项），隐藏显示设置面板
+- 两个面板**互斥切换**，同一时间仅展示一个
+- 当前选中菜单项高亮（蓝色背景 + 蓝色文字）
+
+### 4.3 风险类型 Tab 切换
+
+- 点击「固有风险」/「作业风险」Tab → 切换下方的字段配置表格
+- 切换时即时渲染，\`≤100ms\`（纯前端内存读取）
+- 切换后字段配置表重新按该风险类型的字段顺序渲染
+
+### 4.4 字段联动与动态显隐
+
+<span class="badge-ref">[3]</span> **核心联动规则：**
+
+| 触发 | 联动行为 |
+|------|----------|
+| 取消「是否显示」勾选 | 该行「是否必填」自动取消 + 复选框置灰不可点击 + 复选框样式变灰（添加 \`.is-disabled\`，\`opacity: 0.5\`） |
+| 勾选「是否显示」 | 「是否必填」恢复可编辑状态，去除置灰样式 |
+| 「是否显示 = OFF」时点击「是否必填」 | 无反应（\`disabled\` 属性阻止） |
+
+> 联动在前端 \`onShowChange()\` 和 \`onRequiredChange()\` 中实时处理，无需保存即可预览效果。
+
+### 4.5 操作反馈
+
+- **保存成功**：Toast 居中提示「保存成功！」，2s 后自动消失
+- **配置持久化**：保存操作直接读写 \`localStorage\`，无需接口调用
+- **配置生效**：风险管理与辨识页面**下次加载时**读取 \`localStorage\` 配置，无需手动刷新
+
+## 5. 异常处理
+
+| 异常场景 | 处理方式 |
+|----------|----------|
+| \`localStorage\` 不可用或被禁用 | 使用默认配置（\`makeDefaultConfig()\`），功能正常运行但不持久化 |
+| \`localStorage\` 数据格式异常（JSON 解析失败） | 静默回退到默认配置，不弹出错误提示 |
+| \`localStorage\` 写入失败（如配额已满） | Toast 提示「保存失败，请重试」 |
+| 页面未找到对应 DOM 元素 | 控制台错误，需页面重新加载 |
+
+## 6. 数据权限
+
+- 操作用户仅有**系统管理员**，具有「风险设置」菜单权限
+- 配置数据存储于浏览器端 \`localStorage\`，无后端权限校验
+- 数据范围：仅本企业（\`societyCode\`），不做跨企业配置同步
+
+## 7. 关联文档
+
+- [整体功能 PRD]：\`风险管理与辨识_整体功能_PRD.md\` — 包含名词解释、业务流程图、ER 图、用例图、非功能需求等全局内容
+- [风险管理与辨识页面 PRD]：\`风险管理与辨识_PRD.md\` — 读取本地配置的消费端页面
+- [风险管控设置原型]：\`风险设置.html\` — 本页面的 HTML 原型实现
+- [工贸在线数据接口规范]：\`工贸在线数据接口规范.pdf\` — 工贸平台标准接口文档
+
+## 8. 版本变更记录
+
+| 版本 | 日期 | 变更内容 | 作者 |
+|------|------|----------|------|
+| V1.0 | 2026-06-23 | 初版创建，基于整体功能 PRD 和页面实现 | — |
+`;
+
+  body.innerHTML = parseMarkdown(md);
+  if (typeof mermaid !== 'undefined') {
+    mermaid.run({ nodes: body.querySelectorAll('pre.mermaid') });
+  }
+}
+
+// ==================== 风险管理与辨识 整体 PRD 内容（含角标反向注入） ====================
+function loadOverallRiskPrdContent() {
+  const body = document.getElementById('prdPanelOverallRiskContent');
+
+  const md = `# 风险管理与辨识 · 整体功能 PRD
+
+## <span class="badge-ref">[1]</span> 1. 引言
+
+### 1.1 背景与目标
+
+**核心背景：工贸在线平台监管数据上报需求。**
+
+工贸在线系统要求企业通过标准接口上报风险管控数据，共 **15 个必填/可选字段**。当前系统已具备风险点录入与辨识基础能力，但存在以下差距：
+
+| 差距项 | 详情 |
+|--------|------|
+| **字段缺失** | 风险环节、风险描述两个字段尚未落地 |
+| **字典映射不一致** | 系统风险等级为4级，与工贸在线完全一致，无需映射；固有风险类型需映射为工贸编码(2/3/4) |
+| **地址交互升级** | 从纯文本升级为「地图选坐标+逆地理编码自动填充」 |
+| **管控措施聚合** | 推送工贸时需取所有措施的集合汇总(不去重) |
+| **管控功能缺失** | 管控全流程为全新功能，需从零建设 |
+| **配置灵活度不足** | 需集中化设置按风险类型维度控制字段显隐和必填 |
+
+**目标：** 以满足工贸在线数据上报合规要求为核心驱动力，完成系统字段映射改造、管控流程与数据推送联动、以及字段配置能力建设。
+
+本 PRD 作为**功能级整体需求说明**，统一定义风险管理与辨识功能的全局业务规则、数据模型、流程与非功能需求。
+
+### 1.2 用户价值
+
+| 用户角色 | 价值 |
+|----------|------|
+| 系统管理员 | 1. 按风险类型维度灵活配置字段显隐与必填<br/>2. 统一管理固有风险和作业风险，进行风险辨识与评价<br/>3. 对风险点发起管控并追踪管控状态与历史<br/>4. 管控结束后自动推送数据至工贸在线平台 |
+
+### 1.3 功能范围
+
+**包含：** 接口推送(15字段完整映射)、风险管理与辨识页面(双Tab列表/抽屉/地图选坐标/辨识子表/管控全流程)、风险管控设置页面(显示设置+操作设置)。
+
+**不包含：** 风险数据批量导入/导出、工贸系统侧数据接收处理、逆地理编码后端实现。
+
+---
+
+## <span class="badge-ref">[1]</span> 2. 角色与权限
+
+| 角色 | 菜单权限 | 操作权限 | 数据范围 |
+|------|----------|----------|----------|
+| 系统管理员 | 「风险管理与辨识」「风险设置」菜单 | 新增/编辑/删除风险点 + 风险辨识 + 管控全流程 + 显示设置/操作设置配置 | 本企业全部 |
+
+> 数据范围：所有角色仅可见本企业(\`societyCode\`)数据，不做跨企业穿透。
+
+---
+
+## 3. 名词解释
+
+| 术语 | 定义 |
+|------|------|
+| **工贸在线** | 政府安全监管平台(\`eitohq.cn\`)，要求企业通过标准 REST 接口上报风险管控数据(15字段) |
+| **风险点** | 企业内存在安全风险的具体点位(场所/设备/物料/作业活动) |
+| **固有风险** | 由物品(2)、场所(3)、工艺(4)等固有属性决定的静态风险 |
+| **作业风险** | 由作业活动引发的动态风险，riskType固定传编码1 |
+| **风险辨识** | 对风险点进行的危害识别、风险评价、制定防范措施的过程 |
+| **风险等级** | 系统侧4级：低风险(1)、一般风险(2)、较大风险(3)、重大风险(4)，与工贸在线编码完全一致 |
+| **管控** | 管控状态追踪流程：开始管控→管控中→结束管控；结束管控时触发工贸数据推送 |
+| **管控轮次** | 同一风险点可多次管控，每次为一个轮次(round)，推送取最新轮次起止时间 |
+| **显示设置** | 按风险类型维度控制新增/编辑抽屉中各字段显隐与必填；即使隐藏，工贸推送数据仍需收集 |
+| **操作设置** | 全局开关，控制风险管理与辨识页面是否展示管控操作入口和管控状态列 |
+| **逆地理编码** | 经纬度→行政区划编码(areaCode)+结构化地址(planAddress) |
+
+---
+
+## 4. 核心业务流程图
+
+### 4.1 风险点全生命周期
+
+\`\`\`mermaid
+flowchart TD
+    A[进入风险管理与辨识] --> B{选择风险类型}
+    B -->|固有风险| C1[固有风险列表]
+    B -->|作业风险| C2[作业风险列表]
+    C1 --> D{操作}
+    C2 --> D
+    D -->|新增| E[打开新增抽屉]
+    D -->|编辑| F[打开编辑抽屉]
+    D -->|删除| G[二次确认后删除]
+    D -->|风险辨识/作业步骤| H[进入子表面板]
+    E --> I[填写字段 + 校验必填]
+    F --> I
+    I --> J[保存 → 列表刷新]
+    H --> K[查看/新增/编辑/删除辨识记录<br/>或作业步骤记录]
+    G --> J
+\`\`\`
+
+### <span class="badge-ref">[5]</span> 4.2 风险管控流程
+
+\`\`\`mermaid
+flowchart TD
+    A[新增风险] --> B[风险辨识]
+    B --> C[进行管控]
+    C --> D[管控结束]
+    D --> E{grade是否匹配<br/>工贸在线风险等级}
+    E -->|是:低/一般/较大/重大风险| F[组装JSON→传送工贸在线]
+    E -->|否:不在映射范围内| G[跳过传送，记录日志]
+    F --> H{是否重新管控}
+    H -->|是| I[重新管控]
+    I --> C
+    H -->|否| J[完成]
+\`\`\`
+
+> **多次管控多次传送**：每次管控结束均触发一次传送。重新管控后再次结束管控时，再次组装数据传送，取最新管控轮次起止时间。仅传送符合风险等级(低风险/一般风险/较大风险/重大风险)的数据。
+
+### <span class="badge-ref">[1]</span><span class="badge-ref">[2]</span><span class="badge-ref">[4]</span> 4.3 设置配置流程
+
+\`\`\`mermaid
+flowchart TD
+    A[进入 风险管控设置] --> B{左侧菜单选择}
+    B -->|显示设置| C[选择风险类型Tab]
+    B -->|操作设置| H[展示管控开关单选项]
+    C --> D{固有风险 / 作业风险}
+    D --> E[展示对应字段配置表]
+    E --> F[勾选/取消 是否显示 / 是否必填]
+    F --> G[点击保存→写入localStorage]
+    H --> I[选择 支持/不支持]
+    I --> G
+    G --> J[Toast提示 保存成功！]
+    J --> K[风险管理与辨识页面<br/>下次加载时读取配置]
+\`\`\`
+
+---
+
+## <span class="badge-ref">[2]</span><span class="badge-ref">[3]</span><span class="badge-ref">[4]</span><span class="badge-ref">[5]</span> 5. 数据模型
+
+### 5.1 风险点主表(RISK_POINT)
+
+| 字段名 | 类型 | 必填 | 说明 |
+|--------|------|:----:|------|
+| riskId | string | ✓ | 主键 |
+| name | string(255) | ✓ | 风险点名称/作业名称 |
+| riskType | enum | ✓ | 固有风险/作业风险 |
+| inherentRiskType | enum | 条件 | 仅固有风险：物品(2)/场所(3)/工艺(4) |
+| riskLink | enum | 条件 | 6项风险环节下拉 |
+| riskAnalysisTarget | string | 条件 | 风险分析对象 |
+| riskDescribe | string(500) | 条件 | 风险描述 |
+| grade | int | ✓ | 最高风险等级编码1-4 |
+| dutyPerson | string | ✓ | 负责人员 |
+| lng/lat | float | — | 经纬度坐标 |
+| planAddress | string | — | 逆地理编码详细地址 |
+| areaCode | string | — | 行政区划编码 |
+| identificationTime | datetime | — | 最新辨识时间 |
+| measure | string | — | 管控措施汇总(不去重) |
+| controlStatus | enum | — | none/active/done |
+| controlRound | int | — | 当前管控轮次 |
+
+### 5.2 关联表
+
+| 表名 | 核心字段 |
+|------|----------|
+| 风险辨识记录(RISK_IDENTIFICATION) | 事故类型、危害因素、可能后果、风险等级、防范措施 |
+| 管控轮次(CONTROL_ROUND) | 开始时间、预计结束时间、实际结束时间 |
+| 作业步骤(JOB_STEP) | 步骤名称、事故类型、危害因素、风险等级 |
+
+### 5.3 配置数据结构(localStorage)
+
+- **显示设置 Key：** \`risk_control_industry_settings\` — 行业级(工贸)→风险类型级(固有风险/作业风险)→字段级(show/required)
+- **操作设置 Key：** \`risk_control_operation_settings\` — \`{ "controlSupport": "yes" }\` 或 \`"no"\`
+
+---
+
+## 6. 用例图
+
+\`\`\`mermaid
+flowchart LR
+    subgraph 系统管理员
+        A1[新增风险点]
+        A2[编辑风险点]
+        A3[删除风险点]
+        A4[风险辨识/作业步骤管理]
+        A5[开始管控]
+        A6[结束管控]
+        A7[查看管控详情]
+        A8[重新管控]
+        B1[配置显示设置<br/>字段显隐/必填]
+        B2[配置操作设置<br/>管控功能开关]
+    end
+    subgraph 工贸平台
+        C1[接收风险管控推送数据]
+    end
+    A5 --> A6
+    A6 --> C1
+    A8 --> A5
+\`\`\`
+
+---
+
+## 7. 非功能性需求
+
+### 7.1 性能
+
+| 指标 | 要求 |
+|------|------|
+| 风险列表首屏加载 | ≤2s |
+| 新增/编辑抽屉打开 | ≤500ms |
+| 管控弹窗打开 | ≤300ms |
+| localStorage读写 | ≤50ms |
+| 管控结束推送 | 异步非阻塞，失败不阻塞操作完成 |
+| 列表分页 | 每页10条 |
+
+### 7.2 安全性
+
+- 权限校验：前端菜单权限控制入口显隐；后端CUD权限校验
+- 数据隔离：仅返回本企业(\`societyCode\`)数据
+- 推送安全：携带有效认证凭证
+- XSS防护：所有用户输入HTML编码处理
+- 管控时间校验：开始时间≤当前时间；结束时间≥开始时间且≤当前时间
+
+### 7.3 兼容性
+
+Chrome 90+/Edge 90+/Firefox 88+，最低1280×720，推荐1920×1080
+
+### 7.4 可维护性
+
+- 配置热生效(localStorage变更后下次加载自动同步，无需重启)
+- 新增字段需修改配置清单+抽屉+接口映射
+- 推送日志记录(推送时间、响应状态、失败原因)
+- 工贸推送失败不应阻塞「管控结束」主流程
+
+---
+
+## 8. 页面清单与关联PRD
+
+| 页面名称 | 文件路径 | 说明 |
+|----------|----------|------|
+| 风险管理与辨识 | \`风险管理与辨识.html\` | 核心页面：双Tab列表、抽屉、辨识子表、管控全流程。管控结束时触发工贸数据推送 |
+| 风险管控设置 | \`风险设置.html\` | 配置页面：字段显隐/必填+管控开关，配置写入localStorage供主页面读取 |
+
+---
+
+## <span class="badge-ref">[1]</span><span class="badge-ref">[2]</span><span class="badge-ref">[3]</span><span class="badge-ref">[4]</span><span class="badge-ref">[5]</span> 9. 业务规则与约束
+
+| 序号 | 规则 |
+|:----:|------|
+| 1 | 取消「是否显示」→对应字段「是否必填」自动取消+置灰，不可勾选 |
+| 2 | 「是否必填」仅在「是否显示=ON」时可勾选；若必填=ON，新增/编辑时需前端校验非空 |
+| 3 | 「固有风险类型」字段仅当风险点类型为「固有风险」时显示，作业风险不展示 |
+| 4 | 固有风险Tab含5个可配置字段；作业风险Tab含4个(无固有风险类型) |
+| 5 | 风险分析对象默认不展示(show=false, required=false)，两个Tab均遵循此默认 |
+| 6 | 显示设置与操作设置面板互斥切换，同一时间仅展示一个 |
+| 7 | 保存按钮居中展示，无恢复默认按钮；恢复默认需手动清除localStorage |
+| 8 | 操作设置默认值=「支持」；设为「不支持」后，风险管理与辨识页面隐藏所有管控操作入口和管控状态列 |
+| 9 | 风险等级4级：低风险(1)、一般风险(2)、较大风险(3)、重大风险(4)，无需映射 |
+| 10 | 固有风险类型→工贸编码映射：物品→2，场所→3，工艺→4；作业风险固定传1 |
+| 11 | 多轮管控时，接口推送取最新管控轮的起止时间 |
+| 12 | 辨识时间(identificationTime)取该风险点下所有辨识记录的最大创建时间 |
+| 13 | 管控仅在「结束管控」确认后推送至工贸平台；新增/编辑/开始管控不触发推送 |
+| 13.1 | 风险等级过滤：推送前校验grade是否属于工贸字典范围(低/一般/较大/重大风险)，映射编码1/2/3/4。系统4级全部可映射 |
+| 14 | 推送失败不阻塞结束管控主流程，应记录日志并支持后续重试或手动补推 |
+| 15 | 管控状态下仍可编辑/删除风险点(无硬性限制) |
+| 16 | dutyUserName推送时仅传姓名，去除部门括号后缀 |
+| 17 | 点击「开始管控」时须前置校验：固有风险须存在事故类型记录；作业风险须存在作业步骤记录 |
+| 18 | 点击辨识面板「返回」按钮时，须执行与规则17相同的子表行数前置校验 |
+| 19 | fileUrls固定传空数组\`[]\` |
+
+---
+
+## 10. 工贸接口映射总表
+
+**接口：** \`POST /company/data/riskData\` | JSON数组 | 管控结束确认后触发
+
+| # | 接口参数 | 系统来源 | 状态 | 说明 |
+|:--:|----------|----------|:----:|------|
+| 1 | outId | riskId | ✅ | 风险点主键 |
+| 2 | societyCode | 企业信息配置 | ✅ | 后端注入 |
+| 3 | name | 风险点名称/作业名称 | ✅ | 直接映射 |
+| 4 | controlTimeStart | 最新管控轮startTime | ➕ | yyyy-MM-dd HH:mm:ss |
+| 5 | controlTimeEnd | 最新管控轮actualEndTime | ➕ | yyyy-MM-dd HH:mm:ss |
+| 6 | riskType | 固有风险类型→编码映射 | ⚠️ | 数字1/2/3/4 |
+| 7 | riskLink | 风险环节 | ⚠️ | 配置控制显隐但数据始终收集 |
+| 8 | measure | 子表防范措施汇总拼接 | 🔄 | 事故类型+措施按子表顺序拼接，不去重 |
+| 9 | describe | 风险描述 | ⚠️ | 配置控制显隐但数据始终收集 |
+| 10 | areaCode | 坐标逆地理编码 | ⚠️ | 经纬度→行政区划 |
+| 11 | planAddress | 坐标逆地理编码 | ⚠️ | 经纬度→详细地址 |
+| 12 | dutyUserName | 负责人员(去后缀) | ✅ | 仅传姓名 |
+| 13 | grade | 最高风险等级 | ⚠️ | 4级编码 |
+| 14 | identificationTime | max(辨识记录创建时间) | ⚠️ | 自动派生 |
+| 15 | fileUrls | 固定值 | 🔒 | \`[]\` |
+
+---
+
+## 11. 附录
+
+**参考文档：** 工贸在线数据接口规范.pdf、风险管控功能_PRD.md、风险管理与辨识_PRD.md
+
+**待确认：** 逆地理编码服务、、areaCode数据来源
+
+> 版本 v1.3 · 2026-06-24`;
+
+  body.innerHTML = parseMarkdown(md);
+  if (typeof mermaid !== 'undefined') {
+    mermaid.run({ nodes: body.querySelectorAll('pre.mermaid') });
+  }
+}
+
+// ==================== 工贸在线接口对接 整体 PRD 内容（含角标反向注入） ====================
+function loadOverallApiPrdContent() {
+  const body = document.getElementById('prdPanelOverallApiContent');
+
+  const md = `# 工贸在线接口对接 · 整体功能 PRD
+
+## 1. 引言
+
+### 1.1 背景与目标
+
+**核心背景：环慧慧EHS+系统向工贸在线平台的数据上报需求。**
+
+工贸在线平台(\`eitohq.cn\`)要求企业通过标准REST接口上报三类安全监管数据，共涉及 **3个接口、54个字段**：
+
+| 接口 | 路径 | 字段数 | 推送时机 |
+|------|------|:------:|----------|
+| 企业基础信息接口 | \`POST /company/data/register\` | 17项 | 企业信息配置页保存时 |
+| 风险数据接口 | \`POST /company/data/riskData\` | 15项 | 管控结束确认后 |
+| 隐患数据接口 | \`POST /company/data/troubleData\` | 22项 | 隐患状态已验收后，推送一般隐患和重大隐患 |
+
+当前系统已具备企业信息维护、风险点管理与辨识、隐患排查等基础能力，但存在字段缺失、字典映射不一致、地址交互升级、管控措施聚合、配置灵活度不足等差距。
+
+**目标：** 以满足工贸在线数据上报合规要求为核心驱动力，完成企业信息、风险数据接口的字段落地与页面改造，隐患数据接口的纯字段映射(无页面改造)。
+
+### 1.2 功能范围
+
+| 模块 | 接口 | 涉及页面 |
+|------|------|----------|
+| 企业信息 | \`POST /company/data/register\` | 企业信息配置页 |
+| 风险数据 | \`POST /company/data/riskData\` | 风险管理与辨识.html + 风险设置.html |
+| 隐患数据 | \`POST /company/data/troubleData\` | 隐患排查相关页面(纯字段映射，无页面改造) |
+
+---
+
+## 2. 角色与权限
+
+| 角色 | 菜单权限 | 操作权限 | 数据范围 |
+|------|----------|----------|----------|
+| 系统管理员 | 「企业信息配置」「风险管理与辨识」「风险设置」「隐患汇报」菜单 | 企业信息编辑保存+风险点CRUD+风险辨识+管控全流程+配置+隐患汇报/整改/验收全流程 | 本企业全部 |
+
+---
+
+## 3. 名词解释
+
+| 术语 | 定义 |
+|------|------|
+| **工贸在线** | 政府安全监管平台(\`eitohq.cn\`)，要求企业通过标准REST接口上报安全监管数据 |
+| **环慧慧EHS+** | 企业侧EHS管理平台，作为数据生产方向工贸在线推送数据 |
+| **风险数据接口** | \`POST /company/data/riskData\`，用于上报风险管控数据(15项参数)，管控结束后推送 |
+| **societyCode** | 企业社会信用代码(18位)，运营端维护、企业端只读 |
+| **固有风险** | 由物品(2)、场所(3)、工艺(4)等固有属性决定的静态风险 |
+| **作业风险** | 由作业活动引发的动态风险，riskType固定传编码1 |
+| **风险等级映射** | 系统4级(低/一般/较大/重大)→工贸4级编码(1=低/2=一般/3=较大/4=重大) |
+| **管控** | 风险点管控状态追踪完整流程，含开始管控、管控中、结束管控三个状态 |
+| **逆地理编码** | 将经纬度坐标转换为行政区划编码(areaCode)和结构化地址(planAddress) |
+
+---
+
+## 4. 接口全景架构
+
+\`\`\`
+┌─────────────────────────────────────────────────────────────┐
+│                      环慧慧EHS+                              │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌──────────────┐│
+│  │ 企业信息配置页面  │  │ 风险管理与辨识页面 │  │ 隐患排查页面  ││
+│  └────────┬────────┘  └────────┬─────────┘  └──────┬───────┘│
+│           ▼                    ▼                     ▼         │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │              工贸在线接口推送层                           │  │
+│  │  · 签名认证(timestamp+nonce+accessKey+sign MD5)         │  │
+│  │  · 数据组装与字段映射 · 异步推送&失败重试                │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└───────────────────┬─────────────────────────────────────────┘
+                    ▼  HTTPS POST(JSON Array)
+┌─────────────────────────────────────────────────────────────┐
+│                    工贸在线平台(eitohq.cn)                   │
+│  POST /company/data/register     ← 企业基础信息              │
+│  POST /company/data/riskData     ← 风险管控数据              │
+│  POST /company/data/troubleData  ← 隐患排查数据              │
+└─────────────────────────────────────────────────────────────┘
+\`\`\`
+
+### 认证机制(三接口通用)
+
+| 请求头参数 | 类型 | 说明 |
+|:-----------|------|------|
+| \`timestamp\` | \`long\` | 请求发起时的系统毫秒时间戳 |
+| \`nonce\` | \`string\` | 10位随机字符串，每次请求不同 |
+| \`accessKey\` | \`string\` | 系统分配的访问密钥 |
+| \`sign\` | \`string\` | MD5("eito"+timestamp+nonce+secretKey) |
+
+### 通用响应格式
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| \`success\` | \`boolean\` | \`true\`成功/\`false\`失败 |
+| \`errorCode\` | \`string\` | \`"00000"\`=成功 |
+| \`errorMessage\` | \`string\` | 错误描述 |
+
+---
+
+## <span class="badge-ref">[5]</span> 5. 核心业务流程图
+
+### 5.2 风险管控数据→工贸上报
+
+\`\`\`mermaid
+flowchart TD
+    A[新增风险] --> B[风险辨识]
+    B --> C[进行管控]
+    C --> D[管控结束]
+    D --> E{grade是否匹配<br/>工贸在线风险等级}
+    E -->|是:低/一般/较大/重大风险| F[组装JSON→传送工贸在线]
+    E -->|否:不在映射范围内| G[跳过传送，记录日志]
+    F --> H{是否重新管控}
+    H -->|是| I[重新管控]
+    I --> C
+    H -->|否| J[完成]
+\`\`\`
+
+> **多次管控多次传送**：每次管控结束均触发一次传送。重新管控后再次结束管控时，再次组装数据传送，取最新管控轮次起止时间。
+
+### <span class="badge-ref">[1]</span><span class="badge-ref">[2]</span><span class="badge-ref">[4]</span> 5.4 设置配置流程
+
+\`\`\`mermaid
+flowchart TD
+    A[进入风险设置] --> B{左侧菜单}
+    B -->|显示设置| C[选择风险类型Tab]
+    B -->|操作设置| H[管控开关单选项]
+    C --> D{固有风险/作业风险}
+    D --> E[字段配置表：勾选显隐/必填]
+    E --> F[保存→localStorage]
+    H --> I[选择支持/不支持]
+    I --> F
+    F --> G[Toast:保存成功！]
+    G --> J[风险管理与辨识页下次加载时读取]
+\`\`\`
+
+---
+
+## <span class="badge-ref">[2]</span><span class="badge-ref">[3]</span><span class="badge-ref">[4]</span><span class="badge-ref">[5]</span> 6. 数据模型
+
+### 6.2 配置数据结构(localStorage)
+
+#### 显示设置 Key：\`risk_control_industry_settings\`
+
+\`\`\`json
+{
+  "工贸": {
+    "固有风险": {
+      "inherent_risk_type":   { "show": true,  "required": true  },
+      "risk_location":        { "show": true,  "required": true  },
+      "risk_link":            { "show": true,  "required": true  },
+      "risk_analysis_target": { "show": false, "required": false },
+      "risk_describe":        { "show": true,  "required": true  }
+    },
+    "作业风险": {
+      "risk_location":        { "show": true,  "required": true  },
+      "risk_link":            { "show": true,  "required": true  },
+      "risk_analysis_target": { "show": false, "required": false },
+      "risk_describe":        { "show": true,  "required": true  }
+    }
+  }
+}
+\`\`\`
+
+#### 操作设置 Key：\`risk_control_operation_settings\`
+
+\`\`\`json
+{ "controlSupport": "yes" }
+\`\`\`
+
+---
+
+## <span class="badge-ref">[3]</span> 9. 接口字段映射总表
+
+### 9.2 接口二：风险数据(\`POST /company/data/riskData\`)
+
+| # | 接口参数 | 含义 | 类型 | 必填 | 系统来源 | 映射状态 | 说明 |
+|:--:|----------|------|------|:----:|----------|:--------:|------|
+| 1 | \`outId\` | 主键 | string | 是 | riskId | ✅已有 | 风险点唯一标识 |
+| 2 | \`societyCode\` | 企业社会信用代码 | string | 是 | 企业信息配置 | ✅已有 | 后端自动注入 |
+| 3 | \`name\` | 风险项名称 | string | 是 | 风险点名称/作业名称 | ✅已有 | 直接映射 |
+| 4 | \`controlTimeStart\` | 管控开始时间 | string | 是 | 最新管控轮startTime | ➕新增 | yyyy-MM-dd HH:mm:ss |
+| 5 | \`controlTimeEnd\` | 管控结束时间 | string | 是 | 最新管控轮actualEndTime | ➕新增 | 实际结束时间 |
+| 6 | \`riskType\` | 风险类型 | string | 是 | 固有风险类型→编码映射 | ⚠️需改造 | 1=作业/2=物品/3=场所/4=工艺 |
+| 7 | \`riskLink\` | 风险环节 | string | 是 | 抽屉下拉选择 | ⚠️需收集 | 配置控制显隐但数据始终收集 |
+| 8 | \`measure\` | 管控措施 | string | 是 | 子表防范措施汇总 | 🔄自动派生 | 所有事故类型防范措施汇总拼接 |
+| 9 | \`describe\` | 风险描述 | string | 是 | 抽屉textarea | ⚠️需收集 | 配置控制显隐但数据始终收集 |
+| 10 | \`areaCode\` | 区域编码 | string | 是 | 坐标逆地理编码 | ⚠️待对接 | 经纬度→行政区划编码 |
+| 11 | \`planAddress\` | 详细地址 | string | 是 | 坐标逆地理编码 | ⚠️待对接 | 经纬度→详细地址 |
+| 12 | \`dutyUserName\` | 责任人 | string | 是 | 负责人员(去后缀) | ✅已有 | 仅传姓名 |
+| 13 | \`grade\` | 风险等级 | string | 是 | 最高风险等级→编码映射 | ⚠️需改造 | 4级映射 |
+| 14 | \`identificationTime\` | 辨识时间 | string | 是 | max(辨识记录创建时间) | ⚠️需改造 | yyyy-MM-dd HH:mm:ss |
+| 15 | \`fileUrls\` | 附件下载url | string[] | 否 | 固定值 | 🔒固定 | 当前固定传\`[]\` |
+
+#### 字典映射
+
+**riskType映射：** 作业风险→1 / 固有风险→物品→2 / 场所→3 / 工艺→4
+
+**grade映射：** 低风险→1 / 一般风险→2 / 较大风险→3 / 重大风险→4
+
+#### 推送时机与规则
+
+| 规则 | 说明 |
+|------|------|
+| 推送触发 | 仅「结束管控」确认后触发推送。同一风险点可多次管控，多次结束管控则多次推送 |
+| 风险等级过滤 | 仅当grade映射后的等级名称与工贸在线字典一致时推送(低风险/一般风险/较大风险/重大风险) |
+| 管控时间 | 存在多轮管控时取最新管控轮的起止时间 |
+| 辨识时间 | 取该风险点下所有辨识记录中最新的创建时间 |
+| measure | 子表所有事故类型的防范措施汇总，用「；」拼接(不去重) |
+| 推送失败处理 | 记录日志，不阻塞「结束管控」主流程 |
+
+---
+
+## 10. 业务规则与约束汇总
+
+| 序号 | 规则 | 适用接口 |
+|:----:|------|:--------:|
+| 1 | 取消「是否显示」→对应字段「是否必填」自动取消+置灰 | 风险设置 |
+| 2 | 「固有风险类型」仅当风险点类型为「固有风险」时显示 | 风险数据 |
+| 3 | 风险分析对象默认不展示(show=false, required=false) | 风险设置 |
+| 4 | 操作设置默认值=「支持」；设为「不支持」时隐藏管控入口 | 风险数据 |
+| 5 | 风险等级4级：低风险(1)、一般风险(2)、较大风险(3)、重大风险(4)，无需映射 | 风险数据 |
+| 6 | 固有风险类型→编码：物品→2,场所→3,工艺→4；作业风险→1 | 风险数据 |
+| 7 | 多轮管控时取最新管控轮的起止时间 | 风险数据 |
+| 8 | identificationTime取所有辨识记录中max(创建时间) | 风险数据 |
+| 9 | 管控仅在「结束管控」确认后推送至工贸；推送失败不阻塞主流程 | 风险数据 |
+| 10 | dutyUserName仅传姓名，去除部门后缀 | 风险数据 |
+| 11 | fileUrls当前版本固定传\`[]\` | 风险数据 |
+| 12 | 风险数据推送前置过滤：仅当grade映射后属于工贸字典范围时才推送 | 风险数据 |
+
+---
+
+## 11. 附录
+
+### 参考文档
+
+| 文档 | 路径 | 说明 |
+|------|------|------|
+| 工贸在线数据接口规范 | \`工贸在线数据接口规范.pdf\` | 工贸平台标准接口文档 |
+| 风险管理与辨识PRD | \`风险管理与辨识_PRD.md\` | 风险数据接口映射页面级PRD |
+| 风险设置PRD | \`风险设置_PRD.md\` | 设置页面级PRD |
+
+### 变更记录
+
+| 版本 | 日期 | 变更内容 | 作者 |
+|------|------|----------|------|
+| V1.0 | 2026-06-23 | 初版创建 | — |
+| V1.3 | 2026-06-24 | 修改风险管控流程图；measure汇总不去重；明确风险等级过滤规则 | — |
+`;
+
+  body.innerHTML = parseMarkdown(md);
+  if (typeof mermaid !== 'undefined') {
+    mermaid.run({ nodes: body.querySelectorAll('pre.mermaid') });
+  }
+}
+
+// 简易 Markdown 解析器
+function parseMarkdown(md) {
+  let html = md;
+
+  // 代码块 - mermaid 特殊处理
+  html = html.replace(/```mermaid\n([\s\S]*?)```/g, '<pre class="mermaid">$1</pre>');
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+  // 行内代码
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // 标题
+  html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  // 引用
+  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+  // 分割线
+  html = html.replace(/^---$/gm, '<hr>');
+  // 粗体
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // 斜体
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // 无序列表
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  // 表格
+  html = html.replace(/\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)*)/g, (match, header, rows) => {
+    const hcells = header.split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+    const rhtml = rows.trim().split('\n').map(row => {
+      const cells = row.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
+      return `<tr>${cells}</tr>`;
+    }).join('');
+    return `<table><thead><tr>${hcells}</tr></thead><tbody>${rhtml}</tbody></table>`;
+  });
+  // badge ref
+  html = html.replace(/<span class="badge-ref">\[(\d+)\]<\/span>/g, '<span class="badge-ref">[$1]</span>');
+  // 段落
+  html = html.split('\n\n').map(block => {
+    block = block.trim();
+    if (!block) return '';
+    if (/^<(h[1-4]|table|ul|ol|hr|blockquote|pre)/.test(block)) return block;
+    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+
+  return html;
+}
+
+// ==================== 全局标注开关 ====================
+let badgesVisible = true;
+
+function toggleAllBadges() {
+  badgesVisible = !badgesVisible;
+  const badges = document.querySelectorAll('.prd-badge');
+  const eyeOpen = document.getElementById('badgeToggleIconEyeOpen');
+  const eyeClose = document.getElementById('badgeToggleIconEyeClose');
+
+  badges.forEach(badge => {
+    if (badgesVisible) {
+      badge.classList.remove('prd-badge-hidden');
+    } else {
+      badge.classList.add('prd-badge-hidden');
+    }
+  });
+
+  if (badgesVisible) {
+    eyeOpen.style.display = '';
+    eyeClose.style.display = 'none';
+  } else {
+    eyeOpen.style.display = 'none';
+    eyeClose.style.display = '';
+  }
+}
+
+// ==================== 初始化标注 ====================
+function initAnnotations() {
+  bindBadgeEvents();
+}
+
+// 在所有变量和函数声明之后执行初始化
+init();
+initAnnotations();
+</script>
+
+</body>
+</html>
